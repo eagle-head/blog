@@ -1,11 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  localePrefix,
-  localizedPath,
-  stripLocalePrefix,
-  detectLocaleFromPath,
-  alternateUrls,
-} from './i18n';
+import { localePrefix, localizedPath, stripLocalePrefix, detectLocaleFromPath, alternateUrls } from '../i18n';
 
 describe('localePrefix', () => {
   it('returns empty for default locale', () => {

@@ -20,9 +20,6 @@ export async function getValidatedCollection<C extends AnyCollection>(
 
   const groups = groupBySlug(all);
   assertAllLocalesPresent(groups, name);
-  assertSharedFieldsMatch(
-    groups,
-    SHARED_FIELDS[name] as readonly (keyof CollectionEntry<C>['data'])[],
-  );
+  assertSharedFieldsMatch(groups, SHARED_FIELDS[name] as readonly (keyof CollectionEntry<C>['data'])[]);
   return groups;
 }

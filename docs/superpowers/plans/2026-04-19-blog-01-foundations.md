@@ -1,43 +1,32 @@
 # Blog — Plan 01: Foundations & Content Model
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use
-> superpowers:subagent-driven-development (recommended) or
-> superpowers:executing-plans to implement this plan task-by-task. Steps use
-> checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to
+> implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Establish baseline tooling (scripts, lint, formatter, test runner),
-configure Astro for bilingual SSG with the full remark/rehype pipeline, and
-define the `papers` / `posts` content collections with Zod schemas plus
-cross-language validation helpers. At the end of this plan, `npm run check` and
-`npm test` pass on an empty-but-wired project.
+**Goal:** Establish baseline tooling (scripts, lint, formatter, test runner), configure Astro for bilingual SSG with the full remark/rehype
+pipeline, and define the `papers` / `posts` content collections with Zod schemas plus cross-language validation helpers. At the end of this
+plan, `npm run check` and `npm test` pass on an empty-but-wired project.
 
-**Architecture:** SSG on Astro 6, `output: 'static'`, i18n built-in (`en`
-default, `pt-BR` secondary). Content authored as MDX in
-`src/content/{papers,posts}/<slug>/{en,pt-BR}.mdx`. Per-slug folder co-locates
-translations and assets. Cross-language validation runs in a library module that
-the build pulls in via `getCollection` wrappers. Logic modules (`src/lib/*.ts`)
-are unit-tested with Vitest; content and Astro pieces are validated by
-`astro check` and `astro build`.
+**Architecture:** SSG on Astro 6, `output: 'static'`, i18n built-in (`en` default, `pt-BR` secondary). Content authored as MDX in
+`src/content/{papers,posts}/<slug>/{en,pt-BR}.mdx`. Per-slug folder co-locates translations and assets. Cross-language validation runs in a
+library module that the build pulls in via `getCollection` wrappers. Logic modules (`src/lib/*.ts`) are unit-tested with Vitest; content and
+Astro pieces are validated by `astro check` and `astro build`.
 
-**Tech Stack:** Astro 6.1.8, TypeScript 5.9 (via `@astrojs/check`), MDX pipeline
-(remark-math, rehype-katex, rehype-mermaid, rehype-citation, remark-directive,
-rehype-slug, rehype-autolink-headings, remark-gfm), Tailwind CSS v4 (via
-`@tailwindcss/vite`), Zod (bundled with `astro:content`), Vitest.
+**Tech Stack:** Astro 6.1.8, TypeScript 5.9 (via `@astrojs/check`), MDX pipeline (remark-math, rehype-katex, rehype-mermaid,
+rehype-citation, remark-directive, rehype-slug, rehype-autolink-headings, remark-gfm), Tailwind CSS v4 (via `@tailwindcss/vite`), Zod
+(bundled with `astro:content`), Vitest.
 
 **Reference specs:**
 
 - Architecture: `docs/superpowers/specs/2026-04-19-eduardokohn-blog-design.md`
-- Visual design brief: `docs/superpowers/specs/2026-04-19-visual-design.md`
-  (authoritative source for colors, typography, spacing, tokens)
+- Visual design brief: `docs/superpowers/specs/2026-04-19-visual-design.md` (authoritative source for colors, typography, spacing, tokens)
 
 ---
 
 ## Phase 0 — Baseline Tooling
 
-The scaffold already created `package.json`, `tsconfig.json`, and a minimal
-`src/pages/index.astro`. This phase adds the tooling around them (scripts,
-formatter, linter, test runner, editor config) so every subsequent task has
-`npm run X` commands that work.
+The scaffold already created `package.json`, `tsconfig.json`, and a minimal `src/pages/index.astro`. This phase adds the tooling around them
+(scripts, formatter, linter, test runner, editor config) so every subsequent task has `npm run X` commands that work.
 
 ### Task 0.1 — Add npm scripts
 
@@ -47,11 +36,9 @@ formatter, linter, test runner, editor config) so every subsequent task has
 
 - [ ] **Step 1: Read current scripts block**
 
-Run:
-`node -e "console.log(JSON.stringify(require('./package.json').scripts, null, 2))"`
+Run: `node -e "console.log(JSON.stringify(require('./package.json').scripts, null, 2))"`
 
-Expected: an object with at least `dev`, `build`, `preview`, `astro` keys from
-the Astro minimal template.
+Expected: an object with at least `dev`, `build`, `preview`, `astro` keys from the Astro minimal template.
 
 - [ ] **Step 2: Replace the `scripts` block with the full set**
 
@@ -155,9 +142,8 @@ public/fonts
 
 Run: `npm run format:check`
 
-Expected: a list of files with formatting differences, exiting non-zero. That is
-acceptable — it means prettier runs. We will run `npm run format` to fix
-everything after all configs are in place (Task 0.7).
+Expected: a list of files with formatting differences, exiting non-zero. That is acceptable — it means prettier runs. We will run
+`npm run format` to fix everything after all configs are in place (Task 0.7).
 
 ### Task 0.4 — ESLint flat configuration
 
@@ -181,10 +167,7 @@ export default [
   {
     files: ['**/*.ts', '**/*.tsx'],
     rules: {
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
-      ],
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
     },
   },
   {
@@ -198,8 +181,7 @@ export default [
 
 - [ ] **Step 2: Verify ESLint loads the config**
 
-Run:
-`npx eslint --print-config astro.config.mjs > /tmp/eslint-check.json && head -5 /tmp/eslint-check.json`
+Run: `npx eslint --print-config astro.config.mjs > /tmp/eslint-check.json && head -5 /tmp/eslint-check.json`
 
 Expected: prints JSON (not an error). Confirms config parses.
 
@@ -238,9 +220,8 @@ export default defineConfig({
 
 Run: `npm test`
 
-Expected: Vitest reports "No test files found" and exits 0 (or exits with code 1
-but logs "No test files found, exiting with code 1" — both are fine; the point
-is Vitest itself ran).
+Expected: Vitest reports "No test files found" and exits 0 (or exits with code 1 but logs "No test files found, exiting with code 1" — both
+are fine; the point is Vitest itself ran).
 
 ### Task 0.6 — Add `.gitattributes`
 
@@ -266,8 +247,7 @@ package-lock.json -diff
 
 Run: `git add --renormalize .`
 
-Expected: no errors. (Git may not report anything if the repo already has LF
-line endings — that is fine.)
+Expected: no errors. (Git may not report anything if the repo already has LF line endings — that is fine.)
 
 ### Task 0.7 — Format everything and commit Phase 0
 
@@ -279,8 +259,7 @@ line endings — that is fine.)
 
 Run: `npm run format`
 
-Expected: Prettier reports files it rewrote. Should include `astro.config.mjs`,
-`tsconfig.json`, and the markdown files in `docs/`.
+Expected: Prettier reports files it rewrote. Should include `astro.config.mjs`, `tsconfig.json`, and the markdown files in `docs/`.
 
 - [ ] **Step 2: Verify format is clean**
 
@@ -305,9 +284,8 @@ git commit -m "chore: set up baseline tooling (scripts, prettier, eslint, vitest
 
 ## Phase 1 — Astro Configuration
 
-Wire Astro for bilingual SSG, the full MDX pipeline, Tailwind v4, and
-dark-mode-ready base CSS. At the end of this phase `npm run build` produces a
-`dist/` folder from the current (empty) project.
+Wire Astro for bilingual SSG, the full MDX pipeline, Tailwind v4, and dark-mode-ready base CSS. At the end of this phase `npm run build`
+produces a `dist/` folder from the current (empty) project.
 
 ### Task 1.1 — Rewrite `astro.config.mjs` with full config
 
@@ -391,14 +369,12 @@ Expected: file reformatted, exits 0.
 
 Run: `npx astro sync`
 
-Expected: types regenerated under `.astro/`, exits 0. Any import errors here
-indicate a misspelled plugin name.
+Expected: types regenerated under `.astro/`, exits 0. Any import errors here indicate a misspelled plugin name.
 
 ### Task 1.2 — Install JetBrains Mono and create global CSS with design tokens
 
-Implements §2 (typography), §3 (color system), and §4 (spacing) of the visual
-design brief. All token names match the brief exactly so components in later
-plans can reference them without re-mapping.
+Implements §2 (typography), §3 (color system), and §4 (spacing) of the visual design brief. All token names match the brief exactly so
+components in later plans can reference them without re-mapping.
 
 **Files:**
 
@@ -409,16 +385,13 @@ plans can reference them without re-mapping.
 
 Run: `npm install @fontsource-variable/jetbrains-mono`
 
-Expected: `@fontsource-variable/jetbrains-mono` appears under `dependencies` in
-`package.json`. Inter was installed during bootstrap.
+Expected: `@fontsource-variable/jetbrains-mono` appears under `dependencies` in `package.json`. Inter was installed during bootstrap.
 
 - [ ] **Step 2: Write `src/styles/global.css`**
 
-This is the authoritative token file. It imports Tailwind v4, the typography
-plugin, both variable fonts, and declares the complete token system from the
-visual design brief. Dark-mode tokens override through `[data-theme='dark']` —
-no Tailwind `dark:*` variant is needed because components consume tokens via
-`var(...)` and the attribute swaps them.
+This is the authoritative token file. It imports Tailwind v4, the typography plugin, both variable fonts, and declares the complete token
+system from the visual design brief. Dark-mode tokens override through `[data-theme='dark']` — no Tailwind `dark:*` variant is needed
+because components consume tokens via `var(...)` and the attribute swaps them.
 
 ```css
 @import 'tailwindcss';
@@ -435,12 +408,8 @@ no Tailwind `dark:*` variant is needed because components consume tokens via
 
 @theme {
   /* Fonts */
-  --font-sans:
-    'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
-    Roboto, sans-serif;
-  --font-mono:
-    'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas,
-    monospace;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   /* Type scale (brief §2.2) */
   --text-3xs: 10px;
@@ -566,11 +535,7 @@ no Tailwind `dark:*` variant is needed because components consume tokens via
 
   /* Code palette unchanged (Dark Always) */
 
-  --gradient-featured: linear-gradient(
-    135deg,
-    rgba(136, 192, 208, 0.08) 0%,
-    rgba(235, 203, 139, 0.06) 100%
-  );
+  --gradient-featured: linear-gradient(135deg, rgba(136, 192, 208, 0.08) 0%, rgba(235, 203, 139, 0.06) 100%);
   --color-border-featured: rgba(136, 192, 208, 0.3);
 
   color-scheme: dark;
@@ -638,14 +603,12 @@ a:hover {
 
 Run: `npx astro sync`
 
-Expected: exits 0. (Astro picks up the Tailwind Vite plugin; the CSS file is
-validated when a page imports it.)
+Expected: exits 0. (Astro picks up the Tailwind Vite plugin; the CSS file is validated when a page imports it.)
 
 ### Task 1.3 — Create inline theme script (FOUC-free)
 
-The dark-mode toggle writes to `localStorage.theme` and to
-`document.documentElement.dataset.theme`. This tiny script runs before any
-paint, preventing a flash of the wrong theme.
+The dark-mode toggle writes to `localStorage.theme` and to `document.documentElement.dataset.theme`. This tiny script runs before any paint,
+preventing a flash of the wrong theme.
 
 **Files:**
 
@@ -678,13 +641,11 @@ export const themeInitScript = `
 
 Run: `npx astro sync && npx astro check`
 
-Expected: 0 errors from astro check. (It picks up the new `.ts` file and
-typechecks it against the generated virtual-module types.)
+Expected: 0 errors from astro check. (It picks up the new `.ts` file and typechecks it against the generated virtual-module types.)
 
 ### Task 1.4 — Rewrite `src/pages/index.astro` to sanity-check the build
 
-We will replace this entirely in Plan 2. For now it just needs to compile so
-`astro build` succeeds.
+We will replace this entirely in Plan 2. For now it just needs to compile so `astro build` succeeds.
 
 **Files:**
 
@@ -707,9 +668,7 @@ import '../styles/global.css';
   <body>
     <main class="mx-auto max-w-prose p-8">
       <h1 class="text-3xl font-bold">Scaffold OK</h1>
-      <p class="mt-4 text-[var(--color-muted)]">
-        Foundations in place. Content model coming next.
-      </p>
+      <p class="mt-4 text-[var(--color-muted)]">Foundations in place. Content model coming next.</p>
     </main>
   </body>
 </html>
@@ -719,10 +678,9 @@ import '../styles/global.css';
 
 Run: `npm run build`
 
-Expected: Astro builds successfully; `dist/index.html` exists. If the build
-fails on `rehype-mermaid` or `rehype-citation` it is because the pages reference
-those plugins but no MDX uses them yet — they should not fail on an empty
-pipeline. Investigate the actual error and fix before moving on.
+Expected: Astro builds successfully; `dist/index.html` exists. If the build fails on `rehype-mermaid` or `rehype-citation` it is because the
+pages reference those plugins but no MDX uses them yet — they should not fail on an empty pipeline. Investigate the actual error and fix
+before moving on.
 
 - [ ] **Step 3: Verify `dist/index.html` contains the page**
 
@@ -743,9 +701,8 @@ git commit -m "feat: configure astro i18n, MDX pipeline, tailwind v4, theme toke
 
 ## Phase 2 — Content Model
 
-Define the `papers` and `posts` collections with strict Zod schemas. Write
-cross-language validation helpers using TDD before they plug into Astro's
-`getCollection`.
+Define the `papers` and `posts` collections with strict Zod schemas. Write cross-language validation helpers using TDD before they plug into
+Astro's `getCollection`.
 
 ### Task 2.1 — Write `src/content.config.ts` with Zod schemas
 
@@ -810,9 +767,7 @@ const posts = defineCollection({
       language: localeSchema,
       status: statusSchema,
       heroImage: image().optional(),
-      series: z
-        .object({ id: z.string(), order: z.number().int().nonnegative() })
-        .optional(),
+      series: z.object({ id: z.string(), order: z.number().int().nonnegative() }).optional(),
     }),
 });
 
@@ -823,8 +778,7 @@ export const collections = { papers, posts };
 
 Run: `npx astro sync && npx astro check`
 
-Expected: `astro sync` regenerates `.astro/` types (`collections` typed in
-`.astro/content.d.ts`); `astro check` exits 0.
+Expected: `astro sync` regenerates `.astro/` types (`collections` typed in `.astro/content.d.ts`); `astro check` exits 0.
 
 ### Task 2.2 — TDD: write failing tests for cross-language validation
 
@@ -836,12 +790,7 @@ Expected: `astro sync` regenerates `.astro/` types (`collections` typed in
 
 ```ts
 import { describe, expect, it } from 'vitest';
-import {
-  parseEntryId,
-  groupBySlug,
-  assertAllLocalesPresent,
-  assertSharedFieldsMatch,
-} from './content';
+import { parseEntryId, groupBySlug, assertAllLocalesPresent, assertSharedFieldsMatch } from './content';
 
 describe('parseEntryId', () => {
   it('splits "<slug>/<locale>" into parts', () => {
@@ -888,9 +837,7 @@ describe('assertAllLocalesPresent', () => {
 
   it('throws listing missing locales', () => {
     const groups = { a: { en: { id: 'a/en' } } };
-    expect(() => assertAllLocalesPresent(groups, 'papers')).toThrow(
-      /papers\/a.*pt-BR/i,
-    );
+    expect(() => assertAllLocalesPresent(groups, 'papers')).toThrow(/papers\/a.*pt-BR/i);
   });
 });
 
@@ -909,9 +856,7 @@ describe('assertSharedFieldsMatch', () => {
         },
       },
     };
-    expect(() =>
-      assertSharedFieldsMatch(groups, ['publishedAt', 'tags', 'status']),
-    ).not.toThrow();
+    expect(() => assertSharedFieldsMatch(groups, ['publishedAt', 'tags', 'status'])).not.toThrow();
   });
 
   it('throws listing the mismatch', () => {
@@ -935,9 +880,7 @@ describe('assertSharedFieldsMatch', () => {
         },
       },
     };
-    expect(() =>
-      assertSharedFieldsMatch(groups, ['publishedAt', 'tags', 'status']),
-    ).toThrow(/publishedAt.*a/);
+    expect(() => assertSharedFieldsMatch(groups, ['publishedAt', 'tags', 'status'])).toThrow(/publishedAt.*a/);
   });
 });
 ```
@@ -980,9 +923,7 @@ export function parseEntryId(id: string): { slug: string; locale: Locale } {
   return { slug, locale: locale as Locale };
 }
 
-export function groupBySlug<T>(
-  entries: ReadonlyArray<EntryLike<T>>,
-): GroupedEntries<T> {
+export function groupBySlug<T>(entries: ReadonlyArray<EntryLike<T>>): GroupedEntries<T> {
   const out: GroupedEntries<T> = {};
   for (const entry of entries) {
     const { slug, locale } = parseEntryId(entry.id);
@@ -991,11 +932,7 @@ export function groupBySlug<T>(
   return out;
 }
 
-export function assertAllLocalesPresent<T>(
-  groups: GroupedEntries<T>,
-  collection: string,
-  required: readonly Locale[] = LOCALES,
-): void {
+export function assertAllLocalesPresent<T>(groups: GroupedEntries<T>, collection: string, required: readonly Locale[] = LOCALES): void {
   const problems: string[] = [];
   for (const [slug, group] of Object.entries(groups)) {
     for (const loc of required) {
@@ -1005,16 +942,11 @@ export function assertAllLocalesPresent<T>(
     }
   }
   if (problems.length) {
-    throw new Error(
-      `Missing translations in collection '${collection}':\n  - ${problems.join('\n  - ')}`,
-    );
+    throw new Error(`Missing translations in collection '${collection}':\n  - ${problems.join('\n  - ')}`);
   }
 }
 
-export function assertSharedFieldsMatch<T extends Record<string, unknown>>(
-  groups: GroupedEntries<T>,
-  fields: readonly (keyof T)[],
-): void {
+export function assertSharedFieldsMatch<T extends Record<string, unknown>>(groups: GroupedEntries<T>, fields: readonly (keyof T)[]): void {
   const problems: string[] = [];
   for (const [slug, group] of Object.entries(groups)) {
     const localesInGroup = Object.keys(group) as Locale[];
@@ -1025,17 +957,13 @@ export function assertSharedFieldsMatch<T extends Record<string, unknown>>(
       const otherEntry = group[other]!;
       for (const field of fields) {
         if (!fieldEquals(firstEntry.data[field], otherEntry.data[field])) {
-          problems.push(
-            `${slug}: field '${String(field)}' differs between ${first} and ${other}`,
-          );
+          problems.push(`${slug}: field '${String(field)}' differs between ${first} and ${other}`);
         }
       }
     }
   }
   if (problems.length) {
-    throw new Error(
-      `Shared-field mismatch across locales:\n  - ${problems.join('\n  - ')}`,
-    );
+    throw new Error(`Shared-field mismatch across locales:\n  - ${problems.join('\n  - ')}`);
   }
 }
 
@@ -1047,23 +975,11 @@ function fieldEquals(a: unknown, b: unknown): boolean {
     if (a.length !== b.length) return false;
     return a.every((v, i) => fieldEquals(v, b[i]));
   }
-  if (
-    a &&
-    b &&
-    typeof a === 'object' &&
-    typeof b === 'object' &&
-    !Array.isArray(a) &&
-    !Array.isArray(b)
-  ) {
+  if (a && b && typeof a === 'object' && typeof b === 'object' && !Array.isArray(a) && !Array.isArray(b)) {
     const ak = Object.keys(a as object).sort();
     const bk = Object.keys(b as object).sort();
     if (ak.length !== bk.length || ak.some((k, i) => k !== bk[i])) return false;
-    return ak.every((k) =>
-      fieldEquals(
-        (a as Record<string, unknown>)[k],
-        (b as Record<string, unknown>)[k],
-      ),
-    );
+    return ak.every((k) => fieldEquals((a as Record<string, unknown>)[k], (b as Record<string, unknown>)[k]));
   }
   return a === b;
 }
@@ -1106,10 +1022,7 @@ export async function getValidatedCollection<C extends AnyCollection>(
 
   const groups = groupBySlug(all);
   assertAllLocalesPresent(groups, name);
-  assertSharedFieldsMatch(
-    groups,
-    SHARED_FIELDS[name] as readonly (keyof CollectionEntry<C>['data'])[],
-  );
+  assertSharedFieldsMatch(groups, SHARED_FIELDS[name] as readonly (keyof CollectionEntry<C>['data'])[]);
   return groups;
 }
 ```
@@ -1145,13 +1058,7 @@ Small, pure functions that compute URLs across locales. Written TDD.
 
 ```ts
 import { describe, expect, it } from 'vitest';
-import {
-  localePrefix,
-  localizedPath,
-  stripLocalePrefix,
-  detectLocaleFromPath,
-  alternateUrls,
-} from './i18n';
+import { localePrefix, localizedPath, stripLocalePrefix, detectLocaleFromPath, alternateUrls } from './i18n';
 
 describe('localePrefix', () => {
   it('returns empty for default locale', () => {
@@ -1167,14 +1074,10 @@ describe('localizedPath', () => {
     expect(localizedPath('/papers/quicksort', 'en')).toBe('/papers/quicksort');
   });
   it('prepends /pt-br for pt-BR', () => {
-    expect(localizedPath('/papers/quicksort', 'pt-BR')).toBe(
-      '/pt-br/papers/quicksort',
-    );
+    expect(localizedPath('/papers/quicksort', 'pt-BR')).toBe('/pt-br/papers/quicksort');
   });
   it('normalizes leading slash', () => {
-    expect(localizedPath('papers/quicksort', 'pt-BR')).toBe(
-      '/pt-br/papers/quicksort',
-    );
+    expect(localizedPath('papers/quicksort', 'pt-BR')).toBe('/pt-br/papers/quicksort');
   });
   it('handles root', () => {
     expect(localizedPath('/', 'pt-BR')).toBe('/pt-br/');
@@ -1306,8 +1209,7 @@ git commit -m "feat: add i18n url helpers with tdd"
 
 ## Phase 4 — Full-Foundations Smoke Test
 
-Prove the whole foundation works end to end: lint, typecheck, tests, and build
-all succeed on a wired-up but content-free project.
+Prove the whole foundation works end to end: lint, typecheck, tests, and build all succeed on a wired-up but content-free project.
 
 ### Task 4.1 — Run every quality gate
 
@@ -1327,15 +1229,13 @@ Expected: `Summary: 0 error(s)`.
 
 Run: `npx eslint .`
 
-Expected: exits 0. Fix any rule failures inline (imports order, unused vars)
-before proceeding.
+Expected: exits 0. Fix any rule failures inline (imports order, unused vars) before proceeding.
 
 - [ ] **Step 4: Astro + markdown check**
 
 Run: `npm run check`
 
-Expected: `0 errors` from `astro check`, and markdownlint reports
-`Summary: 0 error(s)`.
+Expected: `0 errors` from `astro check`, and markdownlint reports `Summary: 0 error(s)`.
 
 - [ ] **Step 5: Unit tests**
 
@@ -1347,8 +1247,7 @@ Expected: all Vitest tests in `src/lib/*.test.ts` pass.
 
 Run: `npm run build`
 
-Expected: Astro builds; `dist/index.html` exists and contains the scaffold
-string.
+Expected: Astro builds; `dist/index.html` exists and contains the scaffold string.
 
 ### Task 4.2 — Final commit and summary
 
@@ -1362,8 +1261,7 @@ Expected: "nothing to commit, working tree clean".
 
 Run: `git log --oneline | head`
 
-Expected: at least four commits from this plan (tooling, astro config, content
-model, i18n).
+Expected: at least four commits from this plan (tooling, astro config, content model, i18n).
 
 - [ ] **Step 3: Tag the foundations milestone (optional but useful)**
 
@@ -1378,20 +1276,14 @@ git tag -a v0.1.0-foundations -m "Plan 01 complete: foundations and content mode
 Plan 01 is complete when ALL of the following are true:
 
 1. `npm run check` exits 0.
-2. `npm test` exits 0 with at least 12 passing tests (content helpers + i18n
-   helpers).
+2. `npm test` exits 0 with at least 12 passing tests (content helpers + i18n helpers).
 3. `npm run build` produces `dist/index.html`.
-4. `src/content.config.ts` defines `papers` and `posts` collections with the
-   full schemas from the spec.
-5. `src/lib/content.ts` and `src/lib/i18n.ts` exist and are fully covered by
-   tests.
+4. `src/content.config.ts` defines `papers` and `posts` collections with the full schemas from the spec.
+5. `src/lib/content.ts` and `src/lib/i18n.ts` exist and are fully covered by tests.
 6. Working tree is clean.
 
 ## What's Next
 
-**Plan 02 (Layouts + EN pages + sample content)** adds: `BaseLayout`,
-`PaperLayout`, `PostLayout`, the `SEO` component with JSON-LD, MDX semantic
-components (Theorem/Definition/Proof/Lemma/Figure/Note/Warning), one fully
-featured sample paper and sample post (both locales), and the EN-side pages
-(home, `/papers`, `/papers/[slug]`, `/posts`, `/posts/[slug]`). After Plan 02
-the site renders real, styled content.
+**Plan 02 (Layouts + EN pages + sample content)** adds: `BaseLayout`, `PaperLayout`, `PostLayout`, the `SEO` component with JSON-LD, MDX
+semantic components (Theorem/Definition/Proof/Lemma/Figure/Note/Warning), one fully featured sample paper and sample post (both locales),
+and the EN-side pages (home, `/papers`, `/papers/[slug]`, `/posts`, `/posts/[slug]`). After Plan 02 the site renders real, styled content.

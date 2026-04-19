@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  parseEntryId,
-  groupBySlug,
-  assertAllLocalesPresent,
-  assertSharedFieldsMatch,
-} from './content';
+import { parseEntryId, groupBySlug, assertAllLocalesPresent, assertSharedFieldsMatch } from '../content';
 
 describe('parseEntryId', () => {
   it('splits "<slug>/<locale>" into parts', () => {
@@ -94,8 +89,6 @@ describe('assertSharedFieldsMatch', () => {
         },
       },
     };
-    expect(() => assertSharedFieldsMatch(groups, ['publishedAt', 'tags', 'status'])).toThrow(
-      /publishedAt.*a/,
-    );
+    expect(() => assertSharedFieldsMatch(groups, ['publishedAt', 'tags', 'status'])).toThrow(/publishedAt.*a/);
   });
 });

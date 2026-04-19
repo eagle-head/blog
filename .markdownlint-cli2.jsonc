@@ -4,16 +4,14 @@
 {
   "config": {
     "default": true,
-    // MD013: Line length
-    // - 120 chars is the de-facto standard for technical documentation (aligns
-    //   with Prettier, Black, Rustfmt, and most editor defaults).
-    // - Tables and fenced code blocks are scoped out because Markdown tables
-    //   and command-line examples cannot be line-wrapped without changing
-    //   semantics. The markdownlint docs explicitly expose these as scope
-    //   options for exactly this reason — this is configuration, not rule
-    //   suppression.
+    // MD013: Line length — 140 for markdown (matches Prettier's 140 override
+    // for *.md / *.mdx / *.markdown; non-markdown files use 120 via Prettier
+    // and .editorconfig). Tables and fenced code blocks are scoped out
+    // because Markdown tables and command-line examples cannot be
+    // line-wrapped without changing semantics — this is configuration, not
+    // rule suppression.
     "MD013": {
-      "line_length": 120,
+      "line_length": 140,
       "tables": false,
       "code_blocks": false,
     },

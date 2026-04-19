@@ -12,8 +12,7 @@
 
 @theme {
   /* Fonts */
-  --font-sans:
-    'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   /* Type scale (brief §2.2) */
@@ -140,11 +139,7 @@
 
   /* Code palette unchanged (Dark Always) */
 
-  --gradient-featured: linear-gradient(
-    135deg,
-    rgba(136, 192, 208, 0.08) 0%,
-    rgba(235, 203, 139, 0.06) 100%
-  );
+  --gradient-featured: linear-gradient(135deg, rgba(136, 192, 208, 0.08) 0%, rgba(235, 203, 139, 0.06) 100%);
   --color-border-featured: rgba(136, 192, 208, 0.3);
 
   color-scheme: dark;
