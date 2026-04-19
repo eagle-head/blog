@@ -1,0 +1,21 @@
+// markdownlint-cli2 configuration
+// Docs: https://github.com/DavidAnson/markdownlint-cli2
+// Rule reference: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+{
+  "config": {
+    "default": true,
+    // MD013: Line length
+    // - 120 chars is the de-facto standard for technical documentation (aligns
+    //   with Prettier, Black, Rustfmt, and most editor defaults).
+    // - Tables and fenced code blocks are scoped out because Markdown tables
+    //   and command-line examples cannot be line-wrapped without changing
+    //   semantics. The markdownlint docs explicitly expose these as scope
+    //   options for exactly this reason — this is configuration, not rule
+    //   suppression.
+    "MD013": {
+      "line_length": 120,
+      "tables": false,
+      "code_blocks": false,
+    },
+  },
+}
