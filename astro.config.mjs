@@ -87,7 +87,28 @@ export default defineConfig({
     ],
   },
 
-  integrations: [mdx(), preact(), sitemap()],
+  integrations: [
+    mdx(),
+    preact(),
+    sitemap({
+      // `locales` keys must match the URL-prefix casing used by Astro's
+      // i18n routing. Astro lowercases locale prefixes (pt-BR.mdx → /pt-br/),
+      // so the key here is 'pt-br'. The value is the ISO language code
+      // emitted in the hreflang attribute.
+      i18n: {
+        defaultLocale: 'en',
+        locales: {
+          en: 'en',
+          'pt-br': 'pt-BR',
+        },
+      },
+      filter: (page) => {
+        // Exclude dynamic asset endpoints from the sitemap.
+        if (page.includes('/og/')) return false;
+        return true;
+      },
+    }),
+  ],
 
   vite: {
     plugins: [tailwindcss()],
