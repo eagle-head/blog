@@ -14,10 +14,7 @@ interface PagefindResult {
   data: () => Promise<PagefindSubResult>;
 }
 interface PagefindApi {
-  search: (
-    q: string,
-    opts?: { filters?: Record<string, string | string[]> },
-  ) => Promise<{ results: PagefindResult[] }>;
+  search: (q: string, opts?: { filters?: Record<string, string | string[]> }) => Promise<{ results: PagefindResult[] }>;
   options?: (o: Record<string, unknown>) => void;
 }
 
