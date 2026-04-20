@@ -11,6 +11,13 @@ const strings = {
   'nav.newsletter': { en: 'Newsletter', 'pt-BR': 'Newsletter' },
   'search.placeholder': { en: 'Search\u2026', 'pt-BR': 'Buscar\u2026' },
   'search.label': { en: 'Search posts and papers', 'pt-BR': 'Buscar posts e artigos' },
+  'search.empty': { en: 'Type to search\u2026', 'pt-BR': 'Digite para buscar\u2026' },
+  'search.no-results': { en: 'No results.', 'pt-BR': 'Nenhum resultado.' },
+  'search.loading': { en: 'Loading\u2026', 'pt-BR': 'Carregando\u2026' },
+  'search.close': { en: 'Close', 'pt-BR': 'Fechar' },
+  'search.filter.all': { en: 'All', 'pt-BR': 'Tudo' },
+  'search.filter.papers': { en: 'Papers', 'pt-BR': 'Artigos' },
+  'search.filter.posts': { en: 'Posts', 'pt-BR': 'Posts' },
   'site.subtitle': {
     en: 'Computer Science · Papers and Posts',
     'pt-BR': 'Ciência da Computação · Artigos e Posts',
