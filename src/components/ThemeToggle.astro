@@ -34,6 +34,9 @@
     } catch {
       /* storage blocked — toggle still works for the current page */
     }
+    // Notify Giscus (if present on the page) so its iframe theme follows ours.
+    const giscus = document.querySelector('iframe.giscus-frame') as HTMLIFrameElement | null;
+    giscus?.contentWindow?.postMessage({ giscus: { setConfig: { theme: next } } }, 'https://giscus.app');
   });
 </script>
 
