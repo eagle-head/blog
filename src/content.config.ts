@@ -35,7 +35,7 @@ const papers = defineCollection({
       doi: z.string().optional(),
       status: statusSchema,
       bibliography: z.string().default('./references.bib'),
-      comments: z.boolean().default(false),
+      comments: z.boolean().default(true),
     }),
 });
 
