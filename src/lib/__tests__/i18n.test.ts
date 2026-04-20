@@ -62,3 +62,22 @@ describe('alternateUrls', () => {
     });
   });
 });
+
+import { formatDateForLocale } from '../i18n';
+
+describe('formatDateForLocale', () => {
+  const d = new Date('2026-03-14T00:00:00Z');
+
+  it('formats an EN long date in UTC', () => {
+    expect(formatDateForLocale(d, 'en')).toBe('March 14, 2026');
+  });
+
+  it('formats a pt-BR long date in UTC', () => {
+    expect(formatDateForLocale(d, 'pt-BR')).toBe('14 de março de 2026');
+  });
+
+  it('is timezone-invariant (UTC boundary)', () => {
+    const boundary = new Date('2026-01-01T00:00:00Z');
+    expect(formatDateForLocale(boundary, 'en')).toMatch(/January 1, 2026/);
+  });
+});

@@ -48,3 +48,13 @@ export function alternateUrls(path: string): Record<Locale, string> {
     'pt-BR': localizedPath(canonical, 'pt-BR'),
   };
 }
+
+/** Format a Date as a long calendar date for the given locale in UTC. */
+export function formatDateForLocale(date: Date, locale: Locale): string {
+  return new Intl.DateTimeFormat(locale, {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(date);
+}

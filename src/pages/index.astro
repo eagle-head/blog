@@ -1,40 +1,25 @@
 ---
 // src/pages/index.astro
-// Home (EN) — Brief §6.3 Magazine Grid: featured piece (2fr) with
-// gradient background + sidebar (1fr) with Recent Posts and Tags.
+// Home (EN) — Brief §6.3 Magazine Grid.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import MetaChip from '../components/MetaChip.astro';
 import SEO from '../components/SEO.astro';
-import { getValidatedCollection } from '../lib/collections';
+import { collectAllTags, getLocalizedEntries } from '../lib/collections';
+import { formatDateForLocale } from '../lib/i18n';
+import { t } from '../lib/ui';
 
-const paperGroups = await getValidatedCollection('papers');
-const postGroups = await getValidatedCollection('posts');
+const LOCALE = 'en' as const;
 
-const papers = Object.entries(paperGroups)
-  .map(([slug, g]) => ({ slug, entry: g.en! }))
-  .sort((a, b) => b.entry.data.publishedAt.getTime() - a.entry.data.publishedAt.getTime());
-
-const posts = Object.entries(postGroups)
-  .map(([slug, g]) => ({ slug, entry: g.en! }))
-  .sort((a, b) => b.entry.data.publishedAt.getTime() - a.entry.data.publishedAt.getTime());
+const papers = await getLocalizedEntries('papers', LOCALE);
+const posts = await getLocalizedEntries('posts', LOCALE);
+const tags = await collectAllTags(LOCALE);
 
 const featured = papers[0];
 const morePapers = papers.slice(1, 4);
 const recentPosts = posts.slice(0, 3);
-
-const allTags = Array.from(
-  new Set([...papers.flatMap((p) => p.entry.data.tags), ...posts.flatMap((p) => p.entry.data.tags)]),
-).sort();
-
-const dateFormat = new Intl.DateTimeFormat('en', {
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
 ---
 
-<BaseLayout lang="en">
+<BaseLayout lang={LOCALE}>
   <SEO
     slot="head"
     title="Eduardo Kohn — Computer Science Notes"
@@ -45,7 +30,7 @@ const dateFormat = new Intl.DateTimeFormat('en', {
 
   <section class="sub-header">
     <h1 class="site-title">Eduardo Kohn</h1>
-    <p class="site-sub">Computer Science · Papers and Posts</p>
+    <p class="site-sub">{t(LOCALE, 'site.subtitle')}</p>
   </section>
 
   <div class="magazine">
@@ -53,7 +38,9 @@ const dateFormat = new Intl.DateTimeFormat('en', {
       {
         featured && (
           <a class="featured" href={`/papers/${featured.slug}`}>
-            <MetaChip text={`Featured · Paper · ${dateFormat.format(featured.entry.data.publishedAt)}`} />
+            <MetaChip
+              text={`${t(LOCALE, 'home.featured')} · ${t(LOCALE, 'kind.paper')} · ${formatDateForLocale(featured.entry.data.publishedAt, LOCALE)}`}
+            />
             <div class="featured-title">{featured.entry.data.title}</div>
             <p class="featured-desc">{featured.entry.data.abstract}</p>
           </a>
@@ -62,7 +49,7 @@ const dateFormat = new Intl.DateTimeFormat('en', {
       {
         morePapers.map(({ slug, entry }) => (
           <a class="row" href={`/papers/${slug}`}>
-            <MetaChip text={`Paper · ${dateFormat.format(entry.data.publishedAt)}`} />
+            <MetaChip text={`${t(LOCALE, 'kind.paper')} · ${formatDateForLocale(entry.data.publishedAt, LOCALE)}`} />
             <div class="row-title">{entry.data.title}</div>
             <p class="row-desc">{entry.data.abstract}</p>
           </a>
@@ -72,7 +59,7 @@ const dateFormat = new Intl.DateTimeFormat('en', {
 
     <aside class="side-col" aria-label="Sidebar">
       <section class="side-block">
-        <h3 class="side-label">Recent Posts</h3>
+        <h3 class="side-label">{t(LOCALE, 'home.recent-posts')}</h3>
         {
           recentPosts.map(({ slug, entry }) => (
             <a class="side-item" href={`/posts/${slug}`}>
@@ -83,13 +70,13 @@ const dateFormat = new Intl.DateTimeFormat('en', {
         }
       </section>
       <section class="side-block">
-        <h3 class="side-label">Tags</h3>
+        <h3 class="side-label">{t(LOCALE, 'home.tags')}</h3>
         <p class="tag-list">
           {
-            allTags.map((t, i) => (
+            tags.map(({ tag }, i) => (
               <>
                 {i > 0 && ' · '}
-                <a href={`/tags/${t}`}>{t}</a>
+                <a href={`/tags/${tag}`}>{tag}</a>
               </>
             ))
           }
@@ -166,7 +153,7 @@ const dateFormat = new Intl.DateTimeFormat('en', {
     font-size: var(--text-lg);
     font-weight: var(--font-weight-bold);
     letter-spacing: var(--tracking-snug);
-    margin: var(--space-1) 0 var(--space-1) 0;
+    margin: var(--space-1) 0;
   }
   .row-desc {
     font-size: var(--text-sm);

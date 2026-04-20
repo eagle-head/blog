@@ -6,6 +6,8 @@ import BaseLayout from './BaseLayout.astro';
 import MetaChip from '../components/MetaChip.astro';
 import Tag from '../components/Tag.astro';
 import SEO from '../components/SEO.astro';
+import { formatDateForLocale } from '../lib/i18n';
+import { t } from '../lib/ui';
 
 interface Props {
   entry: CollectionEntry<'papers'>;
@@ -17,13 +19,7 @@ interface Props {
 const { entry, canonicalPath, readingTime } = Astro.props;
 const { title, abstract, publishedAt, updatedAt, authors, tags, keywords, doi, language } = entry.data;
 
-const dateFormat = new Intl.DateTimeFormat(language, {
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
-const chipText = `Paper · ${dateFormat.format(publishedAt)} · ${readingTime}`;
+const chipText = `${t(language, 'kind.paper')} · ${formatDateForLocale(publishedAt, language)} · ${readingTime}`;
 const authorLine = authors.map((a) => (a.affiliation ? `${a.name} · ${a.affiliation}` : a.name)).join(', ');
 ---
 

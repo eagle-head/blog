@@ -1,48 +1,40 @@
 ---
 // src/pages/papers/index.astro
-// Papers listing (EN). Lists every paper whose EN entry is published,
-// most recent first.
+// Papers listing (EN).
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import MetaChip from '../../components/MetaChip.astro';
 import Tag from '../../components/Tag.astro';
 import SEO from '../../components/SEO.astro';
-import { getValidatedCollection } from '../../lib/collections';
+import { getLocalizedEntries } from '../../lib/collections';
+import { formatDateForLocale } from '../../lib/i18n';
+import { t } from '../../lib/ui';
 
-const groups = await getValidatedCollection('papers');
-const papers = Object.entries(groups)
-  .map(([slug, g]) => ({ slug, entry: g.en! }))
-  .sort((a, b) => b.entry.data.publishedAt.getTime() - a.entry.data.publishedAt.getTime());
-
-const dateFormat = new Intl.DateTimeFormat('en', {
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
+const LOCALE = 'en' as const;
+const papers = await getLocalizedEntries('papers', LOCALE);
 ---
 
-<BaseLayout lang="en">
+<BaseLayout lang={LOCALE}>
   <SEO
     slot="head"
-    title="Papers — Eduardo Kohn"
-    description="Computer-science papers by Eduardo Kohn."
+    title={`${t(LOCALE, 'listing.papers.title')} — Eduardo Kohn`}
+    description={t(LOCALE, 'listing.papers.description')}
     canonicalPath="/papers"
     jsonLd={{ kind: 'collection', name: 'papers' }}
   />
   <div class="listing">
-    <h1 class="listing-title">Papers</h1>
+    <h1 class="listing-title">{t(LOCALE, 'listing.papers.title')}</h1>
     <ul class="entries">
       {
         papers.map(({ slug, entry }) => (
           <li class="entry">
-            <MetaChip text={`Paper · ${dateFormat.format(entry.data.publishedAt)}`} />
+            <MetaChip text={`${t(LOCALE, 'kind.paper')} · ${formatDateForLocale(entry.data.publishedAt, LOCALE)}`} />
             <a class="entry-title" href={`/papers/${slug}`}>
               {entry.data.title}
             </a>
             <p class="entry-abstract">{entry.data.abstract}</p>
             <div class="entry-tags">
-              {entry.data.tags.map((t) => (
-                <Tag name={t} href={`/tags/${t}`} />
+              {entry.data.tags.map((tag) => (
+                <Tag name={tag} href={`/tags/${tag}`} />
               ))}
             </div>
           </li>
