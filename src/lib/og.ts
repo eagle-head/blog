@@ -8,7 +8,7 @@ import type { Locale } from './content';
 
 const FONT_DIR = path.join(process.cwd(), 'public', 'fonts', 'og');
 
-let cachedFonts: { name: string; data: Uint8Array; weight: 400 | 700; style: 'normal' }[] | null = null;
+let cachedFonts: { name: string; data: Buffer; weight: 400 | 700; style: 'normal' }[] | null = null;
 
 async function loadFonts() {
   if (cachedFonts) return cachedFonts;
@@ -19,8 +19,8 @@ async function loadFonts() {
   // Fonts are WOFF (not WOFF2) so Satori's opentype.js can decode them
   // directly. Copied from @fontsource/inter at font-install time.
   cachedFonts = [
-    { name: 'Inter', data: new Uint8Array(regular), weight: 400, style: 'normal' },
-    { name: 'Inter', data: new Uint8Array(bold), weight: 700, style: 'normal' },
+    { name: 'Inter', data: regular, weight: 400, style: 'normal' },
+    { name: 'Inter', data: bold, weight: 700, style: 'normal' },
   ];
   return cachedFonts;
 }
@@ -131,4 +131,16 @@ export async function renderOgImage(params: OgParams): Promise<Buffer> {
   const resvg = new Resvg(svg);
   const pngBuffer = resvg.render().asPng();
   return Buffer.from(pngBuffer);
+}
+
+/**
+ * Canonical OG image URL path for an entry — produces the route served by
+ * `src/pages/og/[collection]/[slug]-[lang].png.ts`. Keeps the path convention
+ * in one place so layouts do not reconstruct it by string-surgery on the
+ * canonical URL.
+ */
+export function ogImagePathFor(kind: 'paper' | 'post', slug: string, locale: Locale): string {
+  const collection = kind === 'paper' ? 'papers' : 'posts';
+  const lang = locale === 'en' ? 'en' : 'pt-br';
+  return `/og/${collection}/${slug}-${lang}.png`;
 }

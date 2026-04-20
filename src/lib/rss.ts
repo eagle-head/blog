@@ -1,9 +1,9 @@
 // src/lib/rss.ts
-// Build per-locale RSS feeds for one collection or both merged. Returns the
-// array of items ready for `@astrojs/rss` rss() — the caller is responsible
-// for calling rss({ items: await buildRssItems(...), ... }) in a Response
-// handler.
+// Build per-locale RSS feeds and expose `createRssHandler(source, locale)` so
+// each feed route (e.g. src/pages/rss.xml.ts) is a one-line GET export.
+import rss from '@astrojs/rss';
 import type { RSSFeedItem } from '@astrojs/rss';
+import type { APIContext } from 'astro';
 import { getLocalizedEntries } from './collections';
 import type { Locale } from './content';
 import { localePrefix } from './i18n';
@@ -75,5 +75,26 @@ export function feedMetaForLocale(locale: Locale, source: FeedSource) {
   return {
     title: titles[locale][source],
     description: descriptions[locale][source],
+  };
+}
+
+/**
+ * Factory for an Astro route handler that emits a locale-specific RSS feed
+ * for a given source. Each feed route file (e.g. src/pages/rss.xml.ts)
+ * becomes a one-liner: `export const GET = createRssHandler('both', 'en');`.
+ */
+export function createRssHandler(source: FeedSource, locale: Locale) {
+  return async function GET(context: APIContext) {
+    const [items, meta] = await Promise.all([
+      buildRssItems(source, locale),
+      Promise.resolve(feedMetaForLocale(locale, source)),
+    ]);
+    return rss({
+      title: meta.title,
+      description: meta.description,
+      site: context.site ?? 'https://kohn.dev',
+      items,
+      customData: `<language>${locale}</language>`,
+    });
   };
 }

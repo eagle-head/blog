@@ -100,11 +100,8 @@ export default defineConfig({
           'pt-br': 'pt-BR',
         },
       },
-      filter: (page) => {
-        // Exclude dynamic asset endpoints from the sitemap.
-        if (page.includes('/og/')) return false;
-        return true;
-      },
+      // Exclude dynamic asset endpoints (OG images) from the sitemap.
+      filter: (page) => !page.includes('/og/'),
     }),
   ],
 

@@ -6,7 +6,9 @@ import BaseLayout from './BaseLayout.astro';
 import MetaChip from '../components/MetaChip.astro';
 import Tag from '../components/Tag.astro';
 import SEO from '../components/SEO.astro';
+import { parseEntryId } from '../lib/content';
 import { formatDateForLocale } from '../lib/i18n';
+import { ogImagePathFor } from '../lib/og';
 import { t } from '../lib/ui';
 
 interface Props {
@@ -18,6 +20,7 @@ interface Props {
 }
 const { entry, canonicalPath, readingTime } = Astro.props;
 const { title, abstract, publishedAt, updatedAt, authors, tags, keywords, doi, language } = entry.data;
+const { slug } = parseEntryId(entry.id);
 
 const chipText = `${t(language, 'kind.paper')} · ${formatDateForLocale(publishedAt, language)} · ${readingTime}`;
 const authorLine = authors.map((a) => (a.affiliation ? `${a.name} · ${a.affiliation}` : a.name)).join(', ');
@@ -29,7 +32,7 @@ const authorLine = authors.map((a) => (a.affiliation ? `${a.name} · ${a.affilia
     title={`${title} — Eduardo Kohn`}
     description={abstract}
     canonicalPath={canonicalPath}
-    ogImage={`/og/papers/${canonicalPath.replace('/papers/', '')}-${language === 'en' ? 'en' : 'pt-br'}.png`}
+    ogImage={ogImagePathFor('paper', slug, language)}
     jsonLd={{
       kind: 'paper',
       title,

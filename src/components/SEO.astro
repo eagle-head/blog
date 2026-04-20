@@ -48,6 +48,7 @@ const { title, description, canonicalPath, ogImage, jsonLd } = Astro.props;
 const site = Astro.site?.toString().replace(/\/$/, '') ?? 'https://kohn.dev';
 const alts = alternateUrls(canonicalPath);
 const canonical = `${site}${alts[DEFAULT_LOCALE]}`;
+const ogImageAbs = ogImage ? (ogImage.startsWith('http') ? ogImage : `${site}${ogImage}`) : undefined;
 
 function buildJsonLd(): Record<string, unknown> {
   const base = { '@context': 'https://schema.org' };
@@ -126,11 +127,11 @@ function buildJsonLd(): Record<string, unknown> {
 <meta property="og:url" content={canonical} />
 <meta property="og:site_name" content="Eduardo Kohn" />
 <meta property="og:type" content={jsonLd.kind === 'paper' || jsonLd.kind === 'post' ? 'article' : 'website'} />
-{ogImage && <meta property="og:image" content={ogImage.startsWith('http') ? ogImage : `${site}${ogImage}`} />}
+{ogImageAbs && <meta property="og:image" content={ogImageAbs} />}
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-{ogImage && <meta name="twitter:image" content={ogImage.startsWith('http') ? ogImage : `${site}${ogImage}`} />}
+{ogImageAbs && <meta name="twitter:image" content={ogImageAbs} />}
 
 <script is:inline type="application/ld+json" set:html={JSON.stringify(buildJsonLd())} />
