@@ -1,15 +1,21 @@
 ---
 // src/components/Footer.astro
-// Brief §6.2 — Site footer with copyright and external links.
+// Brief §6.2 — Site footer. RSS and newsletter links resolve to the current locale.
+import { detectLocaleFromPath, localePrefix } from '../lib/i18n';
+
 const year = new Date().getFullYear();
+const locale = detectLocaleFromPath(Astro.url.pathname);
+const prefix = localePrefix(locale);
+const rssHref = `${prefix}/rss.xml`;
+const newsletterHref = `${prefix}/newsletter`;
 ---
 
 <footer class="site-footer">
   <span>© {year} Eduardo Kohn</span>
   <span class="links">
-    <a href="/rss.xml">RSS</a>
+    <a href={rssHref}>RSS</a>
     <span class="sep">·</span>
-    <a href="/newsletter">Newsletter</a>
+    <a href={newsletterHref}>Newsletter</a>
     <span class="sep">·</span>
     <a href="https://github.com/eagle-head" rel="me noopener">GitHub</a>
   </span>
