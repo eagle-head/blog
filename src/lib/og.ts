@@ -8,9 +8,7 @@ import type { Locale } from './content';
 
 const FONT_DIR = path.join(process.cwd(), 'public', 'fonts', 'og');
 
-let cachedFonts:
-  | { name: string; data: Uint8Array; weight: 400 | 700; style: 'normal' }[]
-  | null = null;
+let cachedFonts: { name: string; data: Uint8Array; weight: 400 | 700; style: 'normal' }[] | null = null;
 
 async function loadFonts() {
   if (cachedFonts) return cachedFonts;

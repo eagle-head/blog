@@ -6,10 +6,7 @@ import { renderOgImage } from '../../../lib/og';
 type Params = { collection: 'papers' | 'posts'; slug: string; lang: 'en' | 'pt-br' };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const [papers, posts] = await Promise.all([
-    getValidatedCollection('papers'),
-    getValidatedCollection('posts'),
-  ]);
+  const [papers, posts] = await Promise.all([getValidatedCollection('papers'), getValidatedCollection('posts')]);
   const out: { params: Params }[] = [];
   for (const [slug] of Object.entries(papers)) {
     out.push({ params: { collection: 'papers', slug, lang: 'en' } });

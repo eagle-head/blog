@@ -1,27 +1,19 @@
 # Blog — Plan 04: RSS, Sitemap, OG Images, IEEE Citations
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use
-> superpowers:subagent-driven-development (recommended) or
-> superpowers:executing-plans to implement this plan task-by-task. Steps use
-> checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to
+> implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Ship the SEO / discoverability layer of the blog. RSS/Atom feeds
-(combined + per-collection × 2 locales), sitemap with `hreflang`
-alternates + `robots.txt`, automatically-generated Open Graph images for
-every paper and post, and proper IEEE citation formatting in `rehype-citation`.
+**Goal:** Ship the SEO / discoverability layer of the blog. RSS/Atom feeds (combined + per-collection × 2 locales), sitemap with `hreflang`
+alternates + `robots.txt`, automatically-generated Open Graph images for every paper and post, and proper IEEE citation formatting in
+`rehype-citation`.
 
-**Architecture:** Feeds are Astro endpoint routes (`*.xml.ts`) that read
-the validated collections and emit `<rss>` via `@astrojs/rss`. The sitemap
-integration reads Astro's i18n config and emits `<xhtml:link
-rel="alternate" hreflang="..."/>` entries automatically; a `filter`
-function excludes draft content and dynamic `/og/*` paths. OG images are
-Astro static routes (`.png.ts`) that run Satori → SVG → `@resvg/resvg-js`
-→ PNG at build time, generating one image per
-{collection × slug × locale}. `rehype-citation` is re-configured with the
+**Architecture:** Feeds are Astro endpoint routes (`*.xml.ts`) that read the validated collections and emit `<rss>` via `@astrojs/rss`. The
+sitemap integration reads Astro's i18n config and emits `<xhtml:link rel="alternate" hreflang="..."/>` entries automatically; a `filter`
+function excludes draft content and dynamic `/og/*` paths. OG images are Astro static routes (`.png.ts`) that run Satori → SVG →
+`@resvg/resvg-js` → PNG at build time, generating one image per {collection × slug × locale}. `rehype-citation` is re-configured with the
 official IEEE CSL XML bundled in `public/csl/`.
 
-**Tech Stack:** `@astrojs/rss` (already installed), `@astrojs/sitemap`
-(already installed), Satori + `@resvg/resvg-js` (already installed),
+**Tech Stack:** `@astrojs/rss` (already installed), `@astrojs/sitemap` (already installed), Satori + `@resvg/resvg-js` (already installed),
 `rehype-citation` (already installed).
 
 **Reference specs:**
@@ -29,15 +21,13 @@ official IEEE CSL XML bundled in `public/csl/`.
 - Architecture: `docs/superpowers/specs/2026-04-19-eduardokohn-blog-design.md`
 - Visual design brief: `docs/superpowers/specs/2026-04-19-visual-design.md`
 
-**Prerequisites:** Plan 03 complete (tag `v0.3.0-bilingual`). Working
-tree clean.
+**Prerequisites:** Plan 03 complete (tag `v0.3.0-bilingual`). Working tree clean.
 
 ---
 
 ## Phase 1 — RSS Feeds
 
-Six feed routes total: combined/papers/posts × {EN, pt-BR}. Shared helper
-keeps the route files tiny.
+Six feed routes total: combined/papers/posts × {EN, pt-BR}. Shared helper keeps the route files tiny.
 
 ### Task 1.1 — Shared RSS helper
 
@@ -357,8 +347,7 @@ const newsletterHref = `${prefix}/newsletter`;
 
 Run: `npm run build && grep -oE 'href="[^"]*rss\.xml"' dist/index.html && grep -oE 'href="[^"]*rss\.xml"' dist/pt-br/index.html`
 
-Expected: EN home shows `href="/rss.xml"`; pt-BR home shows
-`href="/pt-br/rss.xml"`.
+Expected: EN home shows `href="/rss.xml"`; pt-BR home shows `href="/pt-br/rss.xml"`.
 
 ### Task 1.5 — Commit Phase 1
 
@@ -375,8 +364,7 @@ git commit -m "feat(feeds): add RSS feeds (combined, papers, posts) for EN and p
 
 ### Task 2.1 — Configure sitemap i18n
 
-`@astrojs/sitemap` accepts an `i18n` option that emits `<xhtml:link
-rel="alternate" hreflang="..."/>` for each page.
+`@astrojs/sitemap` accepts an `i18n` option that emits `<xhtml:link rel="alternate" hreflang="..."/>` for each page.
 
 **Files:**
 
@@ -407,9 +395,8 @@ sitemap({
 
 Run: `npm run build && head -40 dist/sitemap-0.xml`
 
-Expected: XML contains `<xhtml:link rel="alternate" hreflang="en" ...>`
-and `<xhtml:link rel="alternate" hreflang="pt-BR" ...>` entries alongside
-canonical URLs.
+Expected: XML contains `<xhtml:link rel="alternate" hreflang="en" ...>` and `<xhtml:link rel="alternate" hreflang="pt-BR" ...>` entries
+alongside canonical URLs.
 
 ### Task 2.2 — Add `robots.txt`
 
@@ -445,20 +432,17 @@ git commit -m "feat(seo): configure sitemap hreflang and add robots.txt"
 
 ## Phase 3 — Open Graph Images
 
-Dynamic OG images per entry per locale at build time. Satori renders JSX
-to SVG; resvg converts SVG to PNG.
+Dynamic OG images per entry per locale at build time. Satori renders JSX to SVG; resvg converts SVG to PNG.
 
 ### Task 3.1 — Add Inter font file for Satori
 
-Satori requires font data as `ArrayBuffer`, not CSS. The
-`@fontsource-variable/inter` package ships WOFF2 only, which Satori does
-not accept directly. Bundle an Inter TTF explicitly for OG generation.
+Satori requires font data as `ArrayBuffer`, not CSS. The `@fontsource-variable/inter` package ships WOFF2 only, which Satori does not accept
+directly. Bundle an Inter TTF explicitly for OG generation.
 
 **Files:**
 
 - Create: `/home/eduardo/Documents/blog/public/fonts/og/Inter-Bold.ttf`
-- Create:
-  `/home/eduardo/Documents/blog/public/fonts/og/Inter-Regular.ttf`
+- Create: `/home/eduardo/Documents/blog/public/fonts/og/Inter-Regular.ttf`
 
 - [ ] **Step 1: Fetch Inter TTF files from the official Inter repo**
 
@@ -473,12 +457,10 @@ curl -L -o public/fonts/og/Inter-Bold.ttf \
 ls -la public/fonts/og/
 ```
 
-Expected: two files, each ~300 KB. (The files are named `.ttf` for
-convention even though the source is OTF — Satori accepts both and many
+Expected: two files, each ~300 KB. (The files are named `.ttf` for convention even though the source is OTF — Satori accepts both and many
 tutorials standardise on the `.ttf` extension.)
 
-Note: if the Inter repo's `docs/font-files/` path has moved, the
-alternate source is the Inter release ZIP on GitHub:
+Note: if the Inter repo's `docs/font-files/` path has moved, the alternate source is the Inter release ZIP on GitHub:
 `https://github.com/rsms/inter/releases/latest`.
 
 ### Task 3.2 — OG template helper
@@ -500,8 +482,7 @@ import type { Locale } from './content';
 
 const FONT_DIR = path.join(process.cwd(), 'public', 'fonts', 'og');
 
-let cachedFonts: { name: string; data: ArrayBuffer; weight: 400 | 700; style: 'normal' }[] | null =
-  null;
+let cachedFonts: { name: string; data: ArrayBuffer; weight: 400 | 700; style: 'normal' }[] | null = null;
 
 async function loadFonts() {
   if (cachedFonts) return cachedFonts;
@@ -643,13 +624,11 @@ Expected: 0 errors.
 
 ### Task 3.3 — OG endpoint
 
-One static route that enumerates every { collection, slug, locale } and
-emits a PNG per path.
+One static route that enumerates every { collection, slug, locale } and emits a PNG per path.
 
 **Files:**
 
-- Create:
-  `/home/eduardo/Documents/blog/src/pages/og/[collection]/[slug]-[lang].png.ts`
+- Create: `/home/eduardo/Documents/blog/src/pages/og/[collection]/[slug]-[lang].png.ts`
 
 - [ ] **Step 1: Write the endpoint**
 
@@ -662,10 +641,7 @@ import { renderOgImage } from '../../../lib/og';
 type Params = { collection: 'papers' | 'posts'; slug: string; lang: 'en' | 'pt-br' };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const [papers, posts] = await Promise.all([
-    getValidatedCollection('papers'),
-    getValidatedCollection('posts'),
-  ]);
+  const [papers, posts] = await Promise.all([getValidatedCollection('papers'), getValidatedCollection('posts')]);
   const out: { params: Params }[] = [];
   for (const [slug] of Object.entries(papers)) {
     out.push({ params: { collection: 'papers', slug, lang: 'en' } });
@@ -733,8 +709,7 @@ Expected: all four PNGs exist. Each file should be ~30–80 KB.
 
 - [ ] **Step 1: Update PaperLayout to pass ogImage**
 
-Find the `<SEO ... />` invocation inside
-`src/layouts/PaperLayout.astro` and add `ogImage`:
+Find the `<SEO ... />` invocation inside `src/layouts/PaperLayout.astro` and add `ogImage`:
 
 ```astro
 <SEO
@@ -782,22 +757,16 @@ In `src/layouts/PostLayout.astro`:
 
 - [ ] **Step 3: Verify the meta tag is emitted**
 
-Run:
-`npm run build && grep -oE 'og:image" content="[^"]*"' dist/papers/quicksort-partitioning/index.html`
+Run: `npm run build && grep -oE 'og:image" content="[^"]*"' dist/papers/quicksort-partitioning/index.html`
 
-Expected: prints
-`og:image" content="/og/papers/quicksort-partitioning-en.png"`.
+Expected: prints `og:image" content="/og/papers/quicksort-partitioning-en.png"`.
 
-The `SEO.astro` component already prefixes with `Astro.site`; the relative
-path passed here is joined internally — check the existing implementation
-before changing SEO.astro. If SEO.astro does not prepend the site, the
-paper page will emit a relative `og:image` which is acceptable for build
-verification but should be made absolute in the SEO component. If that
-adjustment is needed, add this step:
+The `SEO.astro` component already prefixes with `Astro.site`; the relative path passed here is joined internally — check the existing
+implementation before changing SEO.astro. If SEO.astro does not prepend the site, the paper page will emit a relative `og:image` which is
+acceptable for build verification but should be made absolute in the SEO component. If that adjustment is needed, add this step:
 
-**Step 3b (only if og:image lacks scheme + host):** in
-`src/components/SEO.astro`, change the `ogImage` `<meta>` to prepend
-`site` when a relative path is provided:
+**Step 3b (only if og:image lacks scheme + host):** in `src/components/SEO.astro`, change the `ogImage` `<meta>` to prepend `site` when a
+relative path is provided:
 
 ```astro
 {ogImage && <meta property="og:image" content={ogImage.startsWith('http') ? ogImage : `${site}${ogImage}`} />}
@@ -861,8 +830,7 @@ Replace the existing `rehypeCitation` entry in `rehypePlugins`:
 
 - [ ] **Step 2: Verify build renders IEEE-style citations**
 
-Run:
-`npm run build && grep -c 'class="csl-entry"' dist/papers/quicksort-partitioning/index.html`
+Run: `npm run build && grep -c 'class="csl-entry"' dist/papers/quicksort-partitioning/index.html`
 
 Expected: at least `2` (one per reference in `references.bib`).
 
@@ -935,20 +903,16 @@ Plan 04 is complete when ALL of the following are true:
 1. `npm run check` exits 0.
 2. `npm test` exits 0 (Plan 01/03 tests still pass).
 3. `npm run build` emits:
-   - 6 RSS feeds (`dist/rss.xml`, `dist/papers.rss.xml`,
-     `dist/posts.rss.xml`, and three pt-BR mirrors)
+   - 6 RSS feeds (`dist/rss.xml`, `dist/papers.rss.xml`, `dist/posts.rss.xml`, and three pt-BR mirrors)
    - Sitemap with `xhtml:link` hreflang entries
    - `robots.txt` in `dist/`
-   - One OG PNG per entry per locale (4 total given current sample
-     content: 2 papers × 1 = 2; 2 posts × 1 = 2 ... i.e., one paper + one
-     post × 2 locales = 4 PNGs)
+   - One OG PNG per entry per locale (4 total given current sample content: 2 papers × 1 = 2; 2 posts × 1 = 2 ... i.e., one paper + one post
+     × 2 locales = 4 PNGs)
    - Paper citations render IEEE-style via `rehype-citation`
 4. `og:image` meta tag is present on every paper and post page.
 5. Working tree clean; tag `v0.4.0-seo` applied.
 
 ## What's Next
 
-**Plan 05 (Islands)** adds: Pagefind-powered Command Palette island,
-Giscus comments (opt-in per post), Cloudflare Web Analytics snippet, and
-wires the Buttondown newsletter form in the header. After Plan 05 the
-site has its full interactive surface.
+**Plan 05 (Islands)** adds: Pagefind-powered Command Palette island, Giscus comments (opt-in per post), Cloudflare Web Analytics snippet,
+and wires the Buttondown newsletter form in the header. After Plan 05 the site has its full interactive surface.
