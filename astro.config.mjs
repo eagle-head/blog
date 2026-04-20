@@ -4,6 +4,7 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import preact from '@astrojs/preact';
 import sitemap from '@astrojs/sitemap';
+import pagefind from 'astro-pagefind';
 
 import tailwindcss from '@tailwindcss/vite';
 
@@ -91,6 +92,7 @@ export default defineConfig({
   integrations: [
     mdx(),
     preact(),
+    pagefind(),
     sitemap({
       // `locales` keys must match the URL-prefix casing used by Astro's
       // i18n routing. Astro lowercases locale prefixes (pt-BR.mdx → /pt-br/),
