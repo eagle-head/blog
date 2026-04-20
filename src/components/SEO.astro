@@ -1,0 +1,141 @@
+---
+// src/components/SEO.astro
+// Brief §8.1 — Emits title, meta description, canonical, OpenGraph,
+// Twitter Card, hreflang alternates, and a page-type-specific JSON-LD.
+// JSON-LD schemas: Blog/Person on home, ScholarlyArticle on /papers/[slug],
+// BlogPosting on /posts/[slug], Person on /about, CollectionPage on
+// listing pages.
+import { alternateUrls, DEFAULT_LOCALE } from '../lib/i18n';
+import type { Locale } from '../lib/content';
+
+type JsonLdKind =
+  | { kind: 'home' }
+  | { kind: 'about' }
+  | { kind: 'collection'; name: 'papers' | 'posts' | 'tag'; tagName?: string }
+  | {
+      kind: 'paper';
+      title: string;
+      abstract: string;
+      publishedAt: Date;
+      updatedAt?: Date;
+      keywords?: string[];
+      doi?: string;
+      authors: { name: string; orcid?: string; affiliation?: string }[];
+      inLanguage: Locale;
+    }
+  | {
+      kind: 'post';
+      title: string;
+      lead: string;
+      publishedAt: Date;
+      updatedAt?: Date;
+      tags: string[];
+      inLanguage: Locale;
+    };
+
+interface Props {
+  title: string;
+  description: string;
+  /** Canonical path (EN form, e.g. "/papers/quicksort"). */
+  canonicalPath: string;
+  /** Absolute URL of the OG image; optional. */
+  ogImage?: string;
+  jsonLd: JsonLdKind;
+}
+
+const { title, description, canonicalPath, ogImage, jsonLd } = Astro.props;
+
+const site = Astro.site?.toString().replace(/\/$/, '') ?? 'https://kohn.dev';
+const alts = alternateUrls(canonicalPath);
+const canonical = `${site}${alts[DEFAULT_LOCALE]}`;
+
+function buildJsonLd(): Record<string, unknown> {
+  const base = { '@context': 'https://schema.org' };
+  switch (jsonLd.kind) {
+    case 'home':
+      return {
+        ...base,
+        '@type': 'Blog',
+        name: 'Eduardo Kohn',
+        url: `${site}/`,
+        author: {
+          '@type': 'Person',
+          name: 'Eduardo Kohn',
+          url: `${site}/about`,
+        },
+      };
+    case 'about':
+      return {
+        ...base,
+        '@type': 'Person',
+        name: 'Eduardo Kohn',
+        url: `${site}/about`,
+      };
+    case 'collection':
+      return {
+        ...base,
+        '@type': 'CollectionPage',
+        name: jsonLd.tagName ? `Tag: ${jsonLd.tagName}` : jsonLd.name,
+        url: canonical,
+      };
+    case 'paper':
+      return {
+        ...base,
+        '@type': 'ScholarlyArticle',
+        headline: jsonLd.title,
+        abstract: jsonLd.abstract,
+        datePublished: jsonLd.publishedAt.toISOString(),
+        ...(jsonLd.updatedAt ? { dateModified: jsonLd.updatedAt.toISOString() } : {}),
+        inLanguage: jsonLd.inLanguage,
+        ...(jsonLd.keywords ? { keywords: jsonLd.keywords.join(', ') } : {}),
+        ...(jsonLd.doi ? { sameAs: `https://doi.org/${jsonLd.doi}` } : {}),
+        author: jsonLd.authors.map((a) => ({
+          '@type': 'Person',
+          name: a.name,
+          ...(a.orcid ? { identifier: `https://orcid.org/${a.orcid}` } : {}),
+          ...(a.affiliation
+            ? { affiliation: { '@type': 'Organization', name: a.affiliation } }
+            : {}),
+        })),
+        url: canonical,
+      };
+    case 'post':
+      return {
+        ...base,
+        '@type': 'BlogPosting',
+        headline: jsonLd.title,
+        description: jsonLd.lead,
+        datePublished: jsonLd.publishedAt.toISOString(),
+        ...(jsonLd.updatedAt ? { dateModified: jsonLd.updatedAt.toISOString() } : {}),
+        inLanguage: jsonLd.inLanguage,
+        keywords: jsonLd.tags.join(', '),
+        author: { '@type': 'Person', name: 'Eduardo Kohn' },
+        url: canonical,
+      };
+  }
+}
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<link rel="alternate" hreflang="en" href={`${site}${alts.en}`} />
+<link rel="alternate" hreflang="pt-BR" href={`${site}${alts['pt-BR']}`} />
+<link rel="alternate" hreflang="x-default" href={`${site}${alts.en}`} />
+
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:site_name" content="Eduardo Kohn" />
+<meta
+  property="og:type"
+  content={jsonLd.kind === 'paper' || jsonLd.kind === 'post' ? 'article' : 'website'}
+/>
+{ogImage && <meta property="og:image" content={ogImage} />}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(buildJsonLd())}></script>
