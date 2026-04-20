@@ -13,12 +13,14 @@ tags:
   - complexity
 language: 'en'
 status: 'published'
+bibliography: ./src/content/papers/quicksort-partitioning/references.bib
 ---
 
 import { Theorem, Definition, Proof, Sidenote, Figure } from '../../../components/mdx';
 
-Partitioning is the core operation of quicksort. Two classical schemes exist: Hoare's<Sidenote n={1}>Hoare (1962), two pointers converging
-inward.</Sidenote> and Lomuto's<Sidenote n={2}>Lomuto uses a single pointer; simpler but slower in practice.</Sidenote>.
+Partitioning is the core operation of quicksort. Two classical schemes
+exist: Hoare's [@Hoare1962] and Lomuto's. The expected-case analysis of
+the overall algorithm is due to Sedgewick [@Sedgewick1977].
 
 Given an array $a[\ell..r]$ and a pivot $p$, partitioning rearranges values so every element to the left of some index $k$ satisfies
 $a[i] \le a[k]$ and every element to the right satisfies $a[j] \ge a[k]$.

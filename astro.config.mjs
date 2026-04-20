@@ -77,10 +77,8 @@ export default defineConfig({
       [
         rehypeCitation,
         {
-          // 'vancouver' uses numbered citations ([1], [2]) — visually
-          // closest to IEEE among the built-in presets. True IEEE
-          // formatting requires a CSL XML file; deferred to Plan 04.
-          csl: 'vancouver',
+          // Bundled official IEEE CSL (from citation-style-language/styles).
+          csl: './public/csl/ieee.csl',
           linkCitations: true,
         },
       ],

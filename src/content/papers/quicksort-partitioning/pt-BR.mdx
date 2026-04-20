@@ -13,13 +13,14 @@ tags:
   - complexity
 language: 'pt-BR'
 status: 'published'
+bibliography: ./src/content/papers/quicksort-partitioning/references.bib
 ---
 
 import { Theorem, Definition, Proof, Sidenote, Figure } from '../../../components/mdx';
 
-O particionamento é a operação central do quicksort. Existem dois esquemas clássicos: o de Hoare<Sidenote n={1}>Hoare (1962), dois ponteiros
-convergindo para o centro.</Sidenote> e o de Lomuto<Sidenote n={2}>Lomuto usa um único ponteiro; mais simples, mas mais lento na
-prática.</Sidenote>.
+O particionamento é a operação central do quicksort. Existem dois
+esquemas clássicos: o de Hoare [@Hoare1962] e o de Lomuto. A análise do
+caso esperado do algoritmo como um todo é de Sedgewick [@Sedgewick1977].
 
 Dado um arranjo $a[\ell..r]$ e um pivô $p$, o particionamento reorganiza os valores de modo que todo elemento à esquerda de algum índice $k$
 satisfaça $a[i] \le a[k]$ e todo elemento à direita satisfaça $a[j] \ge a[k]$.
