@@ -1,0 +1,218 @@
+---
+// src/pages/pt-br/index.astro
+// Home (pt-BR) — mirror of /.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MetaChip from '../../components/MetaChip.astro';
+import SEO from '../../components/SEO.astro';
+import { collectAllTags, getLocalizedEntries } from '../../lib/collections';
+import { formatDateForLocale } from '../../lib/i18n';
+import { t } from '../../lib/ui';
+
+const LOCALE = 'pt-BR' as const;
+
+const papers = await getLocalizedEntries('papers', LOCALE);
+const posts = await getLocalizedEntries('posts', LOCALE);
+const tags = await collectAllTags(LOCALE);
+
+const featured = papers[0];
+const morePapers = papers.slice(1, 4);
+const recentPosts = posts.slice(0, 3);
+---
+
+<BaseLayout lang={LOCALE}>
+  <SEO
+    slot="head"
+    title="Eduardo Kohn — Notas de Ciência da Computação"
+    description="Artigos e posts sobre ciência da computação por Eduardo Kohn."
+    canonicalPath="/"
+    jsonLd={{ kind: 'home' }}
+  />
+
+  <section class="sub-header">
+    <h1 class="site-title">Eduardo Kohn</h1>
+    <p class="site-sub">{t(LOCALE, 'site.subtitle')}</p>
+  </section>
+
+  <div class="magazine">
+    <div class="main-col">
+      {
+        featured && (
+          <a class="featured" href={`/pt-br/papers/${featured.slug}`}>
+            <MetaChip
+              text={`${t(LOCALE, 'home.featured')} · ${t(LOCALE, 'kind.paper')} · ${formatDateForLocale(featured.entry.data.publishedAt, LOCALE)}`}
+            />
+            <div class="featured-title">{featured.entry.data.title}</div>
+            <p class="featured-desc">{featured.entry.data.abstract}</p>
+          </a>
+        )
+      }
+      {
+        morePapers.map(({ slug, entry }) => (
+          <a class="row" href={`/pt-br/papers/${slug}`}>
+            <MetaChip
+              text={`${t(LOCALE, 'kind.paper')} · ${formatDateForLocale(entry.data.publishedAt, LOCALE)}`}
+            />
+            <div class="row-title">{entry.data.title}</div>
+            <p class="row-desc">{entry.data.abstract}</p>
+          </a>
+        ))
+      }
+    </div>
+
+    <aside class="side-col" aria-label="Sidebar">
+      <section class="side-block">
+        <h3 class="side-label">{t(LOCALE, 'home.recent-posts')}</h3>
+        {
+          recentPosts.map(({ slug, entry }) => (
+            <a class="side-item" href={`/pt-br/posts/${slug}`}>
+              <div class="side-item-title">{entry.data.title}</div>
+              <p class="side-item-desc">{entry.data.lead}</p>
+            </a>
+          ))
+        }
+      </section>
+      <section class="side-block">
+        <h3 class="side-label">{t(LOCALE, 'home.tags')}</h3>
+        <p class="tag-list">
+          {
+            tags.map(({ tag }, i) => (
+              <>
+                {i > 0 && ' · '}
+                <a href={`/pt-br/tags/${tag}`}>{tag}</a>
+              </>
+            ))
+          }
+        </p>
+      </section>
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .sub-header {
+    padding: 36px var(--space-8) 20px var(--space-8);
+    text-align: center;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .site-title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-snug);
+    margin: 0;
+    color: var(--color-fg);
+  }
+  .site-sub {
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin: var(--space-1) 0 0 0;
+  }
+  .magazine {
+    max-width: var(--measure-magazine);
+    margin: 0 auto;
+    padding: 28px var(--space-8) 40px var(--space-8);
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-8);
+  }
+  .main-col {
+    min-width: 0;
+  }
+  .featured {
+    display: block;
+    background: var(--gradient-featured);
+    border: 1px solid var(--color-border-featured);
+    padding: 28px 24px;
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: var(--color-fg);
+  }
+  .featured-title {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-snug);
+    margin: var(--space-2) 0;
+  }
+  .featured-desc {
+    font-size: var(--text-sm);
+    color: var(--color-text);
+    margin: 0;
+    line-height: var(--leading-normal);
+  }
+  .row {
+    display: block;
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--color-border-soft);
+    text-decoration: none;
+    color: var(--color-fg);
+  }
+  .row:last-child {
+    border-bottom: none;
+  }
+  .row-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-snug);
+    margin: var(--space-1) 0;
+  }
+  .row-desc {
+    font-size: var(--text-sm);
+    color: var(--color-text);
+    margin: 0;
+    line-height: var(--leading-normal);
+  }
+  .side-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .side-label {
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-accent);
+    margin: 0 0 var(--space-2) 0;
+    font-weight: var(--font-weight-bold);
+    border-bottom: 2px solid var(--color-accent);
+    padding-bottom: 3px;
+  }
+  .side-item {
+    display: block;
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border-soft);
+    text-decoration: none;
+    color: var(--color-fg);
+  }
+  .side-item:last-child {
+    border-bottom: none;
+  }
+  .side-item-title {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-1);
+  }
+  .side-item-desc {
+    font-size: var(--text-2xs);
+    color: var(--color-muted);
+    margin: 0;
+  }
+  .tag-list {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+    margin: 0;
+  }
+  .tag-list a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .tag-list a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  @media (max-width: 760px) {
+    .magazine {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,27 @@
+---
+import PaperLayout from '../../../layouts/PaperLayout.astro';
+import { getValidatedCollection } from '../../../lib/collections';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const groups = await getValidatedCollection('papers');
+  return Object.entries(groups).map(([slug, g]) => ({
+    params: { slug },
+    props: { entry: g['pt-BR']! },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+function estimateReadingTime(body: string): string {
+  const words = body.trim().split(/\s+/).length;
+  const minutes = Math.max(1, Math.round(words / 220));
+  return `${minutes} min`;
+}
+const readingTime = estimateReadingTime(entry.body ?? '');
+---
+
+<PaperLayout entry={entry} canonicalPath={`/papers/${Astro.params.slug}`} readingTime={readingTime}>
+  <Content />
+</PaperLayout>
