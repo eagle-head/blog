@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MetaChip from '../../components/MetaChip.astro';
+import SEO from '../../components/SEO.astro';
+import { getEntriesByTag, listAllTagSlugs } from '../../lib/collections';
+import { formatDateForLocale } from '../../lib/i18n';
+import { t } from '../../lib/ui';
+
+export async function getStaticPaths() {
+  const tags = await listAllTagSlugs();
+  return tags.map((tag) => ({ params: { tag } }));
+}
+
+const LOCALE = 'en' as const;
+const { tag } = Astro.params;
+const entries = await getEntriesByTag(tag!, LOCALE);
+---
+
+<BaseLayout lang={LOCALE}>
+  <SEO
+    slot="head"
+    title={`#${tag} — Eduardo Kohn`}
+    description={`Papers and posts tagged ${tag}.`}
+    canonicalPath={`/tags/${tag}`}
+    jsonLd={{ kind: 'collection', name: 'tag', tagName: tag }}
+  />
+  <div class="listing">
+    <h1 class="listing-title">
+      #{tag}
+    </h1>
+    <ul class="entries">
+      {
+        entries.map(({ kind, slug, entry }) => (
+          <li class="entry">
+            <MetaChip
+              text={`${t(LOCALE, kind === 'paper' ? 'kind.paper' : 'kind.post')} · ${formatDateForLocale(entry.data.publishedAt, LOCALE)}`}
+            />
+            <a class="entry-title" href={`/${kind === 'paper' ? 'papers' : 'posts'}/${slug}`}>
+              {entry.data.title}
+            </a>
+            <p class="entry-excerpt">
+              {kind === 'paper'
+                ? (entry.data as { abstract: string }).abstract
+                : (entry.data as { lead: string }).lead}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .listing {
+    max-width: var(--measure-listing);
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-8);
+  }
+  .listing-title {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    margin: 0 0 var(--space-5) 0;
+    color: var(--color-accent);
+  }
+  .entries {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .entry {
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--color-border-soft);
+  }
+  .entry:last-child {
+    border-bottom: none;
+  }
+  .entry-title {
+    display: block;
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    text-decoration: none;
+    margin: var(--space-1) 0 var(--space-2) 0;
+    letter-spacing: var(--tracking-snug);
+    line-height: var(--leading-snug);
+  }
+  .entry-title:hover {
+    color: var(--color-accent);
+  }
+  .entry-excerpt {
+    font-size: var(--text-sm);
+    color: var(--color-text);
+    margin: 0;
+    line-height: var(--leading-normal);
+  }
+</style>

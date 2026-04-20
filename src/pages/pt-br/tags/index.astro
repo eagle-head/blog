@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SEO from '../../../components/SEO.astro';
+import { collectAllTags } from '../../../lib/collections';
+import { t } from '../../../lib/ui';
+
+const LOCALE = 'pt-BR' as const;
+const tags = await collectAllTags(LOCALE);
+---
+
+<BaseLayout lang={LOCALE}>
+  <SEO
+    slot="head"
+    title={`${t(LOCALE, 'listing.tags.title')} — Eduardo Kohn`}
+    description={t(LOCALE, 'listing.tags.description')}
+    canonicalPath="/tags"
+    jsonLd={{ kind: 'collection', name: 'tag' }}
+  />
+  <div class="listing">
+    <h1 class="listing-title">{t(LOCALE, 'listing.tags.title')}</h1>
+    <p class="listing-description">{t(LOCALE, 'listing.tags.description')}</p>
+    <ul class="tag-grid">
+      {
+        tags.map(({ tag, count }) => (
+          <li>
+            <a class="tag-link" href={`/pt-br/tags/${tag}`}>
+              <span class="tag-name">#{tag}</span>
+              <span class="tag-count">
+                {count} {t(LOCALE, 'tag.entriesCount')}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .listing {
+    max-width: var(--measure-listing);
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-8);
+  }
+  .listing-title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    margin: 0 0 var(--space-2) 0;
+    color: var(--color-fg);
+  }
+  .listing-description {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+    margin: 0 0 var(--space-5) 0;
+  }
+  .tag-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--space-3);
+  }
+  .tag-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--color-fg);
+  }
+  .tag-link:hover {
+    border-color: var(--color-accent);
+    background: var(--color-accent-soft);
+  }
+  .tag-name {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+    font-weight: var(--font-weight-semibold);
+  }
+  .tag-count {
+    font-size: var(--text-2xs);
+    color: var(--color-muted);
+  }
+</style>
