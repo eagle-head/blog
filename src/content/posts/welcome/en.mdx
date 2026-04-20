@@ -10,16 +10,13 @@ language: 'en'
 status: 'published'
 ---
 
-Last year I ran my blog on **Gatsby**. It worked, but the JavaScript
-budget kept creeping up and Lighthouse scores drifted down. I wanted
-static HTML, minimum JS, and a pipeline that treats math, code, and
-diagrams as first-class citizens.
+Last year I ran my blog on **Gatsby**. It worked, but the JavaScript budget kept creeping up and Lighthouse scores drifted down. I wanted
+static HTML, minimum JS, and a pipeline that treats math, code, and diagrams as first-class citizens.
 
 ## The stack
 
-Astro as the SSG, Tailwind v4 for utilities, `remark-math` +
-`rehype-katex` for LaTeX, and Pagefind for client-side search.
-Everything pre-rendered at build time.
+Astro as the SSG, Tailwind v4 for utilities, `remark-math` + `rehype-katex` for LaTeX, and Pagefind for client-side search. Everything
+pre-rendered at build time.
 
 ```js title="astro.config.mjs"
 export default defineConfig({
@@ -28,8 +25,7 @@ export default defineConfig({
 });
 ```
 
-The only JavaScript shipped to the browser lives inside four explicit
-islands (command palette, theme toggle, comments, analytics). Pages
+The only JavaScript shipped to the browser lives inside four explicit islands (command palette, theme toggle, comments, analytics). Pages
 that don't use those islands ship **0 KB** of runtime JS.
 
 Lighthouse scores bounce back to 100/100.

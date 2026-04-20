@@ -6,9 +6,11 @@ export type EntryLike<T = unknown> = {
   data: T;
 };
 
-export type EntryGroup<T> = Partial<Record<Locale, EntryLike<T>>>;
-
-export type GroupedEntries<T> = Record<string, EntryGroup<T>>;
+// Groups are generic over the full entry type E, not just E['data'], so that
+// callers passing richer entries (e.g. Astro's CollectionEntry with body,
+// collection, rendered) keep those properties on the grouped output.
+export type EntryGroup<E extends EntryLike = EntryLike> = Partial<Record<Locale, E>>;
+export type GroupedEntries<E extends EntryLike = EntryLike> = Record<string, EntryGroup<E>>;
 
 export function parseEntryId(id: string): { slug: string; locale: Locale } {
   const idx = id.lastIndexOf('/');
@@ -24,8 +26,8 @@ export function parseEntryId(id: string): { slug: string; locale: Locale } {
   return { slug, locale: canonical };
 }
 
-export function groupBySlug<T>(entries: ReadonlyArray<EntryLike<T>>): GroupedEntries<T> {
-  const out: GroupedEntries<T> = {};
+export function groupBySlug<E extends EntryLike>(entries: ReadonlyArray<E>): GroupedEntries<E> {
+  const out: GroupedEntries<E> = {};
   for (const entry of entries) {
     const { slug, locale } = parseEntryId(entry.id);
     (out[slug] ??= {})[locale] = entry;
@@ -33,8 +35,8 @@ export function groupBySlug<T>(entries: ReadonlyArray<EntryLike<T>>): GroupedEnt
   return out;
 }
 
-export function assertAllLocalesPresent<T>(
-  groups: GroupedEntries<T>,
+export function assertAllLocalesPresent<E extends EntryLike>(
+  groups: GroupedEntries<E>,
   collection: string,
   required: readonly Locale[] = LOCALES,
 ): void {
@@ -51,9 +53,9 @@ export function assertAllLocalesPresent<T>(
   }
 }
 
-export function assertSharedFieldsMatch<T extends Record<string, unknown>>(
-  groups: GroupedEntries<T>,
-  fields: readonly (keyof T)[],
+export function assertSharedFieldsMatch<E extends EntryLike<Record<string, unknown>>>(
+  groups: GroupedEntries<E>,
+  fields: readonly (keyof E['data'])[],
 ): void {
   const problems: string[] = [];
   for (const [slug, group] of Object.entries(groups)) {
@@ -64,8 +66,9 @@ export function assertSharedFieldsMatch<T extends Record<string, unknown>>(
     for (const other of rest) {
       const otherEntry = group[other]!;
       for (const field of fields) {
-        if (!fieldEquals(firstEntry.data[field], otherEntry.data[field])) {
-          problems.push(`${slug}: field '${String(field)}' differs between ${first} and ${other}`);
+        const key = field as string;
+        if (!fieldEquals(firstEntry.data[key], otherEntry.data[key])) {
+          problems.push(`${slug}: field '${key}' differs between ${first} and ${other}`);
         }
       }
     }

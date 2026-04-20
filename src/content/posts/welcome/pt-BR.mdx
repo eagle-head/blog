@@ -1,6 +1,7 @@
 ---
 title: 'Por que estou reescrevendo meu blog em Astro'
-lead: 'Um breve passeio pelos trade-offs: static-first, arquitetura de ilhas, e manter o orçamento de JavaScript no cliente próximo de zero.'
+lead:
+  'Um breve passeio pelos trade-offs: static-first, arquitetura de ilhas, e manter o orçamento de JavaScript no cliente próximo de zero.'
 publishedAt: '2026-03-09'
 tags:
   - astro
@@ -10,16 +11,12 @@ language: 'pt-BR'
 status: 'published'
 ---
 
-No ano passado meu blog rodava em **Gatsby**. Funcionava, mas o
-orçamento de JavaScript crescia continuamente e as notas do Lighthouse
-caíam junto. Eu queria HTML estático, JS mínimo e um pipeline que
-tratasse matemática, código e diagramas como cidadãos de primeira
-classe.
+No ano passado meu blog rodava em **Gatsby**. Funcionava, mas o orçamento de JavaScript crescia continuamente e as notas do Lighthouse caíam
+junto. Eu queria HTML estático, JS mínimo e um pipeline que tratasse matemática, código e diagramas como cidadãos de primeira classe.
 
 ## A stack
 
-Astro como SSG, Tailwind v4 para utilitários, `remark-math` +
-`rehype-katex` para LaTeX, e Pagefind para busca client-side. Tudo
+Astro como SSG, Tailwind v4 para utilitários, `remark-math` + `rehype-katex` para LaTeX, e Pagefind para busca client-side. Tudo
 pré-renderizado no build.
 
 ```js title="astro.config.mjs"
@@ -29,8 +26,7 @@ export default defineConfig({
 });
 ```
 
-O único JavaScript enviado ao navegador vive em quatro ilhas
-explícitas (command palette, theme toggle, comentários, analytics).
-Páginas que não usam essas ilhas entregam **0 KB** de runtime JS.
+O único JavaScript enviado ao navegador vive em quatro ilhas explícitas (command palette, theme toggle, comentários, analytics). Páginas que
+não usam essas ilhas entregam **0 KB** de runtime JS.
 
 As notas do Lighthouse voltam a ser 100/100.

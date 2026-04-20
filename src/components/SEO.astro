@@ -93,9 +93,7 @@ function buildJsonLd(): Record<string, unknown> {
           '@type': 'Person',
           name: a.name,
           ...(a.orcid ? { identifier: `https://orcid.org/${a.orcid}` } : {}),
-          ...(a.affiliation
-            ? { affiliation: { '@type': 'Organization', name: a.affiliation } }
-            : {}),
+          ...(a.affiliation ? { affiliation: { '@type': 'Organization', name: a.affiliation } } : {}),
         })),
         url: canonical,
       };
@@ -127,10 +125,7 @@ function buildJsonLd(): Record<string, unknown> {
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
 <meta property="og:site_name" content="Eduardo Kohn" />
-<meta
-  property="og:type"
-  content={jsonLd.kind === 'paper' || jsonLd.kind === 'post' ? 'article' : 'website'}
-/>
+<meta property="og:type" content={jsonLd.kind === 'paper' || jsonLd.kind === 'post' ? 'article' : 'website'} />
 {ogImage && <meta property="og:image" content={ogImage} />}
 
 <meta name="twitter:card" content="summary_large_image" />
@@ -138,4 +133,4 @@ function buildJsonLd(): Record<string, unknown> {
 <meta name="twitter:description" content={description} />
 {ogImage && <meta name="twitter:image" content={ogImage} />}
 
-<script is:inline type="application/ld+json" set:html={JSON.stringify(buildJsonLd())}></script>
+<script is:inline type="application/ld+json" set:html={JSON.stringify(buildJsonLd())} />

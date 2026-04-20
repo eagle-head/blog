@@ -16,6 +16,7 @@ const dateFormat = new Intl.DateTimeFormat('en', {
   month: 'long',
   day: 'numeric',
   year: 'numeric',
+  timeZone: 'UTC',
 });
 ---
 
@@ -27,7 +28,7 @@ const dateFormat = new Intl.DateTimeFormat('en', {
     canonicalPath="/posts"
     jsonLd={{ kind: 'collection', name: 'posts' }}
   />
-  <main class="listing">
+  <div class="listing">
     <h1 class="listing-title">Posts</h1>
     <ul class="entries">
       {
@@ -47,12 +48,12 @@ const dateFormat = new Intl.DateTimeFormat('en', {
         ))
       }
     </ul>
-  </main>
+  </div>
 </BaseLayout>
 
 <style>
   .listing {
-    max-width: var(--measure-prose);
+    max-width: var(--measure-listing);
     margin: 0 auto;
     padding: var(--space-6) var(--space-8);
   }

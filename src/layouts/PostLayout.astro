@@ -19,6 +19,7 @@ const dateFormat = new Intl.DateTimeFormat(language, {
   month: 'long',
   day: 'numeric',
   year: 'numeric',
+  timeZone: 'UTC',
 });
 const chipText = `Post · ${dateFormat.format(publishedAt)} · ${readingTime}`;
 ---

@@ -25,10 +25,6 @@ function estimateReadingTime(body: string): string {
 const readingTime = estimateReadingTime(entry.body ?? '');
 ---
 
-<PaperLayout
-  entry={entry}
-  canonicalPath={`/papers/${Astro.params.slug}`}
-  readingTime={readingTime}
->
+<PaperLayout entry={entry} canonicalPath={`/papers/${Astro.params.slug}`} readingTime={readingTime}>
   <Content />
 </PaperLayout>

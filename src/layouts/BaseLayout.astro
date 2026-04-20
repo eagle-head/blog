@@ -20,12 +20,14 @@ const { lang = 'en' } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <script is:inline set:html={themeInitScript}></script>
+    <script is:inline set:html={themeInitScript} />
     <slot name="head" />
   </head>
   <body>
     <Header />
-    <slot />
+    <main>
+      <slot />
+    </main>
     <Footer />
   </body>
 </html>

@@ -23,16 +23,14 @@ const morePapers = papers.slice(1, 4);
 const recentPosts = posts.slice(0, 3);
 
 const allTags = Array.from(
-  new Set([
-    ...papers.flatMap((p) => p.entry.data.tags),
-    ...posts.flatMap((p) => p.entry.data.tags),
-  ]),
+  new Set([...papers.flatMap((p) => p.entry.data.tags), ...posts.flatMap((p) => p.entry.data.tags)]),
 ).sort();
 
 const dateFormat = new Intl.DateTimeFormat('en', {
   month: 'long',
   day: 'numeric',
   year: 'numeric',
+  timeZone: 'UTC',
 });
 ---
 
@@ -55,9 +53,7 @@ const dateFormat = new Intl.DateTimeFormat('en', {
       {
         featured && (
           <a class="featured" href={`/papers/${featured.slug}`}>
-            <MetaChip
-              text={`Featured · Paper · ${dateFormat.format(featured.entry.data.publishedAt)}`}
-            />
+            <MetaChip text={`Featured · Paper · ${dateFormat.format(featured.entry.data.publishedAt)}`} />
             <div class="featured-title">{featured.entry.data.title}</div>
             <p class="featured-desc">{featured.entry.data.abstract}</p>
           </a>

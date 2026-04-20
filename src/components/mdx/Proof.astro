@@ -12,6 +12,6 @@ const { of } = Astro.props;
   <span class="semantic-label">Proof{of && <> of {of}</>}</span>
   <div class="semantic-body">
     <slot />
-    <span class="semantic-qed" aria-label="End of proof">∎</span>
+    <span class="semantic-qed" role="img" aria-label="End of proof (Q.E.D.)"></span>
   </div>
 </div>

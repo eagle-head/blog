@@ -15,18 +15,16 @@ interface Props {
   readingTime: string;
 }
 const { entry, canonicalPath, readingTime } = Astro.props;
-const { title, abstract, publishedAt, updatedAt, authors, tags, keywords, doi, language } =
-  entry.data;
+const { title, abstract, publishedAt, updatedAt, authors, tags, keywords, doi, language } = entry.data;
 
 const dateFormat = new Intl.DateTimeFormat(language, {
   month: 'long',
   day: 'numeric',
   year: 'numeric',
+  timeZone: 'UTC',
 });
 const chipText = `Paper · ${dateFormat.format(publishedAt)} · ${readingTime}`;
-const authorLine = authors
-  .map((a) => (a.affiliation ? `${a.name} · ${a.affiliation}` : a.name))
-  .join(', ');
+const authorLine = authors.map((a) => (a.affiliation ? `${a.name} · ${a.affiliation}` : a.name)).join(', ');
 ---
 
 <BaseLayout lang={language}>

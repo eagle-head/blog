@@ -37,18 +37,18 @@ Nine decisions were locked through visual comparison sessions:
 
 ### 2.2 Type scale
 
-The scale is compact — informative CS content reads best at smaller sizes on long-form pages. The 14px body is comfortable in Inter with
-1.65 line-height and 680px max measure.
+Editorial/longform scale. Body at 17px with 1.65 line-height on a 640px max measure yields ~60 characters per line — within the 45–75
+optimal-readability range.
 
-- `--text-3xl`: 36px / 1.08 / -0.025em (home hero tagline)
-- `--text-2xl`: 28px / 1.08 / -0.025em (paper/post title)
-- `--text-xl`: 20px / 1.15 / -0.02em (home magazine-grid sub-header)
-- `--text-lg`: 17px / 1.2 / -0.01em (paper H2, post H2 — wine underline)
-- `--text-base`: 14px / 1.65 / 0 (body prose)
-- `--text-sm`: 13px / 1.55 / 0 (author line, entry descriptions)
-- `--text-xs`: 12.5px / 1.6 / 0 (code block body, abstract inside box)
-- `--text-2xs`: 11px / 1.5 / 0.08em (meta labels, tag chips, sidenotes)
-- `--text-3xs`: 10px / 1.5 / 0.18em (uppercase label chips "PAPER", "POST")
+- `--text-3xl`: 48px / 1.08 / -0.025em (home hero tagline)
+- `--text-2xl`: 34px / 1.08 / -0.025em (paper/post title)
+- `--text-xl`: 24px / 1.15 / -0.02em (home magazine-grid sub-header)
+- `--text-lg`: 20px / 1.2 / -0.01em (paper H2, post H2 — wine underline)
+- `--text-base`: 17px / 1.65 / 0 (body prose)
+- `--text-sm`: 15px / 1.55 / 0 (author line, entry descriptions)
+- `--text-xs`: 14px / 1.6 / 0 (code block body, abstract inside box)
+- `--text-2xs`: 12.5px / 1.5 / 0.08em (meta labels, tag chips, sidenotes)
+- `--text-3xs`: 11px / 1.5 / 0.18em (uppercase label chips "PAPER", "POST")
 
 ### 2.3 Weights
 
@@ -169,7 +169,10 @@ Base unit: 4px. All spacing is a multiple.
 
 ### 4.1 Content widths
 
-- `--measure-prose`: 640px — Classic Centered posts, home sub-header, sections inside Tufte main column
+- `--measure-prose`: 640px — Classic Centered posts, sections inside Tufte main column; legibility-optimised reading width (~60 chars/line
+  at 17px body)
+- `--measure-listing`: 840px — `/papers`, `/posts`, `/tags/*` index pages; wider than prose because indexes are scan-and-navigate, not
+  longform reading
 - `--measure-tufte-total`: 980px — Tufte two-column grid total (main + gap + side)
 - `--measure-tufte-main`: `minmax(0, 1fr)` inside the 980px grid (main column auto-sizes)
 - `--measure-tufte-side`: 220px (fixed sidebar for sidenotes)

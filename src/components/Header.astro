@@ -1,6 +1,8 @@
 ---
 // src/components/Header.astro
-// Brief §6.1 — Site header: logo + nav + ⌘K + theme toggle.
+// Brief §6.1 — Site header: logo + nav + search bar + theme toggle.
+// The search-bar trigger is a visual stub; Plan 05 wires it to the
+// Command Palette island for actual client-side search via Pagefind.
 import Kbd from './Kbd.astro';
 import ThemeToggle from './ThemeToggle.astro';
 ---
@@ -11,11 +13,35 @@ import ThemeToggle from './ThemeToggle.astro';
     <a href="/papers">Papers</a>
     <a href="/posts">Posts</a>
     <a href="/about">About</a>
-    <button id="cmdk-trigger" type="button" class="cmdk-trigger" aria-label="Open search" title="Open search">
+  </nav>
+  <div class="site-actions">
+    <button
+      id="cmdk-trigger"
+      type="button"
+      class="search-trigger"
+      aria-label="Search posts and papers"
+      title="Search (Ctrl + K)"
+    >
+      <svg
+        class="search-icon"
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <span class="search-placeholder">Search&hellip;</span>
       <Kbd>⌘K</Kbd>
     </button>
     <ThemeToggle />
-  </nav>
+  </div>
 </header>
 
 <style>
@@ -23,22 +49,24 @@ import ThemeToggle from './ThemeToggle.astro';
     padding: 14px var(--space-8);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: var(--space-6);
     font-size: var(--text-sm);
     border-bottom: 1px solid var(--color-border);
   }
   .logo {
     font-weight: var(--font-weight-extrabold);
     letter-spacing: var(--tracking-snug);
-    font-size: 15px;
+    font-size: var(--text-base);
     color: var(--color-fg);
     text-decoration: none;
+    flex: 0 0 auto;
   }
   .site-nav {
     display: flex;
     align-items: center;
     gap: 22px;
     color: var(--color-muted);
+    flex: 1 1 auto;
   }
   .site-nav a {
     color: inherit;
@@ -47,11 +75,55 @@ import ThemeToggle from './ThemeToggle.astro';
   .site-nav a:hover {
     color: var(--color-fg);
   }
-  .cmdk-trigger {
-    background: transparent;
-    border: none;
-    padding: 0;
+  .site-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex: 0 0 auto;
+  }
+
+  /* Search-bar trigger — pseudo-input look; Plan 05 wires the palette. */
+  .search-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 240px;
+    padding: 6px 10px 6px 12px;
+    background: var(--color-kbd-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+    font-family: inherit;
     cursor: pointer;
-    color: inherit;
+    transition:
+      background 120ms ease,
+      border-color 120ms ease;
+  }
+  .search-trigger:hover {
+    background: var(--color-bg);
+    border-color: var(--color-muted);
+    color: var(--color-fg);
+  }
+  .search-trigger:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  .search-icon {
+    flex: 0 0 auto;
+    color: var(--color-muted);
+  }
+  .search-placeholder {
+    flex: 1 1 auto;
+    text-align: left;
+  }
+
+  @media (max-width: 640px) {
+    .search-trigger {
+      min-width: 0;
+    }
+    .search-placeholder {
+      display: none;
+    }
   }
 </style>
