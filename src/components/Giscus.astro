@@ -20,6 +20,7 @@ const ready = repo && repoId && category && categoryId;
   ready ? (
     <section class="giscus-wrap" aria-label="Comments">
       <script
+        is:inline
         src="https://giscus.app/client.js"
         data-repo={repo}
         data-repo-id={repoId}
