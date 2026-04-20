@@ -62,6 +62,8 @@ const CommandPalettePanel: FunctionalComponent<Props> = ({ locale, onClose }) =>
   const pagefindRef = useRef<PagefindApi | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  const mouseDownOnOverlay = useRef(false);
 
   useEffect(() => {
     let alive = true;
@@ -125,6 +127,26 @@ const CommandPalettePanel: FunctionalComponent<Props> = ({ locale, onClose }) =>
     [locale],
   );
 
+  function handleTabTrap(e: KeyboardEvent) {
+    if (e.key !== 'Tab') return;
+    const panel = panelRef.current;
+    if (!panel) return;
+    const focusables = panel.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    );
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey && active === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
   return (
     <div
       class="cmdk-overlay"
@@ -132,11 +154,18 @@ const CommandPalettePanel: FunctionalComponent<Props> = ({ locale, onClose }) =>
       role="dialog"
       aria-modal="true"
       aria-label={t(locale, 'search.label')}
+      onMouseDown={(e) => {
+        mouseDownOnOverlay.current = e.target === overlayRef.current;
+      }}
       onClick={(e) => {
-        if (e.target === overlayRef.current) onClose();
+        // Only close if both mousedown and click were on the overlay — prevents
+        // drag-release-into-overlay (e.g. selecting text inside the panel) from
+        // closing the modal.
+        if (e.target === overlayRef.current && mouseDownOnOverlay.current) onClose();
+        mouseDownOnOverlay.current = false;
       }}
     >
-      <div class="cmdk-panel">
+      <div class="cmdk-panel" ref={panelRef} onKeyDown={handleTabTrap}>
         <input
           ref={inputRef}
           class="cmdk-input"
