@@ -471,7 +471,7 @@ interface Props {
 
 const { title, description, canonicalPath, ogImage, jsonLd } = Astro.props;
 
-const site = Astro.site?.toString().replace(/\/$/, '') ?? 'https://kohn.dev';
+const site = Astro.site?.toString().replace(/\/$/, '') ?? 'https://eduardokohn.com';
 const alts = alternateUrls(canonicalPath);
 const canonical = `${site}${alts[DEFAULT_LOCALE]}`;
 

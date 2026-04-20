@@ -4,7 +4,7 @@
 > implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Ship the last piece of the v0 blog — continuous integration via GitHub Actions and a reproducible Cloudflare Pages deploy with the
-custom domain `kohn.dev`, security headers, and a documented runbook so the human partner can complete the one-time dashboard steps
+custom domain `eduardokohn.com`, security headers, and a documented runbook so the human partner can complete the one-time dashboard steps
 unassisted.
 
 **Architecture:** CI is a single GitHub Actions workflow at `.github/workflows/ci.yml` that runs on every PR and every push to `main`; it
@@ -22,7 +22,7 @@ pipeline), Node 22.12.x.
 - Visual design brief: `docs/superpowers/specs/2026-04-19-visual-design.md`
 
 **Prerequisites:** Plan 05 complete (tag `v0.5.0-islands`). Working tree clean. GitHub repository already exists at `eagle-head/blog`
-(public). User has a Cloudflare account and owns the `kohn.dev` domain (DNS at Cloudflare or delegable to Cloudflare).
+(public). User has a Cloudflare account and owns the `eduardokohn.com` domain (DNS at Cloudflare or delegable to Cloudflare).
 
 **Constraints (from the brief):**
 
@@ -332,7 +332,7 @@ preview deployment at a throwaway `<pr-branch>.<project>.pages.dev` URL.
 ## 1. Prerequisites
 
 - Cloudflare account.
-- `kohn.dev` domain registered and pointing its nameservers at Cloudflare (Cloudflare dashboard → Websites → Add a site).
+- `eduardokohn.com` domain registered and pointing its nameservers at Cloudflare (Cloudflare dashboard → Websites → Add a site).
 - GitHub repo public at `https://github.com/eagle-head/blog`.
 
 ## 2. Create the Pages project
@@ -341,7 +341,7 @@ preview deployment at a throwaway `<pr-branch>.<project>.pages.dev` URL.
 2. Authorize the Cloudflare GitHub app if not already authorized. Grant access to the `eagle-head/blog` repository only (principle of least
    privilege).
 3. Select the repository. Click **Begin setup**.
-4. **Project name:** `kohn-dev` (this becomes `kohn-dev.pages.dev`; the custom domain overrides it later).
+4. **Project name:** `eduardokohn` (this becomes `eduardokohn.pages.dev`; the custom domain overrides it later).
 5. **Production branch:** `main`.
 6. **Build settings:**
    - **Framework preset:** `Astro` (Cloudflare auto-detects; verify).
@@ -386,15 +386,16 @@ Click **Save and deploy**. The first build will run; expect ~90s for install + b
 ## 5. Cloudflare Web Analytics setup
 
 1. Cloudflare dashboard → **Analytics & Logs** → **Web Analytics** → **Add a site**.
-2. Hostname: `kohn.dev`. Click **Done**.
+2. Hostname: `eduardokohn.com`. Click **Done**.
 3. Copy the **token** (a 32-char hex string). Paste as the value of `PUBLIC_CF_ANALYTICS_TOKEN` in the Pages project env vars (step 3).
 4. **Do not** paste the provided `<script>` snippet into the site — the `Analytics.astro` component already emits it from the env var.
 
 ## 6. Custom domain
 
-1. On the Pages project → **Custom domains** → **Set up a custom domain** → `kohn.dev`.
+1. On the Pages project → **Custom domains** → **Set up a custom domain** → `eduardokohn.com`.
 2. If the domain is already on Cloudflare DNS, the CNAME is created automatically. Approve it.
-3. Add `www.kohn.dev` as a second custom domain with the **Redirect to primary domain** option, so `www.kohn.dev` → `kohn.dev`.
+3. Add `www.eduardokohn.com` as a second custom domain with the **Redirect to primary domain** option, so `www.eduardokohn.com` →
+   `eduardokohn.com`.
 4. Wait for SSL to provision (usually 1–5 minutes; you can refresh the status on the custom-domains page).
 
 ## 7. Smoke test the production deploy
@@ -403,19 +404,19 @@ Once the first deploy completes and the custom domain is active:
 
 ```bash
 # Security headers
-curl -sI https://kohn.dev/ | grep -iE "content-security-policy|strict-transport|referrer-policy"
+curl -sI https://eduardokohn.com/ | grep -iE "content-security-policy|strict-transport|referrer-policy"
 
 # OG image
-curl -sI https://kohn.dev/og/papers/quicksort-partitioning-en.png | head -3
+curl -sI https://eduardokohn.com/og/papers/quicksort-partitioning-en.png | head -3
 
 # Sitemap
-curl -s https://kohn.dev/sitemap-index.xml | head -20
+curl -s https://eduardokohn.com/sitemap-index.xml | head -20
 
 # RSS (combined, EN)
-curl -s https://kohn.dev/rss.xml | head -20
+curl -s https://eduardokohn.com/rss.xml | head -20
 
 # Palette search
-curl -s https://kohn.dev/pagefind/pagefind.js | head -c 80
+curl -s https://eduardokohn.com/pagefind/pagefind.js | head -c 80
 ```
 
 Each command should return 200 OK with the expected body prefix.
@@ -432,7 +433,7 @@ If you ever disconnect the project:
 
 1. Dashboard → project → **Settings** → **Delete project**. Keeps deployments purgeable for 30 days.
 2. Remove the GitHub App (`https://github.com/settings/installations/` → Cloudflare Pages → Configure → Uninstall).
-3. Remove custom domain records (Cloudflare DNS → `kohn.dev` zone → delete the CNAME rows for `@` and `www` that pointed at the Pages
+3. Remove custom domain records (Cloudflare DNS → `eduardokohn.com` zone → delete the CNAME rows for `@` and `www` that pointed at the Pages
    project).
 ````
 
@@ -475,9 +476,9 @@ rest of the doc (likely `##`):
 ```markdown
 ## Deploy
 
-Production hosts at [`kohn.dev`](https://kohn.dev) on Cloudflare Pages. The one-time dashboard setup (project creation, env vars, custom
-domain, Giscus, Cloudflare Analytics) is documented in [`DEPLOY.md`](./DEPLOY.md). Every push to `main` triggers a production deploy; every
-PR gets a preview URL posted back by the Cloudflare GitHub app.
+Production hosts at [`eduardokohn.com`](https://eduardokohn.com) on Cloudflare Pages. The one-time dashboard setup (project creation, env
+vars, custom domain, Giscus, Cloudflare Analytics) is documented in [`DEPLOY.md`](./DEPLOY.md). Every push to `main` triggers a production
+deploy; every PR gets a preview URL posted back by the Cloudflare GitHub app.
 ```
 
 - [ ] **Step 3: Commit**

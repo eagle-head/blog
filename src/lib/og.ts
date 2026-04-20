@@ -115,7 +115,7 @@ export async function renderOgImage(params: OgParams): Promise<Buffer> {
               fontWeight: 700,
               color: '#0a0a0a',
             },
-            children: 'Eduardo Kohn · kohn.dev',
+            children: 'Eduardo Kohn · eduardokohn.com',
           },
         },
       ],

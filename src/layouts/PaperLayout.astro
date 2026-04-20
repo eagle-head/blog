@@ -49,8 +49,8 @@ const authorLine = authors.map((a) => (a.affiliation ? `${a.name} · ${a.affilia
 
   <article class="paper" data-pagefind-body>
     {/* Pagefind filters — one element per filter; combined via search({ filters: {...} }). */}
-    <span hidden data-pagefind-filter="kind:paper" />
-    <span hidden data-pagefind-filter={`lang:${language}`} />
+    <span hidden data-pagefind-filter="kind:paper"></span>
+    <span hidden data-pagefind-filter={`lang:${language}`}></span>
     <div class="paper-main">
       <MetaChip text={chipText} />
       <h1 class="paper-title">{title}</h1>

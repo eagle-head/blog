@@ -46,6 +46,6 @@ Feel free to check [our documentation](https://docs.astro.build) or jump into ou
 
 ## Deploy
 
-Production hosts at [`kohn.dev`](https://kohn.dev) on Cloudflare Pages. The one-time dashboard setup (project creation, env vars, custom
-domain, Giscus, Cloudflare Analytics) is documented in [`DEPLOY.md`](./DEPLOY.md). Every push to `main` triggers a production deploy; every
-PR gets a preview URL posted back by the Cloudflare GitHub app.
+Production hosts at [`eduardokohn.com`](https://eduardokohn.com) on Cloudflare Pages. The one-time dashboard setup (project creation, env
+vars, custom domain, Giscus, Cloudflare Analytics) is documented in [`DEPLOY.md`](./DEPLOY.md). Every push to `main` triggers a production
+deploy; every PR gets a preview URL posted back by the Cloudflare GitHub app.

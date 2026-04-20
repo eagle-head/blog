@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kohn.dev/sitemap-index.xml
+Sitemap: https://eduardokohn.com/sitemap-index.xml

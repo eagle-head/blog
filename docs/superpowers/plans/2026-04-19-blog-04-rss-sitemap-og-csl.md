@@ -147,7 +147,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: meta.title,
     description: meta.description,
-    site: context.site ?? 'https://kohn.dev',
+    site: context.site ?? 'https://eduardokohn.com',
     items,
     customData: `<language>en</language>`,
   });
@@ -168,7 +168,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: meta.title,
     description: meta.description,
-    site: context.site ?? 'https://kohn.dev',
+    site: context.site ?? 'https://eduardokohn.com',
     items,
     customData: `<language>en</language>`,
   });
@@ -189,7 +189,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: meta.title,
     description: meta.description,
-    site: context.site ?? 'https://kohn.dev',
+    site: context.site ?? 'https://eduardokohn.com',
     items,
     customData: `<language>en</language>`,
   });
@@ -224,7 +224,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: meta.title,
     description: meta.description,
-    site: context.site ?? 'https://kohn.dev',
+    site: context.site ?? 'https://eduardokohn.com',
     items,
     customData: `<language>pt-BR</language>`,
   });
@@ -245,7 +245,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: meta.title,
     description: meta.description,
-    site: context.site ?? 'https://kohn.dev',
+    site: context.site ?? 'https://eduardokohn.com',
     items,
     customData: `<language>pt-BR</language>`,
   });
@@ -266,7 +266,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: meta.title,
     description: meta.description,
-    site: context.site ?? 'https://kohn.dev',
+    site: context.site ?? 'https://eduardokohn.com',
     items,
     customData: `<language>pt-BR</language>`,
   });
@@ -410,7 +410,7 @@ alongside canonical URLs.
 User-agent: *
 Allow: /
 
-Sitemap: https://kohn.dev/sitemap-index.xml
+Sitemap: https://eduardokohn.com/sitemap-index.xml
 ```
 
 - [ ] **Step 2: Verify build**
@@ -597,7 +597,7 @@ export async function renderOgImage(params: OgParams): Promise<Buffer> {
               fontWeight: 700,
               color: '#0a0a0a',
             },
-            children: 'Eduardo Kohn · kohn.dev',
+            children: 'Eduardo Kohn · eduardokohn.com',
           },
         },
       ],

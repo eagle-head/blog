@@ -92,7 +92,7 @@ export function createRssHandler(source: FeedSource, locale: Locale) {
     return rss({
       title: meta.title,
       description: meta.description,
-      site: context.site ?? 'https://kohn.dev',
+      site: context.site ?? 'https://eduardokohn.com',
       items,
       customData: `<language>${locale}</language>`,
     });

@@ -44,8 +44,8 @@ const chipText = `${t(language, 'kind.post')} · ${formatDateForLocale(published
 
   <article class="post" data-pagefind-body>
     {/* Pagefind filters — one element per filter; combined via search({ filters: {...} }). */}
-    <span hidden data-pagefind-filter="kind:post" />
-    <span hidden data-pagefind-filter={`lang:${language}`} />
+    <span hidden data-pagefind-filter="kind:post"></span>
+    <span hidden data-pagefind-filter={`lang:${language}`}></span>
     <MetaChip text={chipText} />
     <h1 class="post-title">{title}</h1>
     <p class="post-lead">{lead}</p>
