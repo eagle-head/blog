@@ -41,7 +41,12 @@ const chipText = `${t(language, 'kind.post')} · ${formatDateForLocale(published
     }}
   />
 
-  <article class="post">
+  <article
+    class="post"
+    data-pagefind-body
+    data-pagefind-meta={`kind:post,lang:${language}`}
+    data-pagefind-filter={`kind:post,lang:${language}`}
+  >
     <MetaChip text={chipText} />
     <h1 class="post-title">{title}</h1>
     <p class="post-lead">{lead}</p>
