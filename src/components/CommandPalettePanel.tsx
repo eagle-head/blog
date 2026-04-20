@@ -70,8 +70,11 @@ const CommandPalettePanel: FunctionalComponent<Props> = ({ locale, onClose }) =>
     let alive = true;
     (async () => {
       try {
-        // @ts-expect-error Pagefind bundle is emitted to /dist/pagefind at build time; resolves at runtime.
-        const mod = (await import(/* @vite-ignore */ '/pagefind/pagefind.js')) as PagefindApi;
+        // Pagefind bundle lives at /pagefind/pagefind.js at runtime (emitted to
+        // /dist/pagefind by the astro-pagefind integration). Assigning the path
+        // to a variable keeps Rollup from trying to resolve it at build time.
+        const pagefindPath = '/pagefind/pagefind.js';
+        const mod = (await import(/* @vite-ignore */ pagefindPath)) as PagefindApi;
         if (!alive) return;
         mod.options?.({ excerptLength: 24 });
         pagefindRef.current = mod;
