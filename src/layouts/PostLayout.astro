@@ -6,6 +6,7 @@ import BaseLayout from './BaseLayout.astro';
 import MetaChip from '../components/MetaChip.astro';
 import Tag from '../components/Tag.astro';
 import SEO from '../components/SEO.astro';
+import Giscus from '../components/Giscus.astro';
 import { parseEntryId } from '../lib/content';
 import { formatDateForLocale } from '../lib/i18n';
 import { ogImagePathFor } from '../lib/og';
@@ -17,7 +18,7 @@ interface Props {
   readingTime: string;
 }
 const { entry, canonicalPath, readingTime } = Astro.props;
-const { title, lead, publishedAt, updatedAt, tags, language } = entry.data;
+const { title, lead, publishedAt, updatedAt, tags, language, comments } = entry.data;
 const { slug } = parseEntryId(entry.id);
 
 const chipText = `${t(language, 'kind.post')} · ${formatDateForLocale(publishedAt, language)} · ${readingTime}`;
@@ -56,6 +57,7 @@ const chipText = `${t(language, 'kind.post')} · ${formatDateForLocale(published
     <div class="post-body">
       <slot />
     </div>
+    {comments && <Giscus lang={language} />}
   </article>
 </BaseLayout>
 

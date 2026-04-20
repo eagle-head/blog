@@ -35,6 +35,7 @@ const papers = defineCollection({
       doi: z.string().optional(),
       status: statusSchema,
       bibliography: z.string().default('./references.bib'),
+      comments: z.boolean().default(false),
     }),
 });
 
@@ -54,6 +55,7 @@ const posts = defineCollection({
       status: statusSchema,
       heroImage: image().optional(),
       series: z.object({ id: z.string(), order: z.number().int().nonnegative() }).optional(),
+      comments: z.boolean().default(true),
     }),
 });
 
