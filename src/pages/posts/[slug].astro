@@ -1,0 +1,33 @@
+---
+// src/pages/posts/[slug].astro
+// Post detail page (EN).
+import PostLayout from '../../layouts/PostLayout.astro';
+import { getValidatedCollection } from '../../lib/collections';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const groups = await getValidatedCollection('posts');
+  return Object.entries(groups).map(([slug, g]) => ({
+    params: { slug },
+    props: { entry: g.en! },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+function estimateReadingTime(body: string): string {
+  const words = body.trim().split(/\s+/).length;
+  const minutes = Math.max(1, Math.round(words / 220));
+  return `${minutes} min`;
+}
+const readingTime = estimateReadingTime(entry.body ?? '');
+---
+
+<PostLayout
+  entry={entry}
+  canonicalPath={`/posts/${Astro.params.slug}`}
+  readingTime={readingTime}
+>
+  <Content />
+</PostLayout>

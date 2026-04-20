@@ -1,0 +1,103 @@
+---
+// src/pages/papers/index.astro
+// Papers listing (EN). Lists every paper whose EN entry is published,
+// most recent first.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MetaChip from '../../components/MetaChip.astro';
+import Tag from '../../components/Tag.astro';
+import SEO from '../../components/SEO.astro';
+import { getValidatedCollection } from '../../lib/collections';
+
+const groups = await getValidatedCollection('papers');
+const papers = Object.entries(groups)
+  .map(([slug, g]) => ({ slug, entry: g.en! }))
+  .sort((a, b) => b.entry.data.publishedAt.getTime() - a.entry.data.publishedAt.getTime());
+
+const dateFormat = new Intl.DateTimeFormat('en', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+---
+
+<BaseLayout lang="en">
+  <SEO
+    slot="head"
+    title="Papers — Eduardo Kohn"
+    description="Computer-science papers by Eduardo Kohn."
+    canonicalPath="/papers"
+    jsonLd={{ kind: 'collection', name: 'papers' }}
+  />
+  <main class="listing">
+    <h1 class="listing-title">Papers</h1>
+    <ul class="entries">
+      {
+        papers.map(({ slug, entry }) => (
+          <li class="entry">
+            <MetaChip text={`Paper · ${dateFormat.format(entry.data.publishedAt)}`} />
+            <a class="entry-title" href={`/papers/${slug}`}>
+              {entry.data.title}
+            </a>
+            <p class="entry-abstract">{entry.data.abstract}</p>
+            <div class="entry-tags">
+              {entry.data.tags.map((t) => (
+                <Tag name={t} href={`/tags/${t}`} />
+              ))}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+</BaseLayout>
+
+<style>
+  .listing {
+    max-width: var(--measure-prose);
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-8);
+  }
+  .listing-title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    margin: 0 0 var(--space-5) 0;
+    color: var(--color-fg);
+  }
+  .entries {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .entry {
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--color-border-soft);
+  }
+  .entry:last-child {
+    border-bottom: none;
+  }
+  .entry-title {
+    display: block;
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    text-decoration: none;
+    margin: var(--space-1) 0 var(--space-2) 0;
+    letter-spacing: var(--tracking-snug);
+    line-height: var(--leading-snug);
+  }
+  .entry-title:hover {
+    color: var(--color-accent);
+  }
+  .entry-abstract {
+    font-size: var(--text-sm);
+    color: var(--color-text);
+    margin: 0 0 var(--space-2) 0;
+    line-height: var(--leading-normal);
+  }
+  .entry-tags {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+</style>

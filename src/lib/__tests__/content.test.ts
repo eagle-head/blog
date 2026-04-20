@@ -20,6 +20,14 @@ describe('parseEntryId', () => {
   it('rejects unknown locales', () => {
     expect(() => parseEntryId('x/fr')).toThrow(/unknown locale/i);
   });
+
+  it('accepts lowercase locale and returns canonical form', () => {
+    // Astro glob loader lowercases entry IDs; canonical locale names stay mixed-case.
+    expect(parseEntryId('quicksort/pt-br')).toEqual({
+      slug: 'quicksort',
+      locale: 'pt-BR',
+    });
+  });
 });
 
 describe('groupBySlug', () => {

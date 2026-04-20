@@ -14,11 +14,14 @@ export function parseEntryId(id: string): { slug: string; locale: Locale } {
   const idx = id.lastIndexOf('/');
   if (idx < 0) throw new Error(`invalid entry id (no '/'): ${id}`);
   const slug = id.slice(0, idx);
-  const locale = id.slice(idx + 1);
-  if (!LOCALES.includes(locale as Locale)) {
-    throw new Error(`unknown locale in entry id '${id}': ${locale}`);
+  const rawLocale = id.slice(idx + 1);
+  // Astro's glob loader lowercases entry IDs, so 'pt-BR.mdx' becomes 'pt-br'
+  // in the ID. Match case-insensitively and return the canonical locale form.
+  const canonical = LOCALES.find((loc) => loc.toLowerCase() === rawLocale.toLowerCase());
+  if (!canonical) {
+    throw new Error(`unknown locale in entry id '${id}': ${rawLocale}`);
   }
-  return { slug, locale: locale as Locale };
+  return { slug, locale: canonical };
 }
 
 export function groupBySlug<T>(entries: ReadonlyArray<EntryLike<T>>): GroupedEntries<T> {
