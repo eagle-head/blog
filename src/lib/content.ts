@@ -1,6 +1,12 @@
 export type Locale = 'en' | 'pt-BR';
 export const LOCALES: readonly Locale[] = ['en', 'pt-BR'] as const;
 
+// Precomputed lowercase → canonical map so parseEntryId is O(1) per call.
+// Astro's glob loader lowercases entry IDs ("pt-BR.mdx" → "pt-br"), so every
+// parse needs this reverse lookup; doing it as a Map beats re-running
+// LOCALES.find(...) on each entry.
+const LOCALE_FROM_LOWER = new Map<string, Locale>(LOCALES.map((l) => [l.toLowerCase(), l]));
+
 export type EntryLike<T = unknown> = {
   id: string;
   data: T;
@@ -17,9 +23,7 @@ export function parseEntryId(id: string): { slug: string; locale: Locale } {
   if (idx < 0) throw new Error(`invalid entry id (no '/'): ${id}`);
   const slug = id.slice(0, idx);
   const rawLocale = id.slice(idx + 1);
-  // Astro's glob loader lowercases entry IDs, so 'pt-BR.mdx' becomes 'pt-br'
-  // in the ID. Match case-insensitively and return the canonical locale form.
-  const canonical = LOCALES.find((loc) => loc.toLowerCase() === rawLocale.toLowerCase());
+  const canonical = LOCALE_FROM_LOWER.get(rawLocale.toLowerCase());
   if (!canonical) {
     throw new Error(`unknown locale in entry id '${id}': ${rawLocale}`);
   }
@@ -59,22 +63,34 @@ export function assertSharedFieldsMatch<E extends EntryLike<Record<string, unkno
 ): void {
   const problems: string[] = [];
   for (const [slug, group] of Object.entries(groups)) {
-    const localesInGroup = Object.keys(group) as Locale[];
-    if (localesInGroup.length < 2) continue;
-    const [first, ...rest] = localesInGroup;
-    const firstEntry = group[first]!;
-    for (const other of rest) {
-      const otherEntry = group[other]!;
-      for (const field of fields) {
-        const key = field as string;
-        if (!fieldEquals(firstEntry.data[key], otherEntry.data[key])) {
-          problems.push(`${slug}: field '${key}' differs between ${first} and ${other}`);
-        }
-      }
-    }
+    collectSharedFieldMismatches(slug, group, fields, problems);
   }
   if (problems.length) {
     throw new Error(`Shared-field mismatch across locales:\n  - ${problems.join('\n  - ')}`);
+  }
+}
+
+// Compare every non-base locale of a single group against the first locale,
+// appending one problem message per differing field. Kept as a helper so the
+// public `assertSharedFieldsMatch` reads as a flat loop over groups.
+function collectSharedFieldMismatches<E extends EntryLike<Record<string, unknown>>>(
+  slug: string,
+  group: EntryGroup<E>,
+  fields: readonly (keyof E['data'])[],
+  problems: string[],
+): void {
+  const locales = Object.keys(group) as Locale[];
+  if (locales.length < 2) return;
+  const [baseLocale, ...otherLocales] = locales;
+  const baseEntry = group[baseLocale]!;
+  for (const otherLocale of otherLocales) {
+    const otherEntry = group[otherLocale]!;
+    for (const field of fields) {
+      const key = field as string;
+      if (!fieldEquals(baseEntry.data[key], otherEntry.data[key])) {
+        problems.push(`${slug}: field '${key}' differs between ${baseLocale} and ${otherLocale}`);
+      }
+    }
   }
 }
 
