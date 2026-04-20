@@ -4,6 +4,7 @@
 // The search-bar trigger is a visual stub; Plan 05 wires it to the
 // Command Palette island for actual client-side search via Pagefind.
 import Kbd from './Kbd.astro';
+import LangToggle from './LangToggle.astro';
 import ThemeToggle from './ThemeToggle.astro';
 ---
 
@@ -40,6 +41,7 @@ import ThemeToggle from './ThemeToggle.astro';
       <span class="search-placeholder">Search&hellip;</span>
       <Kbd>⌘K</Kbd>
     </button>
+    <LangToggle />
     <ThemeToggle />
   </div>
 </header>
