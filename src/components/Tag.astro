@@ -1,0 +1,47 @@
+---
+// src/components/Tag.astro
+// Brief §5.1 — Outlined tag pill with # prefix.
+interface Props {
+  /** The raw tag slug, e.g. "sorting". */
+  name: string;
+  /** Optional href; if omitted, the tag renders as a non-link span. */
+  href?: string;
+}
+const { name, href } = Astro.props;
+---
+
+{
+  href ? (
+    <a class="tag" href={href}>
+      {name}
+    </a>
+  ) : (
+    <span class="tag">{name}</span>
+  )
+}
+
+<style>
+  .tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: lowercase;
+    color: var(--color-accent);
+    background: transparent;
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-pill);
+    padding: 2px 8px;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    line-height: 1;
+  }
+  .tag::before {
+    content: '#';
+    opacity: 0.5;
+    margin-right: 2px;
+  }
+  a.tag:hover {
+    background: var(--color-accent-soft);
+  }
+</style>

@@ -1,0 +1,69 @@
+---
+// src/components/ThemeToggle.astro
+// Brief §7.2 — Light/dark toggle that flips [data-theme] on <html>
+// and persists the choice to localStorage.
+---
+
+<button id="theme-toggle" type="button" class="theme-toggle" aria-label="Toggle color theme" title="Toggle color theme">
+  <svg class="icon icon-sun" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="4" fill="currentColor"></circle>
+    <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="12" y1="2" x2="12" y2="5"></line>
+      <line x1="12" y1="19" x2="12" y2="22"></line>
+      <line x1="2" y1="12" x2="5" y2="12"></line>
+      <line x1="19" y1="12" x2="22" y2="12"></line>
+      <line x1="4.6" y1="4.6" x2="6.7" y2="6.7"></line>
+      <line x1="17.3" y1="17.3" x2="19.4" y2="19.4"></line>
+      <line x1="4.6" y1="19.4" x2="6.7" y2="17.3"></line>
+      <line x1="17.3" y1="6.7" x2="19.4" y2="4.6"></line>
+    </g>
+  </svg>
+  <svg class="icon icon-moon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor"></path>
+  </svg>
+</button>
+
+<script>
+  const btn = document.getElementById('theme-toggle');
+  btn?.addEventListener('click', () => {
+    const current = document.documentElement.dataset.theme;
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      /* storage blocked — toggle still works for the current page */
+    }
+  });
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--color-muted);
+    cursor: pointer;
+  }
+  .theme-toggle:hover {
+    color: var(--color-fg);
+    background: var(--color-kbd-bg);
+  }
+  .icon {
+    display: none;
+  }
+  /* show sun in dark mode (clicking returns to light); moon in light mode */
+  :root[data-theme='light'] .theme-toggle .icon-moon,
+  :root:not([data-theme='dark']) .theme-toggle .icon-moon {
+    display: block;
+  }
+  :root[data-theme='dark'] .theme-toggle .icon-sun {
+    display: block;
+  }
+</style>

@@ -1,0 +1,20 @@
+---
+// src/components/Kbd.astro
+// Brief §5.3 — Inline keyboard hint like ⌘K.
+---
+
+<kbd class="kbd"><slot /></kbd>
+
+<style>
+  .kbd {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-muted);
+    background: var(--color-kbd-bg);
+    border: 1px solid var(--color-kbd-border);
+    border-radius: var(--radius-sm);
+    padding: 1px 5px;
+    line-height: 1.2;
+  }
+</style>
