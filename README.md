@@ -43,3 +43,9 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+## Deploy
+
+Production hosts at [`kohn.dev`](https://kohn.dev) on Cloudflare Pages. The one-time dashboard setup (project creation, env vars, custom
+domain, Giscus, Cloudflare Analytics) is documented in [`DEPLOY.md`](./DEPLOY.md). Every push to `main` triggers a production deploy; every
+PR gets a preview URL posted back by the Cloudflare GitHub app.
