@@ -1,5 +1,7 @@
 # Astro Starter Kit: Minimal
 
+[![CI](https://github.com/eagle-head/blog/actions/workflows/ci.yml/badge.svg)](https://github.com/eagle-head/blog/actions/workflows/ci.yml)
+
 ```sh
 npm create astro@latest -- --template minimal
 ```
