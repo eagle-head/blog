@@ -78,7 +78,10 @@ export default defineConfig({
         rehypeCitation,
         {
           // Bundled official IEEE CSL (from citation-style-language/styles).
-          csl: './public/csl/ieee.csl',
+          // Lives under src/ because it is build-time config, not a runtime
+          // asset — keeping it out of public/ means the deploy does not
+          // ship a 13 KB XML file that no one fetches.
+          csl: './src/csl/ieee.csl',
           linkCitations: true,
         },
       ],
