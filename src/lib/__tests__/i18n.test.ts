@@ -20,8 +20,9 @@ describe('localizedPath', () => {
   it('normalizes leading slash', () => {
     expect(localizedPath('papers/quicksort', 'pt-BR')).toBe('/pt-br/papers/quicksort');
   });
-  it('handles root', () => {
-    expect(localizedPath('/', 'pt-BR')).toBe('/pt-br/');
+  it('handles root (no trailing slash on non-default locale)', () => {
+    // Astro's trailingSlash: 'never' — pt-BR root is '/pt-br', not '/pt-br/'.
+    expect(localizedPath('/', 'pt-BR')).toBe('/pt-br');
     expect(localizedPath('/', 'en')).toBe('/');
   });
 });
@@ -59,6 +60,17 @@ describe('alternateUrls', () => {
     expect(alternateUrls('/pt-br/papers/quicksort')).toEqual({
       en: '/papers/quicksort',
       'pt-BR': '/pt-br/papers/quicksort',
+    });
+  });
+
+  it('handles the root path without trailing slash on pt-BR', () => {
+    expect(alternateUrls('/')).toEqual({
+      en: '/',
+      'pt-BR': '/pt-br',
+    });
+    expect(alternateUrls('/pt-br')).toEqual({
+      en: '/',
+      'pt-BR': '/pt-br',
     });
   });
 });

@@ -35,16 +35,11 @@ const entries = await getEntriesByTag(tag!, LOCALE);
             <MetaChip
               text={`${t(LOCALE, kind === 'paper' ? 'kind.paper' : 'kind.post')} · ${formatDateForLocale(entry.data.publishedAt, LOCALE)}`}
             />
-            <a
-              class="entry-title"
-              href={`/pt-br/${kind === 'paper' ? 'papers' : 'posts'}/${slug}`}
-            >
+            <a class="entry-title" href={`/pt-br/${kind === 'paper' ? 'papers' : 'posts'}/${slug}`}>
               {entry.data.title}
             </a>
             <p class="entry-excerpt">
-              {kind === 'paper'
-                ? (entry.data as { abstract: string }).abstract
-                : (entry.data as { lead: string }).lead}
+              {kind === 'paper' ? (entry.data as { abstract: string }).abstract : (entry.data as { lead: string }).lead}
             </p>
           </li>
         ))

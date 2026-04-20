@@ -25,9 +25,7 @@ const papers = await getLocalizedEntries('papers', LOCALE);
       {
         papers.map(({ slug, entry }) => (
           <li class="entry">
-            <MetaChip
-              text={`${t(LOCALE, 'kind.paper')} · ${formatDateForLocale(entry.data.publishedAt, LOCALE)}`}
-            />
+            <MetaChip text={`${t(LOCALE, 'kind.paper')} · ${formatDateForLocale(entry.data.publishedAt, LOCALE)}`} />
             <a class="entry-title" href={`/pt-br/papers/${slug}`}>
               {entry.data.title}
             </a>

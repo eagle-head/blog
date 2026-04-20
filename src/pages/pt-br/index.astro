@@ -49,9 +49,7 @@ const recentPosts = posts.slice(0, 3);
       {
         morePapers.map(({ slug, entry }) => (
           <a class="row" href={`/pt-br/papers/${slug}`}>
-            <MetaChip
-              text={`${t(LOCALE, 'kind.paper')} · ${formatDateForLocale(entry.data.publishedAt, LOCALE)}`}
-            />
+            <MetaChip text={`${t(LOCALE, 'kind.paper')} · ${formatDateForLocale(entry.data.publishedAt, LOCALE)}`} />
             <div class="row-title">{entry.data.title}</div>
             <p class="row-desc">{entry.data.abstract}</p>
           </a>

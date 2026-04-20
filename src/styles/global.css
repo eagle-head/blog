@@ -160,6 +160,9 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-size-adjust: 100%;
+  /* Reserve scrollbar space even when content fits the viewport so navigating
+   * between short and tall pages does not shift the header horizontally. */
+  scrollbar-gutter: stable;
 }
 
 body {

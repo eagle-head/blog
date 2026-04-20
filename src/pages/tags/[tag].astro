@@ -39,9 +39,7 @@ const entries = await getEntriesByTag(tag!, LOCALE);
               {entry.data.title}
             </a>
             <p class="entry-excerpt">
-              {kind === 'paper'
-                ? (entry.data as { abstract: string }).abstract
-                : (entry.data as { lead: string }).lead}
+              {kind === 'paper' ? (entry.data as { abstract: string }).abstract : (entry.data as { lead: string }).lead}
             </p>
           </li>
         ))

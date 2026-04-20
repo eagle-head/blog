@@ -14,7 +14,9 @@ export function localizedPath(path: string, locale: Locale): string {
   const normalized = path.startsWith('/') ? path : `/${path}`;
   const prefix = localePrefix(locale);
   if (!prefix) return normalized;
-  if (normalized === '/') return `${prefix}/`;
+  // Root of a non-default locale is just the prefix (e.g. '/pt-br') — matches
+  // Astro's `trailingSlash: 'never'` config so the toggle lands on a canonical URL.
+  if (normalized === '/') return prefix;
   return `${prefix}${normalized}`;
 }
 
