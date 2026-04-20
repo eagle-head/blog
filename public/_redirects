@@ -1,4 +1,0 @@
-# Canonicalize trailing slashes — Astro emits slash-less URLs; any arriving
-# with a trailing slash (external rewrite, mistyped bookmark) gets 301'd.
-# Apex `/` is preserved by convention (leading slash stays).
-/*/ /:splat 301
