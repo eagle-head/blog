@@ -1,0 +1,81 @@
+---
+// src/layouts/PostLayout.astro
+// Brief §6.5 — Classic Centered single-column layout for posts.
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import MetaChip from '../components/MetaChip.astro';
+import Tag from '../components/Tag.astro';
+import SEO from '../components/SEO.astro';
+
+interface Props {
+  entry: CollectionEntry<'posts'>;
+  canonicalPath: string;
+  readingTime: string;
+}
+const { entry, canonicalPath, readingTime } = Astro.props;
+const { title, lead, publishedAt, updatedAt, tags, language } = entry.data;
+
+const dateFormat = new Intl.DateTimeFormat(language, {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+const chipText = `Post · ${dateFormat.format(publishedAt)} · ${readingTime}`;
+---
+
+<BaseLayout lang={language}>
+  <SEO
+    slot="head"
+    title={`${title} — Eduardo Kohn`}
+    description={lead}
+    canonicalPath={canonicalPath}
+    jsonLd={{
+      kind: 'post',
+      title,
+      lead,
+      publishedAt,
+      updatedAt,
+      tags,
+      inLanguage: language,
+    }}
+  />
+
+  <article class="post">
+    <MetaChip text={chipText} />
+    <h1 class="post-title">{title}</h1>
+    <p class="post-lead">{lead}</p>
+    <div class="post-tags">
+      {tags.map((t) => <Tag name={t} href={`/tags/${t}`} />)}
+    </div>
+    <div class="post-body">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    max-width: var(--measure-prose);
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-8);
+  }
+  .post-title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    margin: var(--space-2) 0 var(--space-2) 0;
+    color: var(--color-fg);
+  }
+  .post-lead {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
+  }
+</style>

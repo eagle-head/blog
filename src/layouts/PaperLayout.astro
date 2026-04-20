@@ -1,0 +1,131 @@
+---
+// src/layouts/PaperLayout.astro
+// Brief §6.4 — Tufte margin layout for papers.
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import MetaChip from '../components/MetaChip.astro';
+import Tag from '../components/Tag.astro';
+import SEO from '../components/SEO.astro';
+
+interface Props {
+  entry: CollectionEntry<'papers'>;
+  /** Canonical EN path, e.g. "/papers/quicksort". */
+  canonicalPath: string;
+  /** Rendered reading time string, e.g. "12 min". */
+  readingTime: string;
+}
+const { entry, canonicalPath, readingTime } = Astro.props;
+const { title, abstract, publishedAt, updatedAt, authors, tags, keywords, doi, language } =
+  entry.data;
+
+const dateFormat = new Intl.DateTimeFormat(language, {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+const chipText = `Paper · ${dateFormat.format(publishedAt)} · ${readingTime}`;
+const authorLine = authors
+  .map((a) => (a.affiliation ? `${a.name} · ${a.affiliation}` : a.name))
+  .join(', ');
+---
+
+<BaseLayout lang={language}>
+  <SEO
+    slot="head"
+    title={`${title} — Eduardo Kohn`}
+    description={abstract}
+    canonicalPath={canonicalPath}
+    jsonLd={{
+      kind: 'paper',
+      title,
+      abstract,
+      publishedAt,
+      updatedAt,
+      keywords,
+      doi,
+      authors,
+      inLanguage: language,
+    }}
+  />
+
+  <article class="paper">
+    <div class="paper-main">
+      <MetaChip text={chipText} />
+      <h1 class="paper-title">{title}</h1>
+      <p class="paper-author">{authorLine}</p>
+      <div class="paper-tags">
+        {tags.map((t) => <Tag name={t} href={`/tags/${t}`} />)}
+      </div>
+      <div class="paper-abstract">
+        <b>Abstract.</b>
+        {' '}
+        {abstract}
+      </div>
+      <div class="paper-body">
+        <slot />
+      </div>
+    </div>
+    <aside class="paper-side" aria-label="Sidenotes">
+      <div id="sidenotes-root"></div>
+    </aside>
+  </article>
+</BaseLayout>
+
+<style>
+  .paper {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--measure-tufte-side);
+    gap: var(--space-8);
+    padding: var(--space-6) var(--space-8);
+    max-width: var(--measure-tufte-total);
+    margin: 0 auto;
+  }
+  .paper-main {
+    min-width: 0;
+  }
+  .paper-title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    margin: var(--space-2) 0 var(--space-2) 0;
+    color: var(--color-fg);
+  }
+  .paper-author {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .paper-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+  .paper-abstract {
+    font-size: var(--text-xs);
+    line-height: var(--leading-normal);
+    color: var(--color-text);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-abstract-bg);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-5);
+  }
+  .paper-abstract b {
+    color: var(--color-fg);
+  }
+  .paper-side {
+    font-size: var(--text-2xs);
+    color: var(--color-muted);
+    padding-top: 40px;
+  }
+  @media (max-width: 900px) {
+    .paper {
+      grid-template-columns: 1fr;
+    }
+    .paper-side {
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--color-border);
+    }
+  }
+</style>
