@@ -1,0 +1,59 @@
+/* src/components/mdx/_semantic.css */
+/* Brief §5.5 — Accent Box semantic blocks. */
+.semantic {
+  display: block;
+  margin: var(--space-4) 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid;
+  border-radius: var(--radius-md);
+}
+.semantic-label {
+  display: block;
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-extrabold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  margin-bottom: var(--space-1);
+}
+.semantic-num {
+  font-family: var(--font-mono);
+  margin-right: 6px;
+}
+.semantic-body {
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+  color: var(--color-text);
+}
+.semantic--italic .semantic-body {
+  font-style: italic;
+}
+.semantic--theorem,
+.semantic--lemma {
+  background: var(--color-accent-soft);
+  border-left-color: var(--color-accent);
+}
+.semantic--theorem .semantic-label,
+.semantic--lemma .semantic-label {
+  color: var(--color-accent);
+}
+.semantic--definition {
+  background: var(--color-accent-2-soft);
+  border-left-color: var(--color-accent-2);
+}
+.semantic--definition .semantic-label {
+  color: var(--color-accent-2);
+}
+.semantic--proof {
+  background: var(--color-border-soft);
+  border-left-color: var(--color-muted);
+}
+.semantic--proof .semantic-label {
+  color: var(--color-muted);
+}
+.semantic-qed {
+  display: inline-block;
+  margin-left: var(--space-2);
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-style: normal;
+}

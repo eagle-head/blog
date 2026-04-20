@@ -1,0 +1,17 @@
+---
+// src/components/mdx/Lemma.astro
+import './_semantic.css';
+interface Props {
+  n?: string;
+  title?: string;
+}
+const { n, title } = Astro.props;
+---
+
+<div class="semantic semantic--theorem semantic--italic">
+  <span class="semantic-label">
+    {n && <span class="semantic-num">{n}</span>}
+    Lemma{title && <>: {title}</>}
+  </span>
+  <div class="semantic-body"><slot /></div>
+</div>

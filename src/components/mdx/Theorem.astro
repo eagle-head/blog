@@ -1,0 +1,20 @@
+---
+// src/components/mdx/Theorem.astro
+// Brief §5.5 — Theorem semantic block (Accent Box, Wine, italic body).
+import './_semantic.css';
+interface Props {
+  /** Numeric label shown before the title, e.g. "2.1". */
+  n?: string;
+  /** Optional human-readable title, e.g. "Hoare comparison bound". */
+  title?: string;
+}
+const { n, title } = Astro.props;
+---
+
+<div class="semantic semantic--theorem semantic--italic">
+  <span class="semantic-label">
+    {n && <span class="semantic-num">{n}</span>}
+    Theorem{title && <>: {title}</>}
+  </span>
+  <div class="semantic-body"><slot /></div>
+</div>

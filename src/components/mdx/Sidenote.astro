@@ -1,0 +1,56 @@
+---
+// src/components/mdx/Sidenote.astro
+// Brief §5.8 — inline marker + marginal note. Each instance renders:
+//   <sup>N</sup><aside>…</aside>
+// On desktop the <aside> is positioned in the right margin by
+// `position: absolute; right: calc(-1 * (var(--measure-tufte-side) + var(--space-8)));`
+// On mobile it collapses inline beneath the paragraph.
+interface Props {
+  n: number;
+}
+const { n } = Astro.props;
+---
+
+<sup class="sidenote-marker">{n}</sup>
+<span class="sidenote">
+  <span class="sidenote-num">{n}.</span>
+  <slot />
+</span>
+
+<style>
+  .sidenote-marker {
+    color: var(--color-accent);
+    font-weight: var(--font-weight-bold);
+    font-size: 0.7em;
+    font-family: var(--font-mono);
+    margin-left: 1px;
+  }
+  .sidenote {
+    display: block;
+    margin: var(--space-2) 0 var(--space-3) 0;
+    padding-left: var(--space-3);
+    border-left: 2px solid var(--color-accent);
+    font-size: var(--text-2xs);
+    color: var(--color-muted);
+    line-height: var(--leading-normal);
+  }
+  .sidenote-num {
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    font-weight: var(--font-weight-bold);
+    margin-right: 4px;
+  }
+
+  /* Desktop Tufte margin placement — absolute inside the paper grid. */
+  @media (min-width: 901px) {
+    .sidenote {
+      display: block;
+      float: right;
+      clear: right;
+      width: var(--measure-tufte-side);
+      margin-right: calc(-1 * (var(--measure-tufte-side) + var(--space-8)));
+      margin-top: 0;
+      margin-bottom: var(--space-3);
+    }
+  }
+</style>

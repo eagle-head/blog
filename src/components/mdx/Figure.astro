@@ -1,0 +1,28 @@
+---
+// src/components/mdx/Figure.astro
+// Semantic <figure> with accessible caption.
+interface Props {
+  caption: string;
+  alt?: string;
+}
+const { caption } = Astro.props;
+---
+
+<figure class="figure">
+  <div class="figure-body"><slot /></div>
+  <figcaption class="figure-caption">{caption}</figcaption>
+</figure>
+
+<style>
+  .figure {
+    margin: var(--space-4) 0;
+    padding: 0;
+  }
+  .figure-caption {
+    font-size: var(--text-2xs);
+    color: var(--color-muted);
+    font-style: italic;
+    margin-top: var(--space-2);
+    text-align: center;
+  }
+</style>

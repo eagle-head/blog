@@ -1,0 +1,17 @@
+---
+// src/components/mdx/Proof.astro
+// Proof is upright (not italic) per §5.5 convention, with a QED mark.
+import './_semantic.css';
+interface Props {
+  of?: string;
+}
+const { of } = Astro.props;
+---
+
+<div class="semantic semantic--proof">
+  <span class="semantic-label">Proof{of && <> of {of}</>}</span>
+  <div class="semantic-body">
+    <slot />
+    <span class="semantic-qed" aria-label="End of proof">∎</span>
+  </div>
+</div>

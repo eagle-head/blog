@@ -1,0 +1,34 @@
+---
+// src/components/mdx/Warning.astro
+// Warning callout — uses Wine accent to signal "stop and read".
+---
+
+<div class="callout callout--warn">
+  <span class="callout-label">Warning</span>
+  <div class="callout-body"><slot /></div>
+</div>
+
+<style>
+  .callout {
+    display: block;
+    margin: var(--space-4) 0;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--color-accent);
+    background: var(--color-accent-soft);
+  }
+  .callout-label {
+    display: block;
+    font-size: var(--text-2xs);
+    font-weight: var(--font-weight-extrabold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-accent);
+    margin-bottom: var(--space-1);
+  }
+  .callout-body {
+    font-size: var(--text-xs);
+    line-height: var(--leading-normal);
+    color: var(--color-text);
+  }
+</style>
