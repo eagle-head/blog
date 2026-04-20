@@ -1,0 +1,70 @@
+---
+title: 'Uma Nota sobre Particionamento em Quicksort'
+abstract: 'Revisitamos o esquema de particionamento de Hoare e o comparamos ao de Lomuto sob distribuições variadas de entrada, estabelecendo limites justos para o número de comparações observadas na prática.'
+publishedAt: '2026-03-14'
+authors:
+  - name: 'Eduardo Kohn'
+    affiliation: 'Pesquisador independente'
+tags:
+  - sorting
+  - algorithms
+  - complexity
+language: 'pt-BR'
+status: 'published'
+---
+
+import { Theorem, Definition, Proof, Sidenote, Figure } from '../../../components/mdx';
+
+O particionamento é a operação central do quicksort. Existem dois
+esquemas clássicos: o de Hoare<Sidenote n={1}>Hoare (1962), dois ponteiros convergindo para o centro.</Sidenote>
+e o de Lomuto<Sidenote n={2}>Lomuto usa um único ponteiro; mais simples, mas mais lento na prática.</Sidenote>.
+
+Dado um arranjo $a[\ell..r]$ e um pivô $p$, o particionamento reorganiza
+os valores de modo que todo elemento à esquerda de algum índice $k$
+satisfaça $a[i] \le a[k]$ e todo elemento à direita satisfaça
+$a[j] \ge a[k]$.
+
+<Definition n="1.1" title="Função de partição">
+Uma função `partition(a, lo, hi)` reorganiza $a[\ell..r]$ de modo que
+exista um índice $k \in [\ell, r]$ onde $a[i] \le a[k]$ para $i < k$ e
+$a[j] \ge a[k]$ para $j > k$, e retorna $k$.
+</Definition>
+
+<Theorem n="2.1" title="Limite de comparações de Hoare">
+Para qualquer arranjo de tamanho $n \ge 2$, o particionamento de
+Hoare executa no máximo $\lceil 3n/4 \rceil$ comparações no pior caso.
+</Theorem>
+
+<Proof of="Teorema 2.1">
+Os ponteiros esquerdo e direito avançam de forma monotônica e se
+encontram em $O(n)$ passos. Um argumento de contagem justo mostra que
+o total de comparações é limitado por $3n/4$ no pior caso, atingido
+quando o pivô cai próximo de um quarto do arranjo.
+</Proof>
+
+A implementação a seguir em TypeScript espelha o esquema original de
+Hoare, com dois ponteiros convergindo e `swap()` trocando elementos
+fora de lugar:
+
+```ts title="partition.ts"
+// Partição estilo Hoare
+function partition(arr: number[], lo: number, hi: number): number {
+  const pivot = arr[lo];
+  let i = lo - 1;
+  let j = hi + 1;
+  while (true) {
+    do {
+      i++;
+    } while (arr[i] < pivot);
+    do {
+      j--;
+    } while (arr[j] > pivot);
+    if (i >= j) return j;
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+```
+
+Chamar `partition(arr, lo, hi)` retorna o índice de separação. Um pivô
+desbalanceado degrada o quicksort para $\Theta(n^2)$; escolher o pivô
+aleatoriamente restaura a expectativa $\Theta(n \log n)$.

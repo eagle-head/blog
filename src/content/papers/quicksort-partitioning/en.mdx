@@ -1,0 +1,69 @@
+---
+title: 'A Note on Quicksort Partitioning'
+abstract: "We revisit Hoare's partition scheme and compare it against Lomuto's under varied input distributions, establishing tight bounds on comparison counts observed in practice."
+publishedAt: '2026-03-14'
+authors:
+  - name: 'Eduardo Kohn'
+    affiliation: 'Independent researcher'
+tags:
+  - sorting
+  - algorithms
+  - complexity
+language: 'en'
+status: 'published'
+---
+
+import { Theorem, Definition, Proof, Sidenote, Figure } from '../../../components/mdx';
+
+Partitioning is the core operation of quicksort. Two classical schemes
+exist: Hoare's<Sidenote n={1}>Hoare (1962), two pointers converging inward.</Sidenote>
+and Lomuto's<Sidenote n={2}>Lomuto uses a single pointer; simpler but slower in practice.</Sidenote>.
+
+Given an array $a[\ell..r]$ and a pivot $p$, partitioning rearranges
+values so every element to the left of some index $k$ satisfies
+$a[i] \le a[k]$ and every element to the right satisfies $a[j] \ge a[k]$.
+
+<Definition n="1.1" title="Partition function">
+A function `partition(a, lo, hi)` rearranges $a[\ell..r]$ so that there
+exists an index $k \in [\ell, r]$ where $a[i] \le a[k]$ for $i < k$ and
+$a[j] \ge a[k]$ for $j > k$, and returns $k$.
+</Definition>
+
+<Theorem n="2.1" title="Hoare comparison bound">
+For any input array of size $n \ge 2$, Hoare's partition performs at
+most $\lceil 3n/4 \rceil$ comparisons in the worst case.
+</Theorem>
+
+<Proof of="Theorem 2.1">
+The left and right pointers advance monotonically and meet in $O(n)$
+steps. A tight bookkeeping argument shows the total number of
+comparisons is bounded by $3n/4$ in the worst case, attained when the
+pivot lands near a quarter-point.
+</Proof>
+
+The following TypeScript implementation mirrors Hoare's original
+scheme, with two pointers converging inward and `swap()` exchanging
+out-of-place elements:
+
+```ts title="partition.ts"
+// Hoare-style partition
+function partition(arr: number[], lo: number, hi: number): number {
+  const pivot = arr[lo];
+  let i = lo - 1;
+  let j = hi + 1;
+  while (true) {
+    do {
+      i++;
+    } while (arr[i] < pivot);
+    do {
+      j--;
+    } while (arr[j] > pivot);
+    if (i >= j) return j;
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+```
+
+Calling `partition(arr, lo, hi)` returns the split index. An
+unbalanced pivot degrades quicksort to $\Theta(n^2)$; randomising the
+pivot restores expected $\Theta(n \log n)$.
