@@ -270,3 +270,105 @@ pre.astro-code::after {
     14px 0 0 #febc2e,
     28px 0 0 #28c840;
 }
+
+/* Command Palette — Dark Always (brief §5.6). */
+.cmdk-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 17, 23, 0.72);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 10vh var(--space-4) var(--space-4);
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+}
+.cmdk-panel {
+  width: min(640px, 100%);
+  background: #0d1117;
+  color: #c9d1d9;
+  border: 1px solid #30363d;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 70vh;
+}
+.cmdk-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: transparent;
+  color: inherit;
+  border: 0;
+  border-bottom: 1px solid #30363d;
+  font: inherit;
+  font-size: var(--text-base);
+  outline: none;
+}
+.cmdk-input::placeholder {
+  color: #8b949e;
+}
+.cmdk-filters {
+  display: flex;
+  gap: var(--space-2);
+  padding: 10px 16px;
+  border-bottom: 1px solid #30363d;
+}
+.cmdk-chip {
+  padding: 4px 10px;
+  background: transparent;
+  color: #8b949e;
+  border: 1px solid #30363d;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: var(--text-xs);
+  cursor: pointer;
+}
+.cmdk-chip.is-active {
+  background: #21262d;
+  color: #c9d1d9;
+  border-color: #8b949e;
+}
+.cmdk-results {
+  overflow-y: auto;
+  padding: var(--space-2) 0;
+}
+.cmdk-results ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cmdk-hit {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 16px;
+  color: inherit;
+  text-decoration: none;
+  border-left: 2px solid transparent;
+}
+.cmdk-hit:hover,
+.cmdk-hit:focus {
+  background: #161b22;
+  border-left-color: var(--color-accent);
+}
+.cmdk-hit-title {
+  font-weight: var(--font-weight-bold);
+  color: #c9d1d9;
+}
+.cmdk-hit-excerpt {
+  font-size: var(--text-xs);
+  color: #8b949e;
+  line-height: var(--leading-normal);
+}
+.cmdk-hit-excerpt mark {
+  background: transparent;
+  color: #f0883e;
+}
+.cmdk-hint {
+  padding: var(--space-4) 16px;
+  font-size: var(--text-sm);
+  color: #8b949e;
+  margin: 0;
+}
