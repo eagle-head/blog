@@ -51,6 +51,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
     "@astrojs/ts-plugin": "^1.10.7",
+    "@fontsource/inter": "^4.5.15",
     "@vitest/coverage-v8": "^4.1.4",
     "eslint": "^10.2.1",
     "eslint-plugin-astro": "^1.7.0",

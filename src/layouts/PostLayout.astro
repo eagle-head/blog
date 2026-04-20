@@ -26,6 +26,7 @@ const chipText = `${t(language, 'kind.post')} · ${formatDateForLocale(published
     title={`${title} — Eduardo Kohn`}
     description={lead}
     canonicalPath={canonicalPath}
+    ogImage={`/og/posts/${canonicalPath.replace('/posts/', '')}-${language === 'en' ? 'en' : 'pt-br'}.png`}
     jsonLd={{
       kind: 'post',
       title,

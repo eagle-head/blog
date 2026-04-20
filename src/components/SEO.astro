@@ -126,11 +126,11 @@ function buildJsonLd(): Record<string, unknown> {
 <meta property="og:url" content={canonical} />
 <meta property="og:site_name" content="Eduardo Kohn" />
 <meta property="og:type" content={jsonLd.kind === 'paper' || jsonLd.kind === 'post' ? 'article' : 'website'} />
-{ogImage && <meta property="og:image" content={ogImage} />}
+{ogImage && <meta property="og:image" content={ogImage.startsWith('http') ? ogImage : `${site}${ogImage}`} />}
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-{ogImage && <meta name="twitter:image" content={ogImage} />}
+{ogImage && <meta name="twitter:image" content={ogImage.startsWith('http') ? ogImage : `${site}${ogImage}`} />}
 
 <script is:inline type="application/ld+json" set:html={JSON.stringify(buildJsonLd())} />
