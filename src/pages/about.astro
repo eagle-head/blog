@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SEO from '../components/SEO.astro';
+import { t } from '../lib/ui';
+
+const LOCALE = 'en' as const;
+---
+
+<BaseLayout lang={LOCALE}>
+  <SEO
+    slot="head"
+    title={`${t(LOCALE, 'about.title')} — Eduardo Kohn`}
+    description="Eduardo Kohn — independent researcher writing about algorithms, systems, and computer science."
+    canonicalPath="/about"
+    jsonLd={{ kind: 'about' }}
+  />
+  <article class="page">
+    <h1 class="page-title">{t(LOCALE, 'about.title')}</h1>
+    <p>
+      I'm Eduardo Kohn, an independent researcher and engineer writing about algorithms, systems,
+      and the occasional rabbit hole in computer science.
+    </p>
+    <p>
+      This blog has two tracks. <a href="/papers">Papers</a> are longer pieces written with
+      scientific rigour — abstracts, citations, theorems, proofs. <a href="/posts">Posts</a> are
+      shorter notes that share an idea before it is finished enough to formalise.
+    </p>
+    <p>
+      Find me at <a href="https://github.com/eduardokohn" rel="me noopener">GitHub</a>
+      or subscribe to the <a href="/newsletter">newsletter</a> to get new pieces by email.
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .page {
+    max-width: var(--measure-prose);
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-8);
+  }
+  .page-title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    margin: 0 0 var(--space-5) 0;
+    color: var(--color-fg);
+  }
+  .page p {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    margin: 0 0 var(--space-4) 0;
+  }
+</style>

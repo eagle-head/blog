@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SEO from '../../components/SEO.astro';
+import { t } from '../../lib/ui';
+
+const LOCALE = 'pt-BR' as const;
+---
+
+<BaseLayout lang={LOCALE}>
+  <SEO
+    slot="head"
+    title={`${t(LOCALE, 'cv.title')} — Eduardo Kohn`}
+    description="Currículo de Eduardo Kohn."
+    canonicalPath="/cv"
+    jsonLd={{ kind: 'about' }}
+  />
+  <article class="page">
+    <h1 class="page-title">{t(LOCALE, 'cv.title')}</h1>
+    <section class="cv-section">
+      <h2>Áreas de pesquisa</h2>
+      <ul>
+        <li>Algoritmos e estruturas de dados</li>
+        <li>Programação de sistemas</li>
+        <li>Análise de complexidade</li>
+      </ul>
+    </section>
+    <section class="cv-section">
+      <h2>Publicações selecionadas</h2>
+      <ul>
+        <li>
+          <a href="/pt-br/papers/quicksort-partitioning">
+            Uma Nota sobre Particionamento em Quicksort
+          </a>
+          — 2026
+        </li>
+      </ul>
+    </section>
+    <section class="cv-section">
+      <h2>Contato</h2>
+      <p>
+        <a href="https://github.com/eduardokohn" rel="me noopener">GitHub</a> ·
+        <a href="/pt-br/newsletter">Newsletter</a>
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .page {
+    max-width: var(--measure-prose);
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-8);
+  }
+  .page-title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    margin: 0 0 var(--space-5) 0;
+    color: var(--color-fg);
+  }
+  .cv-section {
+    margin-bottom: var(--space-6);
+  }
+  .cv-section h2 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-snug);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-2) 0;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--color-accent);
+    display: inline-block;
+  }
+  .cv-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .cv-section li {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    padding: var(--space-1) 0;
+  }
+  .cv-section p {
+    font-size: var(--text-base);
+    color: var(--color-text);
+    margin: 0;
+  }
+</style>

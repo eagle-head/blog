@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SEO from '../../components/SEO.astro';
+import { t } from '../../lib/ui';
+
+const LOCALE = 'pt-BR' as const;
+---
+
+<BaseLayout lang={LOCALE}>
+  <SEO
+    slot="head"
+    title={`${t(LOCALE, 'about.title')} — Eduardo Kohn`}
+    description="Eduardo Kohn — pesquisador independente escrevendo sobre algoritmos, sistemas e ciência da computação."
+    canonicalPath="/about"
+    jsonLd={{ kind: 'about' }}
+  />
+  <article class="page">
+    <h1 class="page-title">{t(LOCALE, 'about.title')}</h1>
+    <p>
+      Sou Eduardo Kohn, pesquisador independente e engenheiro escrevendo sobre algoritmos,
+      sistemas e eventuais tocas de coelho na ciência da computação.
+    </p>
+    <p>
+      Este blog tem duas trilhas. <a href="/pt-br/papers">Artigos</a> são peças mais longas
+      escritas com rigor científico — abstract, citações, teoremas, provas.
+      <a href="/pt-br/posts">Posts</a> são notas curtas que compartilham uma ideia antes que
+      ela esteja completa o suficiente para ser formalizada.
+    </p>
+    <p>
+      Me encontre no <a href="https://github.com/eduardokohn" rel="me noopener">GitHub</a>
+      ou inscreva-se na <a href="/pt-br/newsletter">newsletter</a> para receber novas
+      publicações por email.
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .page {
+    max-width: var(--measure-prose);
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-8);
+  }
+  .page-title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    margin: 0 0 var(--space-5) 0;
+    color: var(--color-fg);
+  }
+  .page p {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    margin: 0 0 var(--space-4) 0;
+  }
+</style>
