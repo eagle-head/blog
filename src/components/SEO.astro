@@ -5,7 +5,7 @@
 // JSON-LD schemas: Blog/Person on home, ScholarlyArticle on /papers/[slug],
 // BlogPosting on /posts/[slug], Person on /about, CollectionPage on
 // listing pages.
-import { alternateUrls, DEFAULT_LOCALE } from '../lib/i18n';
+import { alternateUrls, detectLocaleFromPath } from '../lib/i18n';
 import type { Locale } from '../lib/content';
 
 type JsonLdKind =
@@ -47,7 +47,10 @@ const { title, description, canonicalPath, ogImage, jsonLd } = Astro.props;
 
 const site = Astro.site?.toString().replace(/\/$/, '') ?? 'https://eduardokohn.com';
 const alts = alternateUrls(canonicalPath);
-const canonical = `${site}${alts[DEFAULT_LOCALE]}`;
+// Canonical must be self-referencing per locale — pointing pt-BR pages at the
+// EN URL tells Google the pt-BR is a duplicate and blocks its indexing.
+const pageLocale = detectLocaleFromPath(Astro.url.pathname);
+const canonical = `${site}${alts[pageLocale]}`;
 const ogImageAbs = ogImage ? (ogImage.startsWith('http') ? ogImage : `${site}${ogImage}`) : undefined;
 
 function buildJsonLd(): Record<string, unknown> {
