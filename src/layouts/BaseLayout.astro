@@ -23,15 +23,11 @@ const { lang = 'en' } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
+    {/* Bing Webmaster Tools domain ownership verification (Plan 07 Phase 2). */}
+    <meta name="msvalidate.01" content="99C11D4FD95F4A84076A1D2354311281" />
     {/* Preload the primary font subsets so they arrive before first paint. */}
     {/* Hash filenames are stable across builds unless @fontsource-variable is bumped. */}
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      crossorigin
-      href="/_astro/inter-latin-wght-normal.Dx4kXJAl.woff2"
-    />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/_astro/inter-latin-wght-normal.Dx4kXJAl.woff2" />
     <link
       rel="preload"
       as="font"
