@@ -42,6 +42,25 @@ const { lang = 'en' } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    {/* RSS feed discovery — locale-scoped so feed readers pick the user-facing language. */}
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Eduardo Kohn — All"
+      href={lang === 'pt-BR' ? '/pt-br/rss.xml' : '/rss.xml'}
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Eduardo Kohn — Papers"
+      href={lang === 'pt-BR' ? '/pt-br/papers.rss.xml' : '/papers.rss.xml'}
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Eduardo Kohn — Posts"
+      href={lang === 'pt-BR' ? '/pt-br/posts.rss.xml' : '/posts.rss.xml'}
+    />
     <script is:inline set:html={themeInitScript} />
     <slot name="head" />
     <Analytics />

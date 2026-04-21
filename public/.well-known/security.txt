@@ -1,0 +1,4 @@
+Contact: mailto:eduardokohn15@gmail.com
+Expires: 2027-04-20T00:00:00.000Z
+Preferred-Languages: en, pt-BR
+Canonical: https://eduardokohn.com/.well-known/security.txt
