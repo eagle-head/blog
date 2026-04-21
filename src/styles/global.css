@@ -5,6 +5,27 @@
 @import '@fontsource-variable/inter';
 @import '@fontsource-variable/jetbrains-mono';
 
+/* Metric-matched fallbacks — eliminate CLS from web-font swap.
+ * The size-adjust + *-override values tune the system fallback
+ * (Arial / Courier New) so the pre-swap and post-swap layouts
+ * occupy the same vertical + horizontal space, removing reflow. */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  size-adjust: 107.4%;
+  ascent-override: 90%;
+  descent-override: 22.43%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'JetBrains Mono Fallback';
+  src: local('Courier New');
+  size-adjust: 94%;
+  ascent-override: 107%;
+  descent-override: 27%;
+  line-gap-override: 0%;
+}
+
 /* =========================================================================
  * Design tokens — Tailwind v4 @theme block
  * Source of truth: docs/superpowers/specs/2026-04-19-visual-design.md
@@ -12,8 +33,8 @@
 
 @theme {
   /* Fonts */
-  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-sans: 'Inter Variable', 'Inter Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono Fallback', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   /* Type scale (brief §2.2 — revised for editorial longform readability) */
   --text-3xs: 11px;
