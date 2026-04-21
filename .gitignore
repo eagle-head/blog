@@ -26,3 +26,7 @@ pnpm-debug.log*
 
 # brainstorming companion artifacts (mockups, server state)
 .superpowers/
+
+# Chromium user-data directories that Lighthouse creates when launched
+# against localhost on WSL (Windows-style path escapes through).
+C:\\*
