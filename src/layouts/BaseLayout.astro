@@ -23,6 +23,22 @@ const { lang = 'en' } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
+    {/* Preload the primary font subsets so they arrive before first paint. */}
+    {/* Hash filenames are stable across builds unless @fontsource-variable is bumped. */}
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="/_astro/inter-latin-wght-normal.Dx4kXJAl.woff2"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="/_astro/jetbrains-mono-latin-wght-normal.B9CIFXIH.woff2"
+    />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
