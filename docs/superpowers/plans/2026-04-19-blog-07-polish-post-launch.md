@@ -295,7 +295,77 @@ researchers may assume the contact is abandoned.
 
 ---
 
-### Task 1.7 — End-of-Phase-1 smoke
+### Task 1.7 — Lighthouse audit and remediation loop
+
+Goal: score 100 in each of Performance / Accessibility / Best Practices / SEO on both `npm run preview` and on the production URL.
+
+**Local workflow (Chrome DevTools — recommended for interactive iteration):**
+
+```bash
+npm run build && npm run preview
+# Open http://localhost:4321 (or whatever port astro preview picked)
+# F12 → Lighthouse tab → Mobile + all four categories → "Analyze page load"
+# Click each failing audit to jump to the offending DOM node
+```
+
+**Local workflow (CLI — reproducible, headless, integrates into scripts):**
+
+```bash
+# Reuses Playwright's chromium — already a devDep, no Chrome install needed.
+npm run build
+npm run preview & sleep 3
+PORT=$(grep -oE 'localhost:[0-9]+' /tmp/preview.log | head -1 | cut -d: -f2)
+CHROME_PATH=$(node -e "console.log(require('playwright').chromium.executablePath())") \
+  npx lighthouse@12 http://localhost:$PORT \
+  --preset=desktop \
+  --output=json --output-path=/tmp/lh.json \
+  --chrome-flags="--headless --no-sandbox --disable-gpu" \
+  --quiet
+jq '.categories | to_entries | map({category: .key, score: (.value.score * 100)})' /tmp/lh.json
+kill %1
+```
+
+**Production workflow (for the "final gate" before tagging):**
+
+```bash
+CHROME_PATH=$(node -e "console.log(require('playwright').chromium.executablePath())") \
+  npx lighthouse@12 https://eduardokohn.com \
+  --preset=desktop \
+  --output=html --output-path=/tmp/lh-prod.html \
+  --chrome-flags="--headless --no-sandbox --disable-gpu" \
+  --view
+```
+
+**Known non-actionable audits** (expect these to stay at 50 / not block the 100 scores — all informational, see Lighthouse docs):
+
+- `uses-long-cache-ttl` on `static.cloudflareinsights.com/beacon.min.js` — third-party asset, Cloudflare-controlled, 24h TTL (fine).
+- `render-blocking-insight` — Astro's inline CSS block; unblockable without rearchitecting the build pipeline.
+
+**Known localhost-only errors** (harmless in prod, ignore when running the local CLI variant):
+
+- `errors-in-console` flags a CORS failure on `cloudflareinsights.com/cdn-cgi/rum` when the origin is `http://localhost:<port>` — the beacon
+  allowlists only the production hostname. Running against `https://eduardokohn.com` clears it.
+
+**Remediation rubric for the real failures:**
+
+| Audit                         | Typical fix                                                                                      |
+| ----------------------------- | ------------------------------------------------------------------------------------------------ |
+| `color-contrast`              | Bump the offending token in `src/styles/global.css` (light + dark) until WCAG AA (4.5:1) passes. |
+| `heading-order`               | Use the next sequential level; never skip (e.g. after `<h1>` use `<h2>`, not `<h3>`).            |
+| `label-content-name-mismatch` | Either remove `aria-label` (visible text becomes the name) or prepend the visible text into it.  |
+| `link-name` / `button-name`   | Add discernible text or aria-label.                                                              |
+| `image-alt`                   | Add `alt=""` for decorative, or descriptive alt for meaningful.                                  |
+| `meta-description` missing    | Already handled by SEO.astro; double-check `description` prop on listing pages.                  |
+
+- [ ] **Step 1: Run local audit** with the CLI snippet above.
+- [ ] **Step 2: Iterate** — fix each audit whose score < 1 (except the known-non-actionable list). Re-run until scores are 100/100/100/100
+      on preview (except `errors-in-console` — only verifiable on prod).
+- [ ] **Step 3: Run production audit** and verify all four scores = 100.
+- [ ] **Step 4: Commit** the remediation changes.
+
+---
+
+### Task 1.8 — End-of-Phase-1 smoke
 
 **Files:** none (verification only).
 

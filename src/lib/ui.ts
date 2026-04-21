@@ -56,10 +56,10 @@ const strings = {
   'newsletter.email.label': { en: 'Email address', 'pt-BR': 'Endereço de email' },
   'newsletter.email.placeholder': { en: 'you@example.com', 'pt-BR': 'voce@exemplo.com' },
   'newsletter.subscribe': { en: 'Subscribe', 'pt-BR': 'Inscrever-se' },
-  'lang.toggle.label.to-en': { en: 'Switch to English', 'pt-BR': 'Alternar para inglês' },
+  'lang.toggle.label.to-en': { en: 'EN — Switch to English', 'pt-BR': 'EN — Alternar para inglês' },
   'lang.toggle.label.to-pt': {
-    en: 'Switch to Portuguese (BR)',
-    'pt-BR': 'Alternar para português (BR)',
+    en: 'PT — Switch to Portuguese (BR)',
+    'pt-BR': 'PT — Alternar para português (BR)',
   },
 } as const;
 

@@ -77,7 +77,7 @@
   --color-bg: #ffffff;
   --color-fg: #0a0a0a;
   --color-text: #262626;
-  --color-muted: #737373;
+  --color-muted: #666666;
   --color-border: #e5e5e5;
   --color-border-soft: #f0f0f0;
 
@@ -121,7 +121,7 @@
   --color-bg: #2e3440; /* Polar Night 0 */
   --color-fg: #eceff4; /* Snow */
   --color-text: #d8dee9;
-  --color-muted: #8892a5;
+  --color-muted: #b5bfd1;
   --color-border: #3b4252; /* Polar Night 1 */
   --color-border-soft: #353a48;
 

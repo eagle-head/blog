@@ -59,7 +59,7 @@ const recentPosts = posts.slice(0, 3);
 
     <aside class="side-col" aria-label="Sidebar">
       <section class="side-block">
-        <h3 class="side-label">{t(LOCALE, 'home.recent-posts')}</h3>
+        <h2 class="side-label">{t(LOCALE, 'home.recent-posts')}</h2>
         {
           recentPosts.map(({ slug, entry }) => (
             <a class="side-item" href={`/posts/${slug}`}>
@@ -70,7 +70,7 @@ const recentPosts = posts.slice(0, 3);
         }
       </section>
       <section class="side-block">
-        <h3 class="side-label">{t(LOCALE, 'home.tags')}</h3>
+        <h2 class="side-label">{t(LOCALE, 'home.tags')}</h2>
         <p class="tag-list">
           {
             tags.map(({ tag }, i) => (
