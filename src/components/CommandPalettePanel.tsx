@@ -34,6 +34,18 @@ function decodeEntities(s: string): string {
     .replace(/&#39;/g, "'");
 }
 
+// Pagefind indexes a page served from dir/index.html as "/dir/", but the site
+// uses trailingSlash:'never', so that URL 404s on click. Strip the trailing
+// slash (and any index.html), preserving the root "/" and any #anchor.
+function normalizePath(u: string): string {
+  const hashIdx = u.indexOf('#');
+  const hash = hashIdx >= 0 ? u.slice(hashIdx) : '';
+  let path = hashIdx >= 0 ? u.slice(0, hashIdx) : u;
+  path = path.replace(/index\.html$/, '').replace(/\/+$/, '');
+  if (path === '') path = '/';
+  return path + hash;
+}
+
 // Pagefind excerpts are HTML fragments containing only <mark>…</mark> tags.
 // Parse by hand so we render pure JSX — no raw HTML sink, no XSS surface.
 function Excerpt({ html }: { html: string }) {
@@ -198,14 +210,17 @@ const CommandPalettePanel: FunctionalComponent<Props> = ({ locale, onClose }) =>
             <p class="cmdk-hint">{t(locale, 'search.no-results')}</p>
           ) : (
             <ul>
-              {results.map((r) => (
-                <li key={r.url}>
-                  <a href={r.url} class="cmdk-hit" onClick={onClose}>
-                    <span class="cmdk-hit-title">{r.meta.title ?? r.url}</span>
-                    <Excerpt html={r.excerpt} />
-                  </a>
-                </li>
-              ))}
+              {results.map((r) => {
+                const url = normalizePath(r.url);
+                return (
+                  <li key={url}>
+                    <a href={url} class="cmdk-hit" onClick={onClose}>
+                      <span class="cmdk-hit-title">{r.meta.title ?? url}</span>
+                      <Excerpt html={r.excerpt} />
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
