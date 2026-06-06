@@ -85,7 +85,7 @@
   /* Content widths (brief §4.1) */
   --measure-prose: 640px; /* post reading width — legibility-optimised */
   --measure-listing: 840px; /* index pages — more horizontal for entries */
-  --measure-tufte-total: 980px; /* Tufte (main + side rail) */
+  --measure-tufte-total: 1344px; /* Tufte (main + side rail) — reading column widened ~50% */
   --measure-tufte-side: 220px;
   --measure-magazine: 1040px;
   --measure-hero: 720px;
@@ -394,4 +394,129 @@ pre.astro-code::after {
   font-size: var(--text-sm);
   color: #8b949e;
   margin: 0;
+}
+
+/* =========================================================================
+ * Paper table of contents (.paper-toc) — compact bordered box, two columns.
+ * ========================================================================= */
+.paper-toc {
+  margin: var(--space-5) 0 var(--space-8);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-border-soft);
+}
+.paper-toc p {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-extrabold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-muted);
+}
+.paper-toc ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  columns: 2;
+  column-gap: var(--space-8);
+  font-size: var(--text-xs);
+}
+.paper-toc li {
+  margin: 0 0 var(--space-2);
+  break-inside: avoid;
+}
+.paper-toc li:last-child {
+  margin-bottom: 0;
+}
+.paper-toc a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+.paper-toc a:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+@media (max-width: 600px) {
+  .paper-toc ul {
+    columns: 1;
+  }
+}
+
+/* =========================================================================
+ * Mermaid diagrams — render on a fixed light card. The rendered SVG is
+ * transparent and uses mermaid's light palette (dark strokes/labels), so in
+ * dark mode it would vanish against the page. A fixed white background keeps
+ * the arrows and text legible in both themes.
+ * ========================================================================= */
+.figure-body:has(> svg[aria-roledescription]) {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+.figure-body > svg[aria-roledescription] {
+  display: block;
+}
+
+/* =========================================================================
+ * Paper body lists — Tailwind's preflight strips list markers globally and
+ * the paper body is not a `prose` container, so top-level content lists lose
+ * their numbers/bullets. Restore markers, indentation and spacing. The
+ * .paper-toc nav has its own (markerless) styling and is unaffected.
+ * ========================================================================= */
+.paper-body > ol,
+.paper-body > ul {
+  margin: var(--space-4) 0;
+  padding-left: var(--space-6);
+}
+.paper-body > ol {
+  list-style: decimal;
+}
+.paper-body > ul {
+  list-style: disc;
+}
+.paper-body > ol > li,
+.paper-body > ul > li {
+  margin: var(--space-2) 0;
+  padding-left: var(--space-1);
+}
+.paper-body > ol > li::marker,
+.paper-body > ul > li::marker {
+  color: var(--color-muted);
+}
+
+/* =========================================================================
+ * Paper body typography — preflight zeroes paragraph margins and heading
+ * sizes, and the body is not a `prose` container. Restore paragraph spacing
+ * and give section headings consistent separation above and a clear size
+ * hierarchy (they otherwise render as body-size inline links).
+ * ========================================================================= */
+.paper-body > p {
+  margin: var(--space-4) 0;
+}
+.paper-body > h2 {
+  margin: var(--space-10) 0 var(--space-3);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+  color: var(--color-accent);
+}
+.paper-body > h3 {
+  margin: var(--space-8) 0 var(--space-2);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent);
+}
+.paper-body > h2 a,
+.paper-body > h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+.paper-body > h2 a:hover,
+.paper-body > h3 a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
 }
