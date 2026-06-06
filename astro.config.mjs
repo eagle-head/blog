@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { unified } from '@astrojs/markdown-remark';
 
 import mdx from '@astrojs/mdx';
 import preact from '@astrojs/preact';
@@ -33,7 +34,12 @@ export default defineConfig({
   },
 
   markdown: {
-    syntaxHighlight: 'shiki',
+    // `mermaid` is excluded from Shiki so rehype-mermaid can transform those
+    // fenced blocks into SVG; Shiki would otherwise highlight them as code.
+    syntaxHighlight: {
+      type: 'shiki',
+      excludeLangs: ['mermaid'],
+    },
     shikiConfig: {
       // Dark Always — brief §5.6. Code blocks stay on GitHub Dark
       // regardless of the page light/dark mode.
@@ -69,24 +75,30 @@ export default defineConfig({
         },
       ],
     },
-    remarkPlugins: [remarkGfm, remarkMath, remarkDirective],
-    rehypePlugins: [
-      rehypeSlug,
-      [rehypeAutolinkHeadings, { behavior: 'wrap' }],
-      rehypeKatex,
-      [rehypeMermaid, { strategy: 'inline-svg' }],
-      [
-        rehypeCitation,
-        {
-          // Bundled official IEEE CSL (from citation-style-language/styles).
-          // Lives under src/ because it is build-time config, not a runtime
-          // asset — keeping it out of public/ means the deploy does not
-          // ship a 13 KB XML file that no one fetches.
-          csl: './src/csl/ieee.csl',
-          linkCitations: true,
-        },
+    // Astro 6 deprecated top-level `remarkPlugins`/`rehypePlugins`; the plugin
+    // pipeline now lives on a `unified()` processor from @astrojs/markdown-remark.
+    // `syntaxHighlight`/`shikiConfig` above stay put — Astro passes them to the
+    // processor as shared config.
+    processor: unified({
+      remarkPlugins: [remarkGfm, remarkMath, remarkDirective],
+      rehypePlugins: [
+        rehypeSlug,
+        [rehypeAutolinkHeadings, { behavior: 'wrap' }],
+        rehypeKatex,
+        [rehypeMermaid, { strategy: 'inline-svg' }],
+        [
+          rehypeCitation,
+          {
+            // Bundled official IEEE CSL (from citation-style-language/styles).
+            // Lives under src/ because it is build-time config, not a runtime
+            // asset — keeping it out of public/ means the deploy does not
+            // ship a 13 KB XML file that no one fetches.
+            csl: './src/csl/ieee.csl',
+            linkCitations: true,
+          },
+        ],
       ],
-    ],
+    }),
   },
 
   integrations: [
