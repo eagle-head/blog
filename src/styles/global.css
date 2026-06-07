@@ -85,7 +85,7 @@
   /* Content widths (brief §4.1) */
   --measure-prose: 640px; /* post reading width — legibility-optimised */
   --measure-listing: 840px; /* index pages — more horizontal for entries */
-  --measure-tufte-total: 1344px; /* Tufte (main + side rail) — reading column widened ~50% */
+  --measure-paper: 1080px; /* paper — single centered reading column (no side rail) */
   --measure-tufte-side: 220px;
   --measure-magazine: 1040px;
   --measure-hero: 720px;

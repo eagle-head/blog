@@ -1,6 +1,8 @@
 ---
 // src/layouts/PaperLayout.astro
-// Brief §6.4 — Tufte margin layout for papers.
+// Brief §6.4 — paper layout. Single centered reading column (the Tufte side
+// rail was dropped — no paper used <Sidenote> — so the column now centers
+// instead of leaning left). Below 1024px the article is replaced by a notice.
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import MetaChip from '../components/MetaChip.astro';
@@ -51,40 +53,47 @@ const authorLine = authors.map((a) => (a.affiliation ? `${a.name} · ${a.affilia
     {/* Pagefind filters — one element per filter; combined via search({ filters: {...} }). */}
     <span hidden data-pagefind-filter="kind:paper"></span>
     <span hidden data-pagefind-filter={`lang:${language}`}></span>
-    <div class="paper-main">
-      <MetaChip text={chipText} />
-      <h1 class="paper-title">{title}</h1>
-      <p class="paper-author">{authorLine}</p>
-      <div class="paper-tags">
-        {tags.map((t) => <Tag name={t} href={`/tags/${t}`} />)}
-      </div>
-      <div class="paper-abstract">
-        <b>Abstract.</b>
-        {' '}
-        {abstract}
-      </div>
-      <div class="paper-body">
-        <slot />
-      </div>
-      {comments && <Giscus lang={language} />}
+    <MetaChip text={chipText} />
+    <h1 class="paper-title">{title}</h1>
+    <p class="paper-author">{authorLine}</p>
+    <div class="paper-tags">
+      {tags.map((t) => <Tag name={t} href={`/tags/${t}`} />)}
     </div>
-    <aside class="paper-side" aria-label="Sidenotes">
-      <div id="sidenotes-root"></div>
-    </aside>
+    <div class="paper-abstract">
+      <b>Abstract.</b>
+      {' '}
+      {abstract}
+    </div>
+    <div class="paper-body">
+      <slot />
+    </div>
+    {comments && <Giscus lang={language} />}
   </article>
+
+  {
+    /* Below 1024px the paper's wide diagrams and terminal output are illegible,
+      so the article is hidden and this notice replaces it. Localised at build
+      time — each paper page is per-locale. Widening the window past 1024px
+      reveals the article instantly, no reload. */
+  }
+  <section class="paper-narrow-notice" role="note" aria-label={t(language, 'viewport.narrow.title')}>
+    <p class="pnn-num">1024<span>px</span></p>
+    <p class="pnn-title">{t(language, 'viewport.narrow.title')}</p>
+    <p class="pnn-body">{t(language, 'viewport.narrow.body')}</p>
+    <p class="pnn-actions">
+      <a href={language === 'pt-BR' ? '/pt-br/papers' : '/papers'}>{t(language, 'nav.papers')}</a>
+    </p>
+  </section>
 </BaseLayout>
 
 <style>
+  /* Single centered reading column. The Tufte side rail was removed: no paper
+     used <Sidenote>, so the rail was always empty and only pushed the text
+     off-centre. */
   .paper {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--measure-tufte-side);
-    gap: var(--space-8);
-    padding: var(--space-6) var(--space-8);
-    max-width: var(--measure-tufte-total);
+    max-width: var(--measure-paper);
     margin: 0 auto;
-  }
-  .paper-main {
-    min-width: 0;
+    padding: var(--space-6) var(--space-8);
   }
   .paper-title {
     font-size: var(--text-2xl);
@@ -117,18 +126,55 @@ const authorLine = authors.map((a) => (a.affiliation ? `${a.name} · ${a.affilia
   .paper-abstract b {
     color: var(--color-fg);
   }
-  .paper-side {
-    font-size: var(--text-2xs);
-    color: var(--color-muted);
-    padding-top: 40px;
+  /* Narrow-screen gate (< 1024px): hide the article, show the notice.
+     Mirrors the 404 page's centered treatment. */
+  .paper-narrow-notice {
+    display: none;
   }
-  @media (max-width: 900px) {
+  .pnn-num {
+    font-size: clamp(3rem, 14vw, 5rem);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    line-height: 1;
+    color: var(--color-accent);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .pnn-num span {
+    font-size: 0.4em;
+    font-weight: var(--font-weight-bold);
+    margin-left: 2px;
+  }
+  .pnn-title {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .pnn-body {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-muted);
+    margin: 0 0 var(--space-5) 0;
+  }
+  .pnn-actions {
+    font-size: var(--text-base);
+    margin: 0;
+  }
+  @media (max-width: 1023.98px) {
     .paper {
-      grid-template-columns: 1fr;
+      display: none;
     }
-    .paper-side {
-      padding-top: var(--space-4);
-      border-top: 1px solid var(--color-border);
+    .paper-narrow-notice {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: var(--measure-hero);
+      margin: 0 auto;
+      padding: var(--space-8);
+      min-height: 72vh;
+      text-align: center;
     }
   }
 </style>
