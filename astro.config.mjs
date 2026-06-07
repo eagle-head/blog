@@ -85,7 +85,7 @@ export default defineConfig({
         rehypeSlug,
         [rehypeAutolinkHeadings, { behavior: 'wrap' }],
         rehypeKatex,
-        [rehypeMermaid, { strategy: 'inline-svg' }],
+        [rehypeMermaid, { strategy: 'pre-mermaid' }],
         [
           rehypeCitation,
           {

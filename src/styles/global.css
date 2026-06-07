@@ -444,19 +444,27 @@ pre.astro-code::after {
 }
 
 /* =========================================================================
- * Mermaid diagrams — render on a fixed light card. The rendered SVG is
- * transparent and uses mermaid's light palette (dark strokes/labels), so in
- * dark mode it would vanish against the page. A fixed white background keeps
- * the arrows and text legible in both themes.
+ * Mermaid diagrams — the rehype-mermaid `pre-mermaid` strategy emits
+ * <pre class="mermaid"> source blocks that MermaidRuntime renders to SVG in the
+ * browser (no build-time Chromium). Until the client script runs, the raw
+ * source is hidden to avoid a flash of mermaid markup. Once rendered, the SVG
+ * sits on a fixed white card: mermaid uses a light palette (dark strokes), so a
+ * white background keeps it legible in dark mode too.
  * ========================================================================= */
-.figure-body:has(> svg[aria-roledescription]) {
+pre.mermaid:not([data-processed='true']) {
+  visibility: hidden;
+}
+pre.mermaid[data-processed='true'] {
+  margin: 0;
+  padding: var(--space-4);
   background: #ffffff;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: var(--space-4);
+  white-space: normal;
 }
-.figure-body > svg[aria-roledescription] {
+pre.mermaid[data-processed='true'] > svg {
   display: block;
+  margin-inline: auto;
 }
 
 /* =========================================================================

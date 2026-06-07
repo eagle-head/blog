@@ -1,0 +1,20 @@
+---
+// src/components/MermaidRuntime.astro
+// Client-side Mermaid rendering. The rehype-mermaid `pre-mermaid` strategy
+// emits <pre class="mermaid"> source blocks at build time (no Chromium), and we
+// render them to SVG in the browser here. The mermaid bundle is imported
+// dynamically and only when a diagram is present on the page, so diagram-free
+// pages download nothing. Each diagram pins its own `theme: base` palette in
+// source, so the output is theme-independent and needs no re-render on the
+// light/dark toggle (matching the previous fixed white-card treatment).
+---
+
+<script>
+  (async () => {
+    const blocks = document.querySelectorAll('pre.mermaid');
+    if (blocks.length === 0) return;
+    const { default: mermaid } = await import('mermaid');
+    mermaid.initialize({ startOnLoad: false });
+    await mermaid.run({ querySelector: 'pre.mermaid' });
+  })();
+</script>
