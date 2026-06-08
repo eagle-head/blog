@@ -41,14 +41,16 @@ const { n } = Astro.props;
     margin-right: 4px;
   }
 
-  /* Desktop Tufte margin placement — absolute inside the paper grid. */
-  @media (min-width: 901px) {
+  /* Desktop Tufte margin placement — absolute inside the paper grid.
+     Gated at the 1024px reading-gate complement (min-width:1023.98px+ε): below
+     1024px the whole paper is display:none, so 901px was a dead orphan. */
+  @media (min-width: 1024px) {
     .sidenote {
       display: block;
       float: right;
       clear: right;
       width: var(--measure-tufte-side);
-      margin-right: calc(-1 * (var(--measure-tufte-side) + var(--space-8)));
+      margin-right: calc(-1 * (var(--measure-tufte-side) + var(--gutter)));
       margin-top: 0;
       margin-bottom: var(--space-3);
     }

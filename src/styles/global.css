@@ -46,7 +46,7 @@
   --text-base: 17px;
   --text-lg: 20px;
   --text-xl: 24px;
-  --text-2xl: 34px;
+  --text-2xl: clamp(1.5rem, 1.1rem + 2vw, 2.125rem); /* fluid display title: 24px → 34px */
   --text-3xl: 48px;
 
   /* Weights (brief §2.3) */
@@ -82,6 +82,13 @@
   --space-12: 48px;
   --space-16: 64px;
 
+  /* Page/shell horizontal gutter — fluid: 16px on phones, reaching the 32px
+   * ceiling by ~720px so tablet/desktop are visually unchanged. Use
+   * var(--gutter) for the inline padding of every page container and of the
+   * full-bleed header/footer/sub-header. Internal component spacing stays on
+   * the fixed --space-* scale. */
+  --gutter: clamp(1rem, 0.2rem + 4vw, 2rem);
+
   /* Content widths (brief §4.1) */
   --measure-prose: 640px; /* post reading width — legibility-optimised */
   --measure-listing: 840px; /* index pages — more horizontal for entries */
@@ -95,6 +102,16 @@
   --radius-md: 4px;
   --radius-lg: 6px;
   --radius-pill: 999px;
+
+  /* Motion (NEW — single source of truth; referenced as var() in property
+   * VALUES only, never inside a media condition). Press/release timing is a
+   * deliberate design choice (fast react, slightly slower settle), not a
+   * literal sourced rule. --duration-base drives the menu reveal. */
+  --duration-fast: 90ms;    /* press: react immediately */
+  --duration-base: 180ms;   /* release / menu open-close */
+  --duration-slow: 240ms;   /* reserved for larger transitions */
+  --ease-out: cubic-bezier(0, 0, 0.58, 1);     /* MDN ease-out keyword mapping */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1); /* crisp decelerate — default */
 
   /* ---- Light-mode palette (default, brief §3) ---- */
   --color-bg: #ffffff;
@@ -170,6 +187,97 @@
 }
 
 /* =========================================================================
+ * Reduced motion — global safety net (NEW). Honors the OS "minimize motion"
+ * setting for every transition/animation without per-component duplication.
+ * We near-zero the DURATION (not remove the rule) so discrete-step state
+ * changes still apply instantly and non-motion cues — e.g. an :active tint —
+ * are preserved. prefers-reduced-motion is a media FEATURE (no length in the
+ * condition), so the literal-only @media constraint does not apply here.
+ * ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================================
+ * Responsive foundation
+ *
+ * Inside any @media CONDITION use ONLY these literal values. NEVER put
+ * theme(--breakpoint-*) or var(--*) in a media CONDITION: theme() fails the
+ * production build inside Astro scoped styles (the @theme context is
+ * global-only — empirically verified) and var() in a condition is invalid
+ * syntax that never matches. Property VALUES inside the block may use
+ * var()/clamp()/min() freely.
+ *
+ * THE ONLY FOUR SANCTIONED LITERALS:
+ *   sm     = 30rem     (480px)  narrowest-phone single-column stack tweaks
+ *   md     = 48rem     (768px)  THE touch/mobile boundary: nav -> hamburger,
+ *                               grid -> 1fr, controls grow to 44px tap targets.
+ *                               Reuse for any "is this a touch-sized screen?".
+ *   lg-max = 1023.98px          reading gate (max-width): hides gated reading
+ *                               content + shows the narrow-screen notice.
+ *   lg-min = 1024px             reading gate complement (min-width): reveals
+ *                               desktop-only enrichments (Sidenote margin notes).
+ *
+ * Direction convention: use max-width for "simplify on smaller" (sm, md,
+ * lg-max). Use min-width ONLY for the lg desktop-enrichment complement at
+ * 1024px, kept numerically paired with 1023.98px so there is no sub-pixel
+ * double-match seam (the SANCTIONED EXCEPTION to the rem scale; do NOT migrate
+ * these two to 64rem). No raw orphan px (no 500/600/901). Adding a fifth
+ * breakpoint requires editing this block first.
+ * ========================================================================= */
+
+/* Page container: one rule owns the centered measure + fluid gutter for every
+ * measure-constrained page. Each page composes `.u-container` with its own
+ * scoped class, which sets --measure and keeps its block padding / display.
+ * Full-bleed bands (header, footer, home sub-header) are NOT containers — they
+ * take padding-inline: var(--gutter) directly. The gutter stays as inner
+ * padding so the desktop reading measure is identical to before. */
+.u-container {
+  max-inline-size: var(--measure, var(--measure-prose));
+  margin-inline: auto;
+  padding-inline: max(var(--gutter), env(safe-area-inset-left)) max(var(--gutter), env(safe-area-inset-right));
+}
+
+/* Overflow guardrails — keep wide inline children inside the reading column.
+ * Posts and papers are gated below 1024px, so these apply at >=1024px: a code
+ * block, table or diagram wider than the measure scrolls within its own box
+ * instead of widening the page. */
+.post-body :is(img, svg, video, iframe),
+.paper-body :is(img, svg, video, iframe) {
+  max-width: 100%;
+  height: auto;
+}
+.post-body,
+.paper-body {
+  overflow-wrap: break-word;
+}
+.post-body :is(table, pre),
+.paper-body :is(table, pre) {
+  max-width: 100%;
+  overflow-x: auto;
+}
+pre.astro-code,
+pre.mermaid[data-processed='true'] {
+  max-width: 100%;
+}
+pre.mermaid[data-processed='true'] > svg {
+  max-width: 100%;
+  height: auto;
+}
+/* Flex/grid children default to min-content width and refuse to shrink, which
+ * re-introduces horizontal overflow even with a fluid gutter. */
+:is(.site-header, .site-footer, .magazine, .side-col, .main-col, .entry, .entry-tags) > * {
+  min-inline-size: 0;
+}
+
+/* =========================================================================
  * Base element styling
  * ========================================================================= */
 
@@ -215,8 +323,13 @@ a {
   text-underline-offset: 3px;
 }
 
-a:hover {
-  text-decoration-thickness: 2px;
+/* Hover affordance gated behind a precise, hover-capable pointer so it never
+   sticks after a tap on touchscreens. Keyboard :focus is handled per control
+   and is NEVER gated. This is the same policy the chrome controls use. */
+@media (hover: hover) and (pointer: fine) {
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
 }
 
 ::selection {
@@ -302,7 +415,8 @@ pre.astro-code::after {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 10vh var(--space-4) var(--space-4);
+  /* Cap the top offset on short viewports so the input stays reachable. */
+  padding: clamp(var(--space-4), 6vh, 10vh) var(--space-4) var(--space-4);
   z-index: 9999;
   backdrop-filter: blur(2px);
 }
@@ -371,10 +485,18 @@ pre.astro-code::after {
   text-decoration: none;
   border-left: 2px solid transparent;
 }
-.cmdk-hit:hover,
+/* :focus stays ungated so keyboard/arrow-key navigation always highlights the
+   active result; only the pointer :hover is gated to avoid sticky-hover after a
+   tap on touch. */
 .cmdk-hit:focus {
   background: #161b22;
   border-left-color: var(--color-accent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .cmdk-hit:hover {
+    background: #161b22;
+    border-left-color: var(--color-accent);
+  }
 }
 .cmdk-hit-title {
   font-weight: var(--font-weight-bold);
@@ -433,13 +555,10 @@ pre.astro-code::after {
   color: var(--color-text);
   text-decoration: none;
 }
-.paper-toc a:hover {
-  color: var(--color-accent);
-  text-decoration: underline;
-}
-@media (max-width: 600px) {
-  .paper-toc ul {
-    columns: 1;
+@media (hover: hover) and (pointer: fine) {
+  .paper-toc a:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
   }
 }
 
@@ -522,9 +641,11 @@ pre.mermaid[data-processed='true'] > svg {
   color: inherit;
   text-decoration: none;
 }
-.paper-body > h2 a:hover,
-.paper-body > h3 a:hover {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
+@media (hover: hover) and (pointer: fine) {
+  .paper-body > h2 a:hover,
+  .paper-body > h3 a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
 }

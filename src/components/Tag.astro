@@ -41,7 +41,17 @@ const { name, href } = Astro.props;
     opacity: 0.5;
     margin-right: 2px;
   }
-  a.tag:hover {
+  a.tag {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color var(--duration-base) var(--ease-standard);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    a.tag:hover {
+      background: var(--color-accent-soft);
+    }
+  }
+  a.tag:active {
     background: var(--color-accent-soft);
   }
 </style>

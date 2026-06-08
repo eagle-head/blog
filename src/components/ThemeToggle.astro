@@ -53,10 +53,38 @@
     border-radius: var(--radius-md);
     color: var(--color-muted);
     cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    transition:
+      color var(--duration-base) var(--ease-standard),
+      background-color var(--duration-base) var(--ease-standard),
+      transform var(--duration-base) var(--ease-standard);
   }
-  .theme-toggle:hover {
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .theme-toggle:hover {
+      color: var(--color-fg);
+      background-color: var(--color-kbd-bg);
+    }
+  }
+  .theme-toggle:active {
     color: var(--color-fg);
-    background: var(--color-kbd-bg);
+    background-color: var(--color-kbd-bg);
+    transform: scale(0.96);
+    transition:
+      color var(--duration-fast) var(--ease-standard),
+      background-color var(--duration-fast) var(--ease-standard),
+      transform var(--duration-fast) var(--ease-standard);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .theme-toggle:active {
+      transform: none;
+    }
   }
   .icon {
     display: none;
@@ -68,5 +96,12 @@
   }
   :root[data-theme='dark'] .theme-toggle .icon-sun {
     display: block;
+  }
+  /* Enlarge the tap target to 44px on touch-sized screens (desktop stays 34px). */
+  @media (max-width: 48rem) {
+    .theme-toggle {
+      min-block-size: 44px;
+      min-inline-size: 44px;
+    }
   }
 </style>

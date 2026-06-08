@@ -93,17 +93,35 @@ const titlePt = t(currentLocale, 'lang.toggle.label.to-pt');
     line-height: 1;
     background: transparent;
     cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
   }
   .segment:not(:last-child) {
     border-right: 1px solid var(--color-border);
   }
-  a.segment:hover {
-    background: var(--color-kbd-bg);
-    color: var(--color-fg);
+  a.segment {
+    transition:
+      color var(--duration-base) var(--ease-standard),
+      background-color var(--duration-base) var(--ease-standard);
   }
   a.segment:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: -2px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    a.segment:hover {
+      background: var(--color-kbd-bg);
+      color: var(--color-fg);
+    }
+  }
+  a.segment:active {
+    background: var(--color-kbd-bg);
+    color: var(--color-fg);
+    transition:
+      color var(--duration-fast) var(--ease-standard),
+      background-color var(--duration-fast) var(--ease-standard);
   }
   .segment-active {
     background: var(--color-abstract-bg);
@@ -120,5 +138,12 @@ const titlePt = t(currentLocale, 'lang.toggle.label.to-pt');
     height: 14px;
     border-radius: 2px;
     overflow: hidden;
+  }
+  /* Enlarge each segment's tap target to 44px on touch screens (the pill
+     stretches its segments; desktop stays 34px). */
+  @media (max-width: 48rem) {
+    .lang-pill {
+      min-block-size: 44px;
+    }
   }
 </style>
