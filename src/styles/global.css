@@ -107,10 +107,10 @@
    * VALUES only, never inside a media condition). Press/release timing is a
    * deliberate design choice (fast react, slightly slower settle), not a
    * literal sourced rule. --duration-base drives the menu reveal. */
-  --duration-fast: 90ms;    /* press: react immediately */
-  --duration-base: 180ms;   /* release / menu open-close */
-  --duration-slow: 240ms;   /* reserved for larger transitions */
-  --ease-out: cubic-bezier(0, 0, 0.58, 1);     /* MDN ease-out keyword mapping */
+  --duration-fast: 90ms; /* press: react immediately */
+  --duration-base: 180ms; /* release / menu open-close */
+  --duration-slow: 240ms; /* reserved for larger transitions */
+  --ease-out: cubic-bezier(0, 0, 0.58, 1); /* MDN ease-out keyword mapping */
   --ease-standard: cubic-bezier(0.2, 0, 0, 1); /* crisp decelerate — default */
 
   /* ---- Light-mode palette (default, brief §3) ---- */

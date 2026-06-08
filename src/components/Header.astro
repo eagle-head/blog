@@ -22,7 +22,13 @@ import ThemeToggle from './ThemeToggle.astro';
   </nav>
 
   <div class="site-actions">
-    <button id="cmdk-trigger" type="button" class="search-trigger" aria-label="Search posts and papers (Ctrl + K)" title="Search posts and papers (Ctrl + K)">
+    <button
+      id="cmdk-trigger"
+      type="button"
+      class="search-trigger"
+      aria-label="Search posts and papers (Ctrl + K)"
+      title="Search posts and papers (Ctrl + K)"
+    >
       <svg
         class="search-icon"
         width="14"
@@ -73,9 +79,7 @@ import ThemeToggle from './ThemeToggle.astro';
     header.classList.add('has-js');
     // iOS only renders :active press feedback when the element has a touch
     // handler; attach a no-op so the press states fire on iPhone.
-    [toggle, nav].forEach((el) =>
-      el.addEventListener('touchstart', () => {}, { passive: true })
-    );
+    [toggle, nav].forEach((el) => el.addEventListener('touchstart', () => {}, { passive: true }));
     const close = () => {
       header.removeAttribute('data-nav-open');
       toggle.setAttribute('aria-expanded', 'false');
