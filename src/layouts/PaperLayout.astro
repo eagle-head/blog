@@ -9,6 +9,7 @@ import MetaChip from '../components/MetaChip.astro';
 import Tag from '../components/Tag.astro';
 import SEO from '../components/SEO.astro';
 import Giscus from '../components/Giscus.astro';
+import NarrowScreenNotice from '../components/NarrowScreenNotice.astro';
 import { parseEntryId } from '../lib/content';
 import { formatDateForLocale } from '../lib/i18n';
 import { ogImagePathFor } from '../lib/og';
@@ -72,18 +73,17 @@ const authorLine = authors.map((a) => (a.affiliation ? `${a.name} · ${a.affilia
 
   {
     /* Below 1024px the paper's wide diagrams and terminal output are illegible,
-      so the article is hidden and this notice replaces it. Localised at build
-      time — each paper page is per-locale. Widening the window past 1024px
-      reveals the article instantly, no reload. */
+      so the article (hidden by the gate below) is replaced by this notice.
+      Localised at build time — each paper page is per-locale. Widening past
+      1024px reveals the article instantly, no reload. */
   }
-  <section class="paper-narrow-notice" role="note" aria-label={t(language, 'viewport.narrow.title')}>
-    <p class="pnn-num">1024<span>px</span></p>
-    <p class="pnn-title">{t(language, 'viewport.narrow.title')}</p>
-    <p class="pnn-body">{t(language, 'viewport.narrow.body')}</p>
-    <p class="pnn-actions">
-      <a href={language === 'pt-BR' ? '/pt-br/papers' : '/papers'}>{t(language, 'nav.papers')}</a>
-    </p>
-  </section>
+  <NarrowScreenNotice
+    title={t(language, 'viewport.narrow.title')}
+    body={t(language, 'viewport.narrow.body')}
+    actionHref={language === 'pt-BR' ? '/pt-br/papers' : '/papers'}
+    actionLabel={t(language, 'nav.papers')}
+    ariaLabel={t(language, 'viewport.narrow.title')}
+  />
 </BaseLayout>
 
 <style>
@@ -93,7 +93,7 @@ const authorLine = authors.map((a) => (a.affiliation ? `${a.name} · ${a.affilia
   .paper {
     max-width: var(--measure-paper);
     margin: 0 auto;
-    padding: var(--space-6) var(--space-8);
+    padding: var(--space-6) var(--gutter);
   }
   .paper-title {
     font-size: var(--text-2xl);
@@ -126,55 +126,11 @@ const authorLine = authors.map((a) => (a.affiliation ? `${a.name} · ${a.affilia
   .paper-abstract b {
     color: var(--color-fg);
   }
-  /* Narrow-screen gate (< 1024px): hide the article, show the notice.
-     Mirrors the 404 page's centered treatment. */
-  .paper-narrow-notice {
-    display: none;
-  }
-  .pnn-num {
-    font-size: clamp(3rem, 14vw, 5rem);
-    font-weight: var(--font-weight-extrabold);
-    letter-spacing: var(--tracking-tight);
-    line-height: 1;
-    color: var(--color-accent);
-    margin: 0 0 var(--space-3) 0;
-  }
-  .pnn-num span {
-    font-size: 0.4em;
-    font-weight: var(--font-weight-bold);
-    margin-left: 2px;
-  }
-  .pnn-title {
-    font-size: var(--text-xl);
-    font-weight: var(--font-weight-extrabold);
-    letter-spacing: var(--tracking-tight);
-    line-height: var(--leading-tight);
-    color: var(--color-fg);
-    margin: 0 0 var(--space-3) 0;
-  }
-  .pnn-body {
-    font-size: var(--text-base);
-    line-height: var(--leading-relaxed);
-    color: var(--color-muted);
-    margin: 0 0 var(--space-5) 0;
-  }
-  .pnn-actions {
-    font-size: var(--text-base);
-    margin: 0;
-  }
+  /* Narrow-screen gate (< 1024px): hide the article. NarrowScreenNotice shows
+     its own replacement notice at the same breakpoint. */
   @media (max-width: 1023.98px) {
     .paper {
       display: none;
-    }
-    .paper-narrow-notice {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      max-width: var(--measure-hero);
-      margin: 0 auto;
-      padding: var(--space-8);
-      min-height: 72vh;
-      text-align: center;
     }
   }
 </style>

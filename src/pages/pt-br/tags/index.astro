@@ -16,7 +16,7 @@ const tags = await collectAllTags(LOCALE);
     canonicalPath="/tags"
     jsonLd={{ kind: 'collection', name: 'tag' }}
   />
-  <div class="listing">
+  <div class="u-container listing">
     <h1 class="listing-title">{t(LOCALE, 'listing.tags.title')}</h1>
     <p class="listing-description">{t(LOCALE, 'listing.tags.description')}</p>
     <ul class="tag-grid">
@@ -38,9 +38,8 @@ const tags = await collectAllTags(LOCALE);
 
 <style>
   .listing {
-    max-width: var(--measure-listing);
-    margin: 0 auto;
-    padding: var(--space-6) var(--space-8);
+    --measure: var(--measure-listing);
+    padding-block: var(--space-6);
   }
   .listing-title {
     font-size: var(--text-2xl);
@@ -59,7 +58,7 @@ const tags = await collectAllTags(LOCALE);
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
     gap: var(--space-3);
   }
   .tag-link {

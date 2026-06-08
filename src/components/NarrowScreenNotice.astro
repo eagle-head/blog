@@ -1,0 +1,74 @@
+---
+// src/components/NarrowScreenNotice.astro
+// Replacement notice shown only below 1024px in place of a gated reading
+// article (paper or post). This component owns the notice's own show/hide at
+// the 1023.98px breakpoint; the article-hiding half of the gate lives in the
+// consuming layout's scoped style (`.paper`/`.post { display: none }` at the
+// same breakpoint). Strings are localised at build time by the caller.
+interface Props {
+  title: string;
+  body: string;
+  actionHref: string;
+  actionLabel: string;
+  ariaLabel: string;
+}
+const { title, body, actionHref, actionLabel, ariaLabel } = Astro.props;
+---
+
+<section class="narrow-notice" role="note" aria-label={ariaLabel}>
+  <p class="nn-num">1024<span>px</span></p>
+  <p class="nn-title">{title}</p>
+  <p class="nn-body">{body}</p>
+  <p class="nn-actions"><a href={actionHref}>{actionLabel}</a></p>
+</section>
+
+<style>
+  .narrow-notice {
+    display: none;
+  }
+  .nn-num {
+    font-size: clamp(3rem, 14vw, 5rem);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    line-height: 1;
+    color: var(--color-accent);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .nn-num span {
+    font-size: 0.4em;
+    font-weight: var(--font-weight-bold);
+    margin-left: 2px;
+  }
+  .nn-title {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    color: var(--color-fg);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .nn-body {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-muted);
+    margin: 0 0 var(--space-5) 0;
+  }
+  .nn-actions {
+    font-size: var(--text-base);
+    margin: 0;
+  }
+  /* Mirrors the 404 page's centered treatment. */
+  @media (max-width: 1023.98px) {
+    .narrow-notice {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-inline-size: var(--measure-hero);
+      margin-inline: auto;
+      padding-block: var(--space-8);
+      padding-inline: max(var(--gutter), env(safe-area-inset-left)) max(var(--gutter), env(safe-area-inset-right));
+      min-height: 72vh;
+      text-align: center;
+    }
+  }
+</style>

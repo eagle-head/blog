@@ -16,7 +16,7 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${BUTTONDOWN_U
     canonicalPath="/newsletter"
     jsonLd={{ kind: 'about' }}
   />
-  <article class="page">
+  <article class="u-container page">
     <h1 class="page-title">{t(LOCALE, 'newsletter.title')}</h1>
     <p class="lead">{t(LOCALE, 'newsletter.lead')}</p>
     <form class="nl-form" action={action} method="post" target="popupwindow">
@@ -37,9 +37,8 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${BUTTONDOWN_U
 
 <style>
   .page {
-    max-width: var(--measure-prose);
-    margin: 0 auto;
-    padding: var(--space-6) var(--space-8);
+    --measure: var(--measure-prose);
+    padding-block: var(--space-6);
   }
   .page-title {
     font-size: var(--text-2xl);
@@ -84,9 +83,20 @@ const action = `https://buttondown.com/api/emails/embed-subscribe/${BUTTONDOWN_U
     border: none;
     border-radius: var(--radius-md);
     cursor: pointer;
+    min-block-size: 44px;
   }
   .nl-submit:hover {
     opacity: 0.9;
+  }
+  /* Stack the input + button into a full-width column on phones. */
+  @media (max-width: 30rem) {
+    .nl-form {
+      flex-direction: column;
+    }
+    .nl-input,
+    .nl-submit {
+      width: 100%;
+    }
   }
   .visually-hidden {
     position: absolute;

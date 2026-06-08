@@ -13,7 +13,7 @@ const LOCALE = 'en' as const;
     canonicalPath="/404"
     jsonLd={{ kind: 'about' }}
   />
-  <article class="error-page">
+  <article class="u-container error-page">
     <p class="error-code">404</p>
     <h1 class="error-title">Page not found</h1>
     <p class="error-lead">The page you are looking for does not exist or has moved.</p>
@@ -25,9 +25,8 @@ const LOCALE = 'en' as const;
 
 <style>
   .error-page {
-    max-width: var(--measure-hero);
-    margin: 0 auto;
-    padding: var(--space-8);
+    --measure: var(--measure-hero);
+    padding-block: var(--space-8);
     text-align: center;
     /* Center vertically but biased a little above the true middle. */
     min-height: 72vh;

@@ -24,7 +24,7 @@ const entries = await getEntriesByTag(tag!, LOCALE);
     canonicalPath={`/tags/${tag}`}
     jsonLd={{ kind: 'collection', name: 'tag', tagName: tag }}
   />
-  <div class="listing">
+  <div class="u-container listing">
     <h1 class="listing-title">
       #{tag}
     </h1>
@@ -50,9 +50,8 @@ const entries = await getEntriesByTag(tag!, LOCALE);
 
 <style>
   .listing {
-    max-width: var(--measure-listing);
-    margin: 0 auto;
-    padding: var(--space-6) var(--space-8);
+    --measure: var(--measure-listing);
+    padding-block: var(--space-6);
   }
   .listing-title {
     font-family: var(--font-mono);
@@ -61,6 +60,7 @@ const entries = await getEntriesByTag(tag!, LOCALE);
     letter-spacing: var(--tracking-tight);
     margin: 0 0 var(--space-5) 0;
     color: var(--color-accent);
+    overflow-wrap: anywhere;
   }
   .entries {
     list-style: none;

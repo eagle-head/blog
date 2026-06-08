@@ -33,7 +33,7 @@ const recentPosts = posts.slice(0, 3);
     <p class="site-sub">{t(LOCALE, 'site.subtitle')}</p>
   </section>
 
-  <div class="magazine">
+  <div class="u-container magazine">
     <div class="main-col">
       {
         featured && (
@@ -88,7 +88,7 @@ const recentPosts = posts.slice(0, 3);
 
 <style>
   .sub-header {
-    padding: 36px var(--space-8) 20px var(--space-8);
+    padding: 36px var(--gutter) 20px var(--gutter);
     text-align: center;
     border-bottom: 1px solid var(--color-border);
   }
@@ -108,9 +108,8 @@ const recentPosts = posts.slice(0, 3);
   }
 
   .magazine {
-    max-width: var(--measure-magazine);
-    margin: 0 auto;
-    padding: 28px var(--space-8) 40px var(--space-8);
+    --measure: var(--measure-magazine);
+    padding-block: 28px 40px;
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: var(--space-8);
@@ -201,6 +200,7 @@ const recentPosts = posts.slice(0, 3);
     font-size: var(--text-sm);
     color: var(--color-muted);
     margin: 0;
+    overflow-wrap: anywhere;
   }
   .tag-list a {
     color: var(--color-accent);
@@ -211,7 +211,7 @@ const recentPosts = posts.slice(0, 3);
     text-underline-offset: 3px;
   }
 
-  @media (max-width: 760px) {
+  @media (max-width: 48rem) {
     .magazine {
       grid-template-columns: 1fr;
     }

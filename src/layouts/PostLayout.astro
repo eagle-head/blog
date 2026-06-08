@@ -7,6 +7,7 @@ import MetaChip from '../components/MetaChip.astro';
 import Tag from '../components/Tag.astro';
 import SEO from '../components/SEO.astro';
 import Giscus from '../components/Giscus.astro';
+import NarrowScreenNotice from '../components/NarrowScreenNotice.astro';
 import { parseEntryId } from '../lib/content';
 import { formatDateForLocale } from '../lib/i18n';
 import { ogImagePathFor } from '../lib/og';
@@ -57,13 +58,25 @@ const chipText = `${t(language, 'kind.post')} · ${formatDateForLocale(published
     </div>
     {comments && <Giscus lang={language} />}
   </article>
+
+  {
+    /* Below 1024px posts are gated like papers: the article (hidden by the gate
+      below) is replaced by this notice. Localised at build time per-locale. */
+  }
+  <NarrowScreenNotice
+    title={t(language, 'viewport.narrow.post.title')}
+    body={t(language, 'viewport.narrow.post.body')}
+    actionHref={language === 'pt-BR' ? '/pt-br/posts' : '/posts'}
+    actionLabel={t(language, 'nav.posts')}
+    ariaLabel={t(language, 'viewport.narrow.post.title')}
+  />
 </BaseLayout>
 
 <style>
   .post {
     max-width: var(--measure-prose);
     margin: 0 auto;
-    padding: var(--space-6) var(--space-8);
+    padding: var(--space-6) var(--gutter);
   }
   .post-title {
     font-size: var(--text-2xl);
@@ -83,5 +96,12 @@ const chipText = `${t(language, 'kind.post')} · ${formatDateForLocale(published
     flex-wrap: wrap;
     gap: var(--space-2);
     margin-bottom: var(--space-5);
+  }
+  /* Narrow-screen gate (< 1024px): hide the article. NarrowScreenNotice shows
+     its own replacement notice at the same breakpoint. */
+  @media (max-width: 1023.98px) {
+    .post {
+      display: none;
+    }
   }
 </style>

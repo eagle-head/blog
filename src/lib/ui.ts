@@ -70,6 +70,15 @@ const strings = {
     'pt-BR':
       'Os diagramas e as saídas de terminal são feitos para uma tela de pelo menos 1024px de largura. Abra em um monitor maior para ler com conforto.',
   },
+  'viewport.narrow.post.title': {
+    en: 'This post needs a wider screen',
+    'pt-BR': 'Este post precisa de uma tela maior',
+  },
+  'viewport.narrow.post.body': {
+    en: 'It is formatted for a display at least 1024px wide. Open it on a larger screen to read comfortably.',
+    'pt-BR':
+      'Ele é formatado para uma tela de pelo menos 1024px de largura. Abra em um monitor maior para ler com conforto.',
+  },
 } as const;
 
 export type UiKey = keyof typeof strings;

@@ -14,7 +14,7 @@ const LOCALE = 'en' as const;
     canonicalPath="/about"
     jsonLd={{ kind: 'about' }}
   />
-  <article class="page">
+  <article class="u-container page">
     <h1 class="page-title">{t(LOCALE, 'about.title')}</h1>
     <p>
       I'm Eduardo Kohn, a Computer Science undergraduate with a growing focus on the mathematical foundations of
@@ -58,9 +58,8 @@ const LOCALE = 'en' as const;
 
 <style>
   .page {
-    max-width: var(--measure-prose);
-    margin: 0 auto;
-    padding: var(--space-6) var(--space-8);
+    --measure: var(--measure-prose);
+    padding-block: var(--space-6);
   }
   .page-title {
     font-size: var(--text-2xl);
