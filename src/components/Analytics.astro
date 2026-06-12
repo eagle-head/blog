@@ -1,10 +1,15 @@
 ---
 // src/components/Analytics.astro
+// The Cloudflare Web Analytics beacon runs in production only: it cannot reach
+// cloudflareinsights.com from localhost (the preflight is CORS-blocked) and dev
+// traffic should never land in analytics. Gating on PROD keeps the dev console
+// clean while leaving the deployed site unaffected.
 const token = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN;
+const enabled = Boolean(token) && import.meta.env.PROD;
 ---
 
 {
-  token ? (
+  enabled ? (
     <script
       is:inline
       defer

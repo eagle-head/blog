@@ -10,6 +10,8 @@ import DiagramViewerHost from '../components/DiagramViewerHost';
 import Analytics from '../components/Analytics.astro';
 import MermaidRuntime from '../components/MermaidRuntime.astro';
 import { themeInitScript } from '../lib/theme-init';
+import interLatinWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import jetbrainsMonoLatinWoff2 from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
 
 interface Props {
   lang?: 'en' | 'pt-BR';
@@ -27,16 +29,21 @@ const { lang = 'en' } = Astro.props;
     <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
     {/* Bing Webmaster Tools domain ownership verification (Plan 07 Phase 2). */}
     <meta name="msvalidate.01" content="99C11D4FD95F4A84076A1D2354311281" />
-    {/* Preload the primary font subsets so they arrive before first paint. */}
-    {/* Hash filenames are stable across builds unless @fontsource-variable is bumped. */}
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="/_astro/inter-latin-wght-normal.Dx4kXJAl.woff2" />
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      crossorigin
-      href="/_astro/jetbrains-mono-latin-wght-normal.B9CIFXIH.woff2"
-    />
+    {
+      /* Preload the primary font subsets so they arrive before first paint.
+         Production only: the hashed asset URL is emitted by the build, so a dev
+         preload would 404 — `astro dev` loads the fonts via the @fontsource
+         @font-face in global.css. The ?url imports resolve to the real hashed
+         path, so there is no hand-maintained hash to drift on a fontsource bump. */
+    }
+    {
+      import.meta.env.PROD && (
+        <Fragment>
+          <link rel="preload" as="font" type="font/woff2" crossorigin href={interLatinWoff2} />
+          <link rel="preload" as="font" type="font/woff2" crossorigin href={jetbrainsMonoLatinWoff2} />
+        </Fragment>
+      )
+    }
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
