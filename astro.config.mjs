@@ -44,7 +44,11 @@ export default defineConfig({
       // Dark Always — brief §5.6. Code blocks stay on GitHub Dark
       // regardless of the page light/dark mode.
       theme: 'github-dark',
-      wrap: true,
+      // Long lines scroll horizontally inside the code box instead of wrapping
+      // (the inner <code> is the scroll container; the macOS chrome on the <pre>
+      // stays put). Wrapped code reads badly — worse now that papers/posts also
+      // render on mobile.
+      wrap: false,
       transformers: [
         {
           // Extract `title="filename.ext"` from the fence meta string and

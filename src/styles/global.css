@@ -370,7 +370,12 @@ pre.astro-code {
 pre.astro-code > code {
   display: block;
   padding: var(--space-3) var(--space-4);
+  /* Long lines scroll here (the <code>), keeping the <pre>'s macOS chrome fixed.
+   * white-space:pre — never wrap; overscroll-behavior — a horizontal code scroll
+   * on touch must not chain into the browser's back-swipe. */
+  white-space: pre;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
   background: transparent !important;
 }
 
