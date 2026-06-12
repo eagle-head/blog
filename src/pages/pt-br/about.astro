@@ -10,45 +10,59 @@ const LOCALE = 'pt-BR' as const;
   <SEO
     slot="head"
     title={`${t(LOCALE, 'about.title')} — Eduardo Kohn`}
-    description="Eduardo Kohn — pesquisador independente escrevendo sobre algoritmos, sistemas e ciência da computação."
+    description="Eduardo Kohn — engenheiro de software (10+ anos) e agora pesquisador independente, partindo de fundamentos de redes de computadores rumo à segurança de Cyber-Physical Systems (CPS/ICS)."
     canonicalPath="/about"
     jsonLd={{ kind: 'about' }}
   />
   <article class="u-container page">
     <h1 class="page-title">{t(LOCALE, 'about.title')}</h1>
     <p>
-      Sou Eduardo Kohn, graduando em Ciência da Computação com foco crescente em fundamentos matemáticos da computação e
-      Cybersecurity. Meu interesse está menos em entregar features e mais em entender <em>por que</em> as coisas funcionam
-      — da álgebra linear por trás de um modelo à criptografia que sustenta um protocolo.
+      Sou Eduardo Kohn, engenheiro de software com mais de dez anos construindo sistemas full-stack — Java/Spring Boot e
+      Elixir/Phoenix no backend, React e TypeScript no frontend, com PostgreSQL, Docker e Kubernetes em produção. Hoje
+      estou em uma transição deliberada da prática de engenharia para a pesquisa aplicada em
+      <strong>Cyber-Physical Systems (CPS)</strong> e segurança de <strong
+        >sistemas de controle industrial (ICS/OT)</strong
+      >.
     </p>
     <p>
-      Dentro de Cybersecurity, a área que mais me motiva — e que pretendo começar a estudar em breve — é
-      <strong>Cyber-Physical Systems (CPS)</strong>: a interseção entre computação, redes e processos físicos que
-      sustenta infraestrutura crítica como redes de energia, sistemas de controle industrial, dispositivos médicos, IoT
-      e veículos autônomos. Quando uma vulnerabilidade atravessa a fronteira do digital e afeta o mundo físico, as
-      consequências deixam de ser abstratas — e é exatamente essa responsabilidade técnica que me atrai.
+      Minha abordagem é bottom-up. Antes da camada de segurança, estou reconstruindo fundamentos rigorosos de redes de
+      computadores — TCP/IP, roteamento, DNS e os detalhes internos de protocolo dos quais os sistemas reais de fato
+      dependem — estudando Kurose &amp; Ross e confrontando a teoria com capturas de pacotes em vez de tomá-la como
+      certa. Sempre me interessou mais entender <em>por que</em> as coisas funcionam do que entregar features — dos bytes
+      que trafegam pela rede à criptografia que protege um protocolo.
     </p>
     <p>
-      Sou também contribuidor ativo do <a
+      Dentro de segurança, a direção que mais me motiva é <strong>Cyber-Physical Systems</strong>: a interseção entre
+      computação, redes e processos físicos que sustenta infraestrutura crítica como redes elétricas, sistemas de
+      controle industrial, dispositivos médicos, IoT e veículos autônomos. Quando uma vulnerabilidade atravessa a
+      fronteira do digital e afeta o mundo físico, as consequências deixam de ser abstratas — e é exatamente essa
+      responsabilidade técnica que me atrai.
+    </p>
+    <p>
+      Sou contribuidor ativo do ecossistema Erlang/Elixir. Tenho quatro pull requests aceitos no <a
         href="https://github.com/phoenixframework/phoenix"
         target="_blank"
-        rel="noopener noreferrer">framework Phoenix (Elixir)</a
-      >, onde aprendi na prática o que significa projetar sistemas concorrentes, tolerantes a falhas e construídos sobre
-      uma base teórica séria (OTP, árvore de supervisão, message passing). Trabalhar em um projeto open source dessa
-      escala tem sido minha principal escola de engenharia de software.
+        rel="noopener noreferrer">framework Phoenix</a
+      > — encoding de query-string, geração de código, tratamento de crash no installer e correções de documentação, revisados
+      por core maintainers — além de contribuições abertas no Cowboy e em suas bibliotecas de apoio, do teardown de socket
+      TCP ao parsing de cabeçalhos HTTP/1 baseado em SWAR. Trabalhar em open source nessa escala tem sido minha principal
+      escola de engenharia: foi onde aprendi na prática o que significa projetar sistemas concorrentes e tolerantes a falhas
+      sobre uma base teórica séria — OTP, árvore de supervisão, message passing.
     </p>
     <p>
-      Este blog é onde penso em público. <a href="/pt-br/papers">Artigos</a> são peças mais longas escritas com rigor científico
-      — abstract, citações, teoremas, provas. <a href="/pt-br/posts">Posts</a> são notas curtas que compartilham uma ideia
-      antes que ela esteja completa o suficiente para ser formalizada.
+      Este blog é onde penso em público, escrevendo enquanto trabalho cada tópico. <a href="/pt-br/papers">Artigos</a> são
+      peças mais longas escritas com rigor científico — abstract, citações, teoremas, provas; meu estudo de DNS, do conceito
+      ao pacote, está lá. <a href="/pt-br/posts">Posts</a> são notas curtas que compartilham uma ideia antes que ela esteja
+      completa o suficiente para ser formalizada.
     </p>
     <p>
-      Profissionalmente, atuo com frontend desde 2016 (React, React Native, TypeScript, Design Systems) e como fullstack
-      desde 2021, somando backend em Java/Spring Boot, PostgreSQL, Docker/Kubernetes, Keycloak e testes automatizados.
-      Essa base me dá um chão técnico sólido para explorar problemas mais profundos e teóricos daqui pra frente.
+      Profissionalmente, atuo com frontend desde 2016 e como engenheiro full-stack desde 2021, passando por empresas
+      como EY, AB InBev, Leroy Merlin e Capgemini. Curso Bacharelado em Ciência da Computação (Universidade São Judas
+      Tadeu, 2024–2028) e, hoje baseado em Ohio, converso com pesquisadores nos Estados Unidos enquanto me preparo para
+      me candidatar a um doutorado em segurança aplicada.
     </p>
     <p>
-      Me encontre no <a href="https://github.com/eagle-head" target="_blank" rel="me noopener noreferrer">GitHub</a>,
+      Encontre-me no <a href="https://github.com/eagle-head" target="_blank" rel="me noopener noreferrer">GitHub</a>,
       <a href="https://www.linkedin.com/in/eduardokohn84" target="_blank" rel="me noopener noreferrer">LinkedIn</a>, ou
       inscreva-se na <a href="/pt-br/newsletter">newsletter</a> para receber novas publicações por email.
     </p>

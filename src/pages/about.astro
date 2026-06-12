@@ -10,43 +10,53 @@ const LOCALE = 'en' as const;
   <SEO
     slot="head"
     title={`${t(LOCALE, 'about.title')} — Eduardo Kohn`}
-    description="Eduardo Kohn — independent researcher writing about algorithms, systems, and computer science."
+    description="Eduardo Kohn — software engineer (10+ yrs) turned independent researcher, working from computer-networking foundations toward cyber-physical systems (CPS/ICS) security."
     canonicalPath="/about"
     jsonLd={{ kind: 'about' }}
   />
   <article class="u-container page">
     <h1 class="page-title">{t(LOCALE, 'about.title')}</h1>
     <p>
-      I'm Eduardo Kohn, a Computer Science undergraduate with a growing focus on the mathematical foundations of
-      computing and Cybersecurity. I'm more interested in understanding <em>why</em> things work than in shipping features
-      — from the linear algebra behind a model to the cryptography underpinning a protocol.
+      I'm Eduardo Kohn, a software engineer with more than ten years building full-stack systems — Java/Spring Boot and
+      Elixir/Phoenix on the backend, React and TypeScript on the frontend, with PostgreSQL, Docker, and Kubernetes in
+      production. I'm now in a deliberate transition from engineering practice toward applied research in
+      <strong>cyber-physical systems (CPS)</strong> and <strong>industrial control systems (ICS/OT) security</strong>.
     </p>
     <p>
-      Within Cybersecurity, the area that most motivates me — and that I plan to start studying soon — is
-      <strong>Cyber-Physical Systems (CPS)</strong>: the intersection of computing, networking, and physical processes
-      that underlies critical infrastructure like power grids, industrial control systems, medical devices, IoT, and
-      autonomous vehicles. When a vulnerability crosses from digital into physical, the consequences stop being abstract
-      — and that technical responsibility is exactly what draws me in.
+      My approach is bottom-up. Before the security layer, I'm rebuilding rigorous foundations in computer networking —
+      TCP/IP, routing, DNS, and the protocol internals that real systems actually depend on — working through Kurose
+      &amp; Ross and validating the theory against packet captures rather than taking it on faith. I've always been more
+      interested in understanding <em>why</em> things work than in shipping features — from the bytes on the wire to the cryptography
+      that secures a protocol.
     </p>
     <p>
-      I'm also an active contributor to the <a
+      Within security, the direction that most motivates me is <strong>Cyber-Physical Systems</strong>: the intersection
+      of computing, networking, and physical processes that underlies critical infrastructure like power grids,
+      industrial control systems, medical devices, IoT, and autonomous vehicles. When a vulnerability crosses from the
+      digital into the physical, the consequences stop being abstract — and that technical responsibility is exactly
+      what draws me in.
+    </p>
+    <p>
+      I'm an active contributor to the Erlang/Elixir ecosystem. I have four merged pull requests in the <a
         href="https://github.com/phoenixframework/phoenix"
         target="_blank"
-        rel="noopener noreferrer">Phoenix framework (Elixir)</a
-      >, where I've learned in practice what it takes to design concurrent, fault-tolerant systems built on serious
-      theoretical foundations (OTP, supervision trees, message passing). Working on an open source project at that scale
-      has been my main engineering school.
+        rel="noopener noreferrer">Phoenix framework</a
+      > — query-string encoding, code generation, installer crash handling, and documentation fixes, reviewed by core maintainers
+      — along with open contributions to Cowboy and its supporting libraries, from TCP socket teardown to SWAR-based HTTP/1
+      parsing. Working on open source at that scale has been my main engineering school: it's where I've learned in practice
+      what it takes to design concurrent, fault-tolerant systems on serious theoretical foundations — OTP, supervision trees,
+      message passing.
     </p>
     <p>
-      This blog is where I think in public. <a href="/papers">Papers</a> are longer pieces written with scientific rigour
-      — abstracts, citations, theorems, proofs. <a href="/posts">Posts</a> are shorter notes that share an idea before it
-      is finished enough to formalise.
+      This blog is where I think in public, writing as I work through each topic. <a href="/papers">Papers</a> are longer
+      pieces written with scientific rigour — abstracts, citations, theorems, proofs; my DNS study, from concept to packet,
+      lives there. <a href="/posts">Posts</a> are shorter notes that share an idea before it is finished enough to formalise.
     </p>
     <p>
-      Professionally, I've worked with frontend since 2016 (React, React Native, TypeScript, Design Systems) and as a
-      fullstack engineer since 2021, adding backend in Java/Spring Boot, PostgreSQL, Docker/Kubernetes, Keycloak, and
-      automated testing. That foundation gives me solid ground to explore deeper, more theoretical problems from here
-      on.
+      Professionally, I've worked with frontend since 2016 and as a full-stack engineer since 2021, across companies
+      including EY, AB InBev, Leroy Merlin, and Capgemini. I'm pursuing a Bachelor's in Computer Science (Universidade
+      São Judas Tadeu, 2024–2028) and, now based in Ohio, engaging with US-based researchers as I prepare to apply for
+      doctoral work in applied security.
     </p>
     <p>
       Find me on <a href="https://github.com/eagle-head" target="_blank" rel="me noopener noreferrer">GitHub</a>,
