@@ -2,14 +2,14 @@
 // src/layouts/PaperLayout.astro
 // Brief §6.4 — paper layout. Single centered reading column (the Tufte side
 // rail was dropped — no paper used <Sidenote> — so the column now centers
-// instead of leaning left). Below 1024px the article is replaced by a notice.
+// instead of leaning left). The article renders at every width; wide diagrams
+// downscale inline and open in a fullscreen pan/zoom viewer on tap.
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import MetaChip from '../components/MetaChip.astro';
 import Tag from '../components/Tag.astro';
 import SEO from '../components/SEO.astro';
 import Giscus from '../components/Giscus.astro';
-import NarrowScreenNotice from '../components/NarrowScreenNotice.astro';
 import { parseEntryId } from '../lib/content';
 import { formatDateForLocale } from '../lib/i18n';
 import { ogImagePathFor } from '../lib/og';
@@ -70,20 +70,6 @@ const authorLine = authors.map((a) => (a.affiliation ? `${a.name} · ${a.affilia
     </div>
     {comments && <Giscus lang={language} />}
   </article>
-
-  {
-    /* Below 1024px the paper's wide diagrams and terminal output are illegible,
-      so the article (hidden by the gate below) is replaced by this notice.
-      Localised at build time — each paper page is per-locale. Widening past
-      1024px reveals the article instantly, no reload. */
-  }
-  <NarrowScreenNotice
-    title={t(language, 'viewport.narrow.title')}
-    body={t(language, 'viewport.narrow.body')}
-    actionHref={language === 'pt-BR' ? '/pt-br/papers' : '/papers'}
-    actionLabel={t(language, 'nav.papers')}
-    ariaLabel={t(language, 'viewport.narrow.title')}
-  />
 </BaseLayout>
 
 <style>
@@ -125,12 +111,5 @@ const authorLine = authors.map((a) => (a.affiliation ? `${a.name} · ${a.affilia
   }
   .paper-abstract b {
     color: var(--color-fg);
-  }
-  /* Narrow-screen gate (< 1024px): hide the article. NarrowScreenNotice shows
-     its own replacement notice at the same breakpoint. */
-  @media (max-width: 1023.98px) {
-    .paper {
-      display: none;
-    }
   }
 </style>

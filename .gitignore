@@ -30,3 +30,6 @@ pnpm-debug.log*
 # Chromium user-data directories that Lighthouse creates when launched
 # against localhost on WSL (Windows-style path escapes through).
 C:\\*
+
+# Test coverage output (vitest --coverage)
+coverage/

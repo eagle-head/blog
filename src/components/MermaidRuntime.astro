@@ -13,6 +13,13 @@
   (async () => {
     const blocks = document.querySelectorAll('pre.mermaid');
     if (blocks.length === 0) return;
+    // Preserve each diagram's source BEFORE mermaid.run() overwrites the <pre>'s
+    // content with the rendered SVG (mermaid sets element.innerHTML = svg). The
+    // fullscreen viewer (DiagramViewerHost/Panel) re-renders from this stashed
+    // source on tap — reading textContent afterwards would yield SVG label text.
+    blocks.forEach((el) => {
+      (el as HTMLElement).dataset.mermaidSrc = el.textContent ?? '';
+    });
     const { default: mermaid } = await import('mermaid');
     mermaid.initialize({ startOnLoad: false });
     await mermaid.run({ querySelector: 'pre.mermaid' });

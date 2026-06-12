@@ -329,7 +329,7 @@ hierarchy on its behalf:
 
 That is four queries and four responses, **eight messages** to resolve a name with no cache.
 
-<Figure caption="Figure 1 — Typical iterative resolution with no cache: only the first query is recursive, and the local server asks at each level (root, TLD, authoritative).">
+<Figure caption="Figure 1 — Typical iterative resolution with no cache: only the first query is recursive, and the local server asks at each level (root, TLD, authoritative)." zoomable>
 
 ```mermaid
 ---
@@ -369,7 +369,7 @@ final answer. In an **iterative** query, each server replies "I do not know, but
 that iterates. In theory, any query could be of either kind. In practice, the pattern is fixed: host → local is recursive, and the rest is
 iterative.
 
-<Figure caption="Figure 2 — Fully recursive resolution: each server forwards the query to the next, and the answer climbs back up the chain. The local server does not iterate.">
+<Figure caption="Figure 2 — Fully recursive resolution: each server forwards the query to the next, and the answer climbs back up the chain. The local server does not iterate." zoomable>
 
 ```mermaid
 ---
@@ -406,7 +406,7 @@ In practice, the TLD server often does not directly know the authoritative serve
 Acme, `dns.acme.com` is intermediate and the engineering department has its own authoritative server `dns.eng.acme.com`. Resolving
 `web.eng.acme.com` requires one extra hop, totaling **ten messages**.
 
-<Figure caption="Figure 3 — Variant with an intermediate server: the TLD points to the intermediate, not the authoritative, producing ten messages.">
+<Figure caption="Figure 3 — Variant with an intermediate server: the TLD points to the intermediate, not the authoritative, producing ten messages." zoomable>
 
 ```mermaid
 ---
@@ -525,7 +525,7 @@ returns the IP from the cache, even without authority over that name. Mappings a
 (Time To Live), often on the order of two days, after which the entry is discarded. Since local servers also cache the IPs of the TLD
 servers, the root servers end up bypassed on practically every query.
 
-<Figure caption="Figure 4 — Cache shortcuts: a repeated answer comes straight from the local server, skipping the hierarchy. With only the TLD cached, just the root is bypassed.">
+<Figure caption="Figure 4 — Cache shortcuts: a repeated answer comes straight from the local server, skipping the hierarchy. With only the TLD cached, just the root is bypassed." zoomable>
 
 ```mermaid
 ---
@@ -647,7 +647,7 @@ is exactly the NS + A glue pair we saw arrive in each hierarchy referral — it 
 
 There are only two DNS messages, query and response, and both share the same format: a 12-byte header followed by four data sections.
 
-<Figure caption="Figure 5 — Structure of the DNS message: a 12-byte header plus four sections, whose sections carry resource records.">
+<Figure caption="Figure 5 — Structure of the DNS message: a 12-byte header plus four sections, whose sections carry resource records." zoomable>
 
 ```mermaid
 ---
@@ -750,7 +750,7 @@ answer came from the local resolver, from the cache, not from the server that ow
 The response to an MX query illustrates what the additional section is for. The answer section carries the canonical name of the mail
 server, and the additional section already brings the A record with its IP, saving a second query.
 
-<Figure caption="Figure 6 — MX query: the response brings the mail server's canonical name and its IP at once, in the additional section.">
+<Figure caption="Figure 6 — MX query: the response brings the mail server's canonical name and its IP at once, in the additional section." zoomable>
 
 ```mermaid
 ---
@@ -810,7 +810,7 @@ servers, an NS + A pair for each. And you insert, into your own authoritative se
 name, the CNAME linking the alias to the canonical name, and the MX for the mail server. There is also the protocol's **UPDATE** option for
 adding and removing records dynamically [@RFC2136].
 
-<Figure caption="Figure 7 — Record insertion: the registrar inserts NS and A into the TLD, and the domain owner inserts A, CNAME and MX into its authoritative server.">
+<Figure caption="Figure 7 — Record insertion: the registrar inserts NS and A into the TLD, and the domain owner inserts A, CNAME and MX into its authoritative server." zoomable>
 
 ```mermaid
 ---

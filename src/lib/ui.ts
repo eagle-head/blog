@@ -61,24 +61,12 @@ const strings = {
     en: 'PT — Switch to Portuguese (BR)',
     'pt-BR': 'PT — Alternar para português (BR)',
   },
-  'viewport.narrow.title': {
-    en: 'This paper needs a wider screen',
-    'pt-BR': 'Este artigo precisa de uma tela maior',
-  },
-  'viewport.narrow.body': {
-    en: 'Its diagrams and terminal output are built for a display at least 1024px wide. Open it on a larger screen to read comfortably.',
-    'pt-BR':
-      'Os diagramas e as saídas de terminal são feitos para uma tela de pelo menos 1024px de largura. Abra em um monitor maior para ler com conforto.',
-  },
-  'viewport.narrow.post.title': {
-    en: 'This post needs a wider screen',
-    'pt-BR': 'Este post precisa de uma tela maior',
-  },
-  'viewport.narrow.post.body': {
-    en: 'It is formatted for a display at least 1024px wide. Open it on a larger screen to read comfortably.',
-    'pt-BR':
-      'Ele é formatado para uma tela de pelo menos 1024px de largura. Abra em um monitor maior para ler com conforto.',
-  },
+  'viewer.open': { en: 'View diagram', 'pt-BR': 'Ver diagrama' },
+  'viewer.close': { en: 'Close', 'pt-BR': 'Fechar' },
+  'viewer.label': { en: 'Diagram viewer', 'pt-BR': 'Visualizador de diagrama' },
+  'viewer.zoom-in': { en: 'Zoom in', 'pt-BR': 'Aproximar' },
+  'viewer.zoom-out': { en: 'Zoom out', 'pt-BR': 'Afastar' },
+  'viewer.reset': { en: 'Reset zoom', 'pt-BR': 'Redefinir zoom' },
 } as const;
 
 export type UiKey = keyof typeof strings;

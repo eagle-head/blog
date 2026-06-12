@@ -326,7 +326,7 @@ hierarquia por ele:
 
 São quatro consultas e quatro respostas, **oito mensagens** para resolver um nome sem cache.
 
-<Figure caption="Figura 1 — Resolução iterativa típica sem cache: só a primeira consulta é recursiva, e o servidor local pergunta a cada nível (raiz, TLD, autoritativo).">
+<Figure caption="Figura 1 — Resolução iterativa típica sem cache: só a primeira consulta é recursiva, e o servidor local pergunta a cada nível (raiz, TLD, autoritativo)." zoomable>
 
 ```mermaid
 ---
@@ -365,7 +365,7 @@ Há dois tipos de consulta em jogo. Numa consulta **recursiva**, o host pede ao 
 resposta final. Numa consulta **iterativa**, cada servidor responde com "não sei, mas pergunte àquele ali", e quem itera é o servidor local.
 Em teoria, qualquer consulta poderia ser de um ou outro tipo. Na prática, o padrão é fixo: host → local é recursiva, e o resto é iterativo.
 
-<Figure caption="Figura 2 — Resolução totalmente recursiva: cada servidor repassa a consulta ao próximo e a resposta sobe a cadeia. O local não itera.">
+<Figure caption="Figura 2 — Resolução totalmente recursiva: cada servidor repassa a consulta ao próximo e a resposta sobe a cadeia. O local não itera." zoomable>
 
 ```mermaid
 ---
@@ -402,7 +402,7 @@ Na prática, o servidor TLD muitas vezes não conhece diretamente o autoritativo
 Acme, `dns.acme.com` é intermediário e o departamento de engenharia tem seu próprio autoritativo `dns.eng.acme.com`. Resolver
 `web.eng.acme.com` exige um salto a mais, somando **dez mensagens**.
 
-<Figure caption="Figura 3 — Variante com servidor intermediário: o TLD aponta o intermediário, não o autoritativo, gerando dez mensagens.">
+<Figure caption="Figura 3 — Variante com servidor intermediário: o TLD aponta o intermediário, não o autoritativo, gerando dez mensagens." zoomable>
 
 ```mermaid
 ---
@@ -521,7 +521,7 @@ devolve o IP do cache, mesmo sem ter autoridade sobre aquele nome. Os mapeamento
 validade, o **TTL** (Time To Live), com frequência da ordem de dois dias, após o qual a entrada é descartada. Como os servidores locais
 também guardam em cache os IPs dos servidores TLD, os servidores raiz acabam sendo contornados em praticamente todas as consultas.
 
-<Figure caption="Figura 4 — Atalhos por cache: uma resposta repetida vem direto do local, pulando a hierarquia. Com só o TLD em cache, apenas a raiz é contornada.">
+<Figure caption="Figura 4 — Atalhos por cache: uma resposta repetida vem direto do local, pulando a hierarquia. Com só o TLD em cache, apenas a raiz é contornada." zoomable>
 
 ```mermaid
 ---
@@ -643,7 +643,7 @@ exatamente esse par NS + A de cola que vimos chegar em cada referral da hierarqu
 
 Só existem duas mensagens DNS, consulta e resposta, e ambas têm o mesmo formato: um cabeçalho de 12 bytes seguido de quatro seções de dados.
 
-<Figure caption="Figura 5 — Estrutura da mensagem DNS: cabeçalho de 12 bytes mais quatro seções, cujas seções carregam registros de recurso.">
+<Figure caption="Figura 5 — Estrutura da mensagem DNS: cabeçalho de 12 bytes mais quatro seções, cujas seções carregam registros de recurso." zoomable>
 
 ```mermaid
 ---
@@ -745,7 +745,7 @@ do cache, não do servidor dono do domínio — o mesmo `Non-authoritative answe
 A resposta a uma consulta MX ilustra para que serve a seção adicional. Na seção de resposta vem o canonical name do servidor de e-mail, e a
 seção adicional já traz o registro A com o IP dele, poupando uma segunda consulta.
 
-<Figure caption="Figura 6 — Consulta MX: a resposta traz o canonical name do servidor de e-mail e o seu IP de uma só vez, na seção adicional.">
+<Figure caption="Figura 6 — Consulta MX: a resposta traz o canonical name do servidor de e-mail e o seu IP de uma só vez, na seção adicional." zoomable>
 
 ```mermaid
 ---
@@ -805,7 +805,7 @@ um par NS + A para cada um. E você insere, nos seus próprios servidores autori
 CNAME que liga o alias ao canonical name e o MX do servidor de e-mail. Há ainda a opção **UPDATE** do protocolo para adicionar e remover
 registros dinamicamente [@RFC2136].
 
-<Figure caption="Figura 7 — Inserção de registros: o registrar insere NS e A no TLD, e o dono do domínio insere A, CNAME e MX no seu autoritativo.">
+<Figure caption="Figura 7 — Inserção de registros: o registrar insere NS e A no TLD, e o dono do domínio insere A, CNAME e MX no seu autoritativo." zoomable>
 
 ```mermaid
 ---

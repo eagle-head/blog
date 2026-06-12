@@ -1,15 +1,48 @@
 ---
 // src/components/mdx/Figure.astro
-// Semantic <figure> with accessible caption.
+// Semantic <figure> with accessible caption. When `zoomable`, the figure is
+// marked for the DiagramViewerHost island and gets a focusable corner button
+// that opens its diagram in a fullscreen pan/zoom viewer. The marker + button
+// are static build-time HTML (SEO-safe, inert until the host hydrates); the
+// affordance only shows for figures that actually hold a rendered mermaid
+// diagram (gated in global.css via :has(pre.mermaid)).
+import { detectLocaleFromPath } from '../../lib/i18n';
+import { t } from '../../lib/ui';
+
 interface Props {
   caption: string;
   alt?: string;
+  zoomable?: boolean;
+  kind?: 'diagram' | 'table' | 'math' | 'image';
 }
-const { caption } = Astro.props;
+const { caption, zoomable = false, kind = 'diagram' } = Astro.props;
+const locale = detectLocaleFromPath(Astro.url.pathname);
 ---
 
-<figure class="figure">
-  <div class="figure-body"><slot /></div>
+<figure class="figure" data-zoomable={zoomable ? '' : undefined} data-zoom-kind={zoomable ? kind : undefined}>
+  <div class="figure-body">
+    <slot />
+    {
+      zoomable && (
+        <button type="button" class="zoom-trigger" data-zoom-open aria-label={t(locale, 'viewer.open')}>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+            <path d="M16 3h3a2 2 0 0 1 2 2v3" />
+            <path d="M8 21H5a2 2 0 0 1-2-2v-3" />
+            <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+          </svg>
+        </button>
+      )
+    }
+  </div>
   <figcaption class="figure-caption">{caption}</figcaption>
 </figure>
 

@@ -245,9 +245,9 @@
   padding-inline: max(var(--gutter), env(safe-area-inset-left)) max(var(--gutter), env(safe-area-inset-right));
 }
 
-/* Overflow guardrails — keep wide inline children inside the reading column.
- * Posts and papers are gated below 1024px, so these apply at >=1024px: a code
- * block, table or diagram wider than the measure scrolls within its own box
+/* Overflow guardrails — keep wide inline children inside the reading column at
+ * every width (papers and posts now render on mobile too): a code block, table
+ * or diagram wider than the measure scrolls or downscales within its own box
  * instead of widening the page. */
 .post-body :is(img, svg, video, iframe),
 .paper-body :is(img, svg, video, iframe) {
@@ -648,4 +648,160 @@ pre.mermaid[data-processed='true'] > svg {
     text-decoration-thickness: 1px;
     text-underline-offset: 4px;
   }
+}
+
+/* =========================================================================
+ * Diagram viewer — papers/posts now render at every width, so wide mermaid
+ * diagrams downscale inline (capped by the overflow guardrails above) and can
+ * be tapped open in a fullscreen pan/zoom overlay (DiagramViewerHost/Panel,
+ * lazy islands). All viewer CSS lives here, unscoped, to avoid the Tailwind-v4
+ * scoped-@media var()/theme() build trap. The overlay clones .cmdk-overlay and
+ * uses Dark-Always chrome (brief §5.6) framing a white diagram stage — mermaid
+ * uses a light palette, so the stage stays white even in dark mode.
+ * ========================================================================= */
+
+/* Reclaim phone width: trim the diagram card padding on touch-sized screens so
+ * the downscaled inline SVG keeps as much width as possible before any tap. */
+@media (max-width: 48rem) {
+  pre.mermaid[data-processed='true'] {
+    padding: var(--space-2);
+  }
+}
+
+/* Tap-to-expand affordance — only on figures holding a rendered diagram. */
+.figure-body:has(pre.mermaid[data-processed='true']) {
+  position: relative;
+}
+.zoom-trigger {
+  display: none;
+}
+.figure-body:has(pre.mermaid[data-processed='true']) .zoom-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
+  cursor: zoom-in;
+}
+.zoom-trigger > svg {
+  width: 18px;
+  height: 18px;
+}
+/* Desktop: reveal on hover/focus to keep the diagram clean; touch: always on. */
+@media (hover: hover) and (pointer: fine) {
+  .figure-body:has(pre.mermaid[data-processed='true']) .zoom-trigger {
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-standard);
+  }
+  .figure-body:has(pre.mermaid[data-processed='true']):hover .zoom-trigger,
+  .figure-body:has(pre.mermaid[data-processed='true']) .zoom-trigger:focus-visible {
+    opacity: 1;
+  }
+}
+@media (max-width: 48rem) {
+  .figure-body:has(pre.mermaid[data-processed='true']) .zoom-trigger {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Fullscreen overlay (clones .cmdk-overlay). */
+.dv-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 17, 23, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+  padding: var(--space-4);
+  animation: dv-fade var(--duration-base) var(--ease-standard);
+}
+@keyframes dv-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.dv-panel {
+  display: flex;
+  flex-direction: column;
+  width: min(1200px, 100%);
+  height: min(92vh, 100%);
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+.dv-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-bottom: 1px solid #30363d;
+}
+.dv-spacer {
+  flex: 1;
+}
+.dv-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: var(--text-lg);
+  line-height: 1;
+  color: #c9d1d9;
+  background: transparent;
+  border: 1px solid #30363d;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+@media (max-width: 48rem) {
+  .dv-btn {
+    width: 44px;
+    height: 44px;
+  }
+}
+.dv-stage {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  touch-action: none;
+  background: #ffffff;
+  cursor: grab;
+}
+.dv-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.dv-content > svg {
+  display: block;
+}
+.dv-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: #8b949e;
+  font-size: var(--text-xl);
 }
