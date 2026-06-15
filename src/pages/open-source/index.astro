@@ -1,0 +1,231 @@
+---
+// src/pages/open-source/index.astro
+// Open Source listing (EN): authored libraries + upstream contributions.
+// Editorial two-section listing — same .listing/.entry vocabulary as the
+// papers/posts indexes, fed by the `libraries` and `contributions` data
+// collections. The /pt-br mirror is a hand-authored sibling file.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MetaChip from '../../components/MetaChip.astro';
+import Tag from '../../components/Tag.astro';
+import SEO from '../../components/SEO.astro';
+import { getCollection } from 'astro:content';
+import { sortLibraries, sortContributions } from '../../lib/open-source';
+import { t } from '../../lib/ui';
+
+const LOCALE = 'en' as const;
+
+const libraries = (await getCollection('libraries')).map((entry) => entry.data).sort(sortLibraries);
+const contributions = (await getCollection('contributions')).map((entry) => entry.data).sort(sortContributions);
+
+// An honest 0-star library shows no "★ 0" — drop the segment when stars === 0.
+function libraryChip(language: string, stars: number): string {
+  const base = `${t(LOCALE, 'kind.library')} · ${language}`;
+  return stars > 0 ? `${base} · ★ ${stars}` : base;
+}
+---
+
+<BaseLayout lang={LOCALE}>
+  <SEO
+    slot="head"
+    title={`${t(LOCALE, 'listing.open-source.title')} — Eduardo Kohn`}
+    description={t(LOCALE, 'listing.open-source.description')}
+    canonicalPath="/open-source"
+    jsonLd={{ kind: 'collection', name: 'open-source' }}
+  />
+  <div class="u-container open-source">
+    <h1 class="listing-title">{t(LOCALE, 'listing.open-source.title')}</h1>
+    <p class="listing-description">{t(LOCALE, 'listing.open-source.description')}</p>
+
+    <section class="os-section" aria-label={t(LOCALE, 'open-source.libraries.aria')}>
+      <h2 class="section-label">{t(LOCALE, 'open-source.libraries.title')}</h2>
+      <ul class="entries">
+        {
+          libraries.map((lib) => (
+            <li class="entry">
+              <MetaChip text={libraryChip(lib.language, lib.stars)} />
+              <a class="entry-title" href={lib.repoUrl} target="_blank" rel="noopener noreferrer">
+                {lib.name}
+              </a>
+              <p class="entry-abstract">{lib.summary[LOCALE]}</p>
+              {lib.registry &&
+                (lib.packageUrl ? (
+                  <p class="registry">
+                    <a class="registry-link" href={lib.packageUrl} target="_blank" rel="noopener noreferrer">
+                      {lib.registry}
+                    </a>
+                  </p>
+                ) : (
+                  <p class="registry">{lib.registry}</p>
+                ))}
+              <div class="entry-tags">
+                {lib.tags.map((tag) => (
+                  <Tag name={tag} />
+                ))}
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="os-section" aria-label={t(LOCALE, 'open-source.contributions.aria')}>
+      <h2 class="section-label">{t(LOCALE, 'open-source.contributions.title')}</h2>
+      {
+        contributions.map((project) => (
+          <div class="project">
+            <h3 class="project-name">
+              <a class="project-slug" href={project.projectUrl} target="_blank" rel="noopener noreferrer">
+                {project.projectSlug}
+              </a>
+            </h3>
+            <p class="project-blurb">{project.blurb[LOCALE]}</p>
+            <ul class="entries">
+              {project.prs.map((pr) => (
+                <li class="entry">
+                  <MetaChip
+                    text={`${t(LOCALE, pr.state === 'merged' ? 'pr.state.merged' : 'pr.state.open')} · #${pr.number}`}
+                  />
+                  <a class="pr-title" href={pr.url} target="_blank" rel="noopener noreferrer">
+                    {pr.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .open-source {
+    --measure: var(--measure-listing);
+    padding-block: var(--space-6);
+  }
+  .listing-title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-tight);
+    margin: 0 0 var(--space-2) 0;
+    color: var(--color-fg);
+  }
+  .listing-description {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+    margin: 0 0 var(--space-6) 0;
+  }
+
+  /* Extra breathing room between the Libraries and Contributions sections. */
+  .os-section + .os-section {
+    margin-top: var(--space-10);
+  }
+  .section-label {
+    display: inline-block;
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-accent);
+    font-weight: var(--font-weight-bold);
+    border-bottom: 2px solid var(--color-accent);
+    padding-bottom: 3px;
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  .entries {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .entry {
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--color-border-soft);
+  }
+  .entry:last-child {
+    border-bottom: none;
+  }
+  .entry-title {
+    display: block;
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    text-decoration: none;
+    margin: var(--space-1) 0 var(--space-2) 0;
+    letter-spacing: var(--tracking-snug);
+    line-height: var(--leading-snug);
+  }
+  .entry-title:hover {
+    color: var(--color-accent);
+  }
+  .entry-abstract {
+    font-size: var(--text-sm);
+    color: var(--color-text);
+    margin: 0 0 var(--space-2) 0;
+    line-height: var(--leading-normal);
+  }
+  .registry {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    color: var(--color-muted);
+    margin: 0 0 var(--space-2) 0;
+    overflow-wrap: anywhere;
+  }
+  /* The registry coordinate doubles as the package link when one exists; it
+     stays muted and only colours on hover, matching the page's link voice. */
+  .registry-link {
+    color: inherit;
+    text-decoration: none;
+  }
+  .registry-link:hover {
+    color: var(--color-accent);
+  }
+  .entry-tags {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  /* Contributions: a quiet, grouped activity list — borderless project headings
+     so it never competes with the library entries above it. */
+  .project {
+    margin-bottom: var(--space-6);
+  }
+  .project:last-child {
+    margin-bottom: 0;
+  }
+  .project-name {
+    margin: 0;
+  }
+  .project-slug {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-muted);
+    text-decoration: none;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .project-slug:hover {
+    color: var(--color-accent);
+  }
+  .project-blurb {
+    font-size: var(--text-sm);
+    color: var(--color-text);
+    margin: var(--space-1) 0 var(--space-2) 0;
+    line-height: var(--leading-normal);
+  }
+  /* PR rows read one step lighter than library titles. */
+  .pr-title {
+    display: block;
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-fg);
+    text-decoration: none;
+    margin: var(--space-1) 0 0 0;
+    line-height: var(--leading-snug);
+  }
+  .pr-title:hover {
+    color: var(--color-accent);
+  }
+</style>

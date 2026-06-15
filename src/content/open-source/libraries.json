@@ -1,0 +1,33 @@
+[
+  {
+    "id": "timekeeper-countdown",
+    "name": "timekeeper-countdown",
+    "repoUrl": "https://github.com/eagle-head/timekeeper-countdown",
+    "language": "TypeScript",
+    "stars": 18,
+    "registry": "npm: @timekeeper-countdown/core @0.2.0 · @timekeeper-countdown/react @0.2.0",
+    "tags": ["countdown", "timer", "typescript", "state-machine", "react-hook"],
+    "summary": {
+      "en": "Zero-dependency countdown engine with a snapshot-driven API and a React useCountdown hook, structured as a monorepo (core engine plus framework adapters). The framework-agnostic core uses wall-clock (performance.now) precision, immutable per-tick snapshots, and ships a fake-time provider for deterministic tests. Published to npm under the @timekeeper-countdown scope with VitePress docs and CI.",
+      "pt-BR": "Countdown engine zero-dependency com uma API orientada a snapshots e um hook React useCountdown, estruturado como monorepo (core engine mais framework adapters). O core, framework-agnostic, usa precisão wall-clock (performance.now), snapshots imutáveis por tick e inclui um fake-time provider para testes determinísticos. Publicado no npm sob o escopo @timekeeper-countdown, com docs em VitePress e CI."
+    },
+    "featured": false,
+    "order": 0
+  },
+  {
+    "id": "erli18n",
+    "name": "erli18n",
+    "repoUrl": "https://github.com/eagle-head/erli18n",
+    "language": "Erlang",
+    "stars": 0,
+    "registry": "hex: erli18n 0.1.0",
+    "packageUrl": "https://hex.pm/packages/erli18n",
+    "tags": ["erlang", "otp", "i18n", "gettext", "l10n", "cldr"],
+    "summary": {
+      "en": "Internationalization (i18n) library for Erlang/OTP, fully GNU gettext compatible — drop-in support for .po/.pot files from Poedit, Crowdin, Transifex, Weblate, and xgettext. A first-class pure-Erlang gettext alternative (gettext/ngettext/pgettext) with atomic catalog loading, runtime Plural-Forms resolution, and CLDR validation, filling the gap left by the stalled gettexter without forcing an Elixir polyglot build.",
+      "pt-BR": "Library de internacionalização (i18n) para Erlang/OTP, totalmente compatível com GNU gettext — suporte drop-in a arquivos .po/.pot do Poedit, Crowdin, Transifex, Weblate e xgettext. Uma alternativa gettext pure-Erlang de primeira classe (gettext/ngettext/pgettext), com carregamento atômico de catálogos, resolução de Plural-Forms em runtime e validação CLDR, preenchendo a lacuna deixada pelo gettexter parado sem exigir um build polyglot com Elixir."
+    },
+    "featured": false,
+    "order": 1
+  }
+]

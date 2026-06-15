@@ -11,7 +11,7 @@ import type { Locale } from '../lib/content';
 type JsonLdKind =
   | { kind: 'home' }
   | { kind: 'about' }
-  | { kind: 'collection'; name: 'papers' | 'posts' | 'tag'; tagName?: string }
+  | { kind: 'collection'; name: 'papers' | 'posts' | 'tag' | 'open-source'; tagName?: string }
   | {
       kind: 'paper';
       title: string;

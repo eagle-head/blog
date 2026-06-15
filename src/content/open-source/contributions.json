@@ -1,0 +1,120 @@
+[
+  {
+    "id": "phoenix",
+    "project": "Phoenix Framework",
+    "projectSlug": "phoenixframework/phoenix",
+    "projectUrl": "https://github.com/phoenixframework/phoenix",
+    "blurb": {
+      "en": "The productive web framework for Elixir — peace of mind from prototype to production.",
+      "pt-BR": "O framework web produtivo para Elixir — tranquilidade do protótipo à produção."
+    },
+    "significance": "flagship",
+    "order": 0,
+    "prs": [
+      {
+        "number": 6635,
+        "title": "Don't pass type: :id to scope references in generated migrations",
+        "url": "https://github.com/phoenixframework/phoenix/pull/6635",
+        "state": "merged"
+      },
+      {
+        "number": 6633,
+        "title": "Fix phx.new crash when parent directory contains a colon",
+        "url": "https://github.com/phoenixframework/phoenix/pull/6633",
+        "state": "merged"
+      },
+      {
+        "number": 6632,
+        "title": "Raise on list value in query string parameter encoding",
+        "url": "https://github.com/phoenixframework/phoenix/pull/6632",
+        "state": "merged"
+      },
+      {
+        "number": 6631,
+        "title": "Fix outdated flash component example in docs",
+        "url": "https://github.com/phoenixframework/phoenix/pull/6631",
+        "state": "merged"
+      }
+    ]
+  },
+  {
+    "id": "cowboy",
+    "project": "Cowboy",
+    "projectSlug": "ninenines/cowboy",
+    "projectUrl": "https://github.com/ninenines/cowboy",
+    "blurb": {
+      "en": "Small, fast, modern HTTP server for Erlang/OTP.",
+      "pt-BR": "Servidor HTTP pequeno, rápido e moderno para Erlang/OTP."
+    },
+    "significance": "flagship",
+    "order": 1,
+    "prs": [
+      {
+        "number": 1715,
+        "title": "Set SO_LINGER to {true, 0} before the linger loop",
+        "url": "https://github.com/ninenines/cowboy/pull/1715",
+        "state": "open"
+      }
+    ]
+  },
+  {
+    "id": "cowlib",
+    "project": "Cowlib",
+    "projectSlug": "ninenines/cowlib",
+    "projectUrl": "https://github.com/ninenines/cowlib",
+    "blurb": {
+      "en": "Support library for manipulating Web protocols (HTTP/1, HTTP/2, WebSocket parsing) underpinning Cowboy.",
+      "pt-BR": "Library de apoio para manipular protocolos Web (parsing de HTTP/1, HTTP/2 e WebSocket) que dá base ao Cowboy."
+    },
+    "significance": "flagship",
+    "order": 2,
+    "prs": [
+      {
+        "number": 156,
+        "title": "Use SWAR in cow_http1 header and path parsers",
+        "url": "https://github.com/ninenines/cowlib/pull/156",
+        "state": "open"
+      }
+    ]
+  },
+  {
+    "id": "ci-erlang-mk",
+    "project": "ci.erlang.mk",
+    "projectSlug": "ninenines/ci.erlang.mk",
+    "projectUrl": "https://github.com/ninenines/ci.erlang.mk",
+    "blurb": {
+      "en": "Automatic Erlang/OTP version management for Erlang.mk CI.",
+      "pt-BR": "Gerenciamento automático de versões do Erlang/OTP para o CI do Erlang.mk."
+    },
+    "significance": "notable",
+    "order": 3,
+    "prs": [
+      {
+        "number": 2,
+        "title": "Add a FreeBSD test job to the shared CI workflow",
+        "url": "https://github.com/ninenines/ci.erlang.mk/pull/2",
+        "state": "open"
+      }
+    ]
+  },
+  {
+    "id": "morphdom",
+    "project": "morphdom",
+    "projectSlug": "patrick-steele-idem/morphdom",
+    "projectUrl": "https://github.com/patrick-steele-idem/morphdom",
+    "blurb": {
+      "en": "Fast, lightweight DOM diffing/patching with no virtual DOM — the diffing engine used by Phoenix LiveView.",
+      "pt-BR": "Diffing/patching de DOM rápido e leve, sem virtual DOM — o diffing engine usado pelo Phoenix LiveView."
+    },
+    "significance": "notable",
+    "order": 4,
+    "prs": [
+      {
+        "number": 288,
+        "title": "Fix CSP violation: use DOM style API instead of setAttribute(\"style\")",
+        "url": "https://github.com/patrick-steele-idem/morphdom/pull/288",
+        "state": "open"
+      }
+    ]
+  }
+]
