@@ -23,11 +23,11 @@ bibliography: ./src/content/papers/dns-from-concept-to-packet/references.bib
 
 import { Definition, Note, Warning, Figure, Sidenote } from '../../../components/mdx';
 
-Every time you open a website, your machine asks a silent question before anything else: "what is the IP address of this name?". The answer
-comes from **DNS** (the Domain Name System), the Internet's directory service. This article opens that black box. The theory follows the
-fundamentals of Kurose and Ross [@KuroseRoss2021], and each concept appears right next to the command that makes it visible, with the
-**real** output captured on a Windows machine using `nslookup`, PowerShell and Wireshark. The outputs were collected on June 6, 2026, and
-are reproduced exactly as they left the terminal.
+Each access to a website is preceded by a silent question posed by the host: the IP address corresponding to a given name. The answer comes
+from **DNS** (the Domain Name System), the Internet's directory service. This article examines that black box. The theory follows the
+fundamentals of Kurose and Ross [@KuroseRoss2021], and each concept is paired with the command that renders it observable, with the **real**
+output captured on a Windows machine using `nslookup`, PowerShell and Wireshark. The outputs were collected on June 6, 2026, and are
+reproduced exactly as they left the terminal.
 
 <nav class="paper-toc" aria-label="Contents">
 
@@ -54,11 +54,11 @@ People are identified in many ways — by name, by an ID number, by a tax ID. In
 Automated systems prefer fixed-length numbers, while people prefer names, which are easier to remember. The same holds for hosts on the
 Internet, and DNS exists to reconcile the two identifiers every host carries.
 
-The first is the **hostname**, like `www.acme.com`. It is made for humans and so is easy to remember, but it has two weaknesses for the
-network. It says almost nothing about _where_ the host is, and, being alphanumeric and variable in length, it is hard for a router to
-process. The second is the **IP address** (Internet Protocol), four bytes such as `121.7.106.83`, each byte a decimal from 0 to 255. It has
-a rigid hierarchical structure and a fixed length, exactly what a router prefers. It is hierarchical in the sense that, read left to right,
-it reveals increasingly specific information about where the host is, like a postal address read from country down to street.
+The first is the **hostname**, such as `www.acme.com`. It is made for humans and is therefore easy to remember, but it has two weaknesses
+for the network. It conveys almost nothing about _where_ the host is, and, being alphanumeric and variable in length, it is hard for a
+router to process. The second is the **IP address** (Internet Protocol), four bytes such as `121.7.106.83`, each byte a decimal from 0
+to 255. It has a rigid hierarchical structure and a fixed length, exactly what a router prefers. It is hierarchical in the sense that, read
+left to right, it reveals increasingly specific information about where the host is, like a postal address read from country down to street.
 
 Reconciling "a name that is easy to remember" with "an address the network knows how to route" requires a directory service that translates
 a name into an IP. That is the main task of DNS, which is in fact two things at once: a **distributed database**, implemented across a
@@ -66,7 +66,7 @@ hierarchy of servers spread around the world, and an **application-layer protoco
 over **UDP** (the User Datagram Protocol), on port **53**, and is specified in RFCs 1034 and 1035 [@RFC1034; @RFC1035]. In practice, the
 servers usually run the **BIND** (Berkeley Internet Name Domain) software.
 
-You can see all of this at once with a single command. `nslookup` takes a name, asks the DNS server, and shows the answer.
+All of this can be observed at once with a single command. `nslookup` takes a name, queries the DNS server, and displays the answer.
 
 ```bat
 nslookup www.github.com.
@@ -82,35 +82,34 @@ Address:  140.82.113.4
 Aliases:  www.github.com
 ```
 
-The top block, with `Server:` and `Address:`, is the **resolver** that answered, usually the network's router or the provider's DNS. The
-name showing up as `UnKnown` is not an error, it simply means that server has no reverse name configured. The `Non-authoritative answer:`
-line reveals that the IP came from the resolver's **cache**, not from the server that owns the domain — that is the common case, and the
-first manifestation of the cache we will look at in detail later. Since `www.github.com` is an alias, Windows shows the canonical name in
-`Name:` and what you typed in `Aliases:`.
+The top block, with `Server:` and `Address:`, identifies the **resolver** that answered, usually the network's router or the provider's DNS.
+The name showing up as `UnKnown` is not an error; it simply means that server has no reverse name configured. The
+`Non-authoritative answer:` line reveals that the IP came from the resolver's **cache**, not from the server that owns the domain — that is
+the common case, and the first manifestation of the cache examined in detail later. Since `www.github.com` is an alias, Windows shows the
+canonical name in `Name:` and the queried name in `Aliases:`.
 
 <Note>
-  The trailing dot in `www.github.com.` is deliberate. Without it, Windows appends your network's search suffix (here, `lan`) and asks
-  `www.github.com.lan` first, polluting the result and, later on, the Wireshark capture. The trailing dot says "this is the complete name,
-  do not append anything".
+  The trailing dot in `www.github.com.` is deliberate. Without it, Windows appends the network's search suffix (here, `lan`) and queries
+  `www.github.com.lan` first, polluting the result and, later on, the Wireshark capture. The trailing dot signals that the name is complete
+  and that nothing should be appended.
 </Note>
 
 ## The DNS client lives on your machine
 
-DNS almost never shows up on its own. **HTTP** (the Hypertext Transfer Protocol), **SMTP** (the Simple Mail Transfer Protocol) and others
-call it "under the hood" to translate the name the user typed. Follow the access to `www.acme.com/index.html`:
+DNS almost never appears on its own. **HTTP** (the Hypertext Transfer Protocol), **SMTP** (the Simple Mail Transfer Protocol) and others
+invoke it under the hood to translate the name the user typed. Consider the access to `www.acme.com/index.html`:
 
-1. The user's own machine runs the **client side** of DNS. It is not a separate remote server, it lives on your host.
+1. The user's own machine runs the **client side** of DNS. It is not a separate remote server; it resides on the host.
 2. The browser extracts the hostname `www.acme.com` from the URL and hands it to the DNS client.
 3. The DNS client sends a query with that name to a DNS server.
 4. The client receives back the IP corresponding to the name.
 5. Only then, holding the IP, does the browser open the **TCP** (Transmission Control Protocol) connection to the HTTP server on port 80.
 
-Because this translation happens **before** any application data flows, DNS adds delay, sometimes substantial. What saves us is the cache:
-the IP being sought is almost always already stored on a nearby server, which reduces both the average delay and the DNS traffic on the
-network.
+Because this translation happens **before** any application data flows, DNS adds delay, sometimes substantial. The cache mitigates this: the
+IP being sought is almost always already stored on a nearby server, which reduces both the average delay and the DNS traffic on the network.
 
-So who is the server that answered the previous query? `ipconfig /all` shows it. (I trimmed the output to the lines that matter and hid the
-physical address and machine identifiers.)
+The server that answered the previous query can be identified with `ipconfig /all`. (The output is trimmed to the relevant lines, and the
+physical address and machine identifiers are hidden.)
 
 ```bat
 ipconfig /all
@@ -129,10 +128,10 @@ Ethernet adapter Ethernet:
 
 The `DNS Servers` line carries the resolver configured on the adapter, and it is the same `192.168.40.1` that appeared as `Server:` in the
 previous query. That address arrived automatically via **DHCP** (the Dynamic Host Configuration Protocol), which distributes network
-settings. It is the local DNS server, which acts as a proxy for your queries and which we will see more closely when we get to the
+settings. It is the local DNS server, which acts as a proxy for the host's queries and which is examined more closely in the section on the
 hierarchy.
 
-To see that other protocols call DNS under the hood, just run a `ping`. It resolves the name **before** sending any packet.
+That other protocols invoke DNS under the hood is confirmed by a `ping`. It resolves the name **before** sending any packet.
 
 ```bat
 ping -n 4 www.github.com.
@@ -152,16 +151,16 @@ Approximate round trip times in milli-seconds:
 ```
 
 The first line is the proof: `Pinging github.com [140.82.113.4]`. The IP in brackets can only be there because the name **was already
-resolved by DNS** before the first packet. Notice too that, although I typed `www.github.com`, `ping` shows the canonical name `github.com`,
-the same alias → canonical chain the first query revealed.
+resolved by DNS** before the first packet. Note as well that, although `www.github.com` was typed, `ping` shows the canonical name
+`github.com`, the same alias → canonical chain the first query revealed.
 
 ## The four DNS services
 
 Beyond name → IP translation, DNS offers three other services. Using the fictional company **Acme** (`acme.com`):
 
 1. **Name → IP translation**, the main service already seen.
-2. **Host aliasing.** A real server usually has a complicated canonical name, like `relay1.east.acme.com`. For users, simpler aliases are
-   defined, such as `www.acme.com`. The pretty name you type is, underneath, a pointer to the real canonical name.
+2. **Host aliasing.** A real server usually has a complicated canonical name, such as `relay1.east.acme.com`. For users, simpler aliases are
+   defined, such as `www.acme.com`. The simpler name typed by the user is, underneath, a pointer to the real canonical name.
 3. **Mail-server aliasing.** The same idea applied to email. The address should be simple (`bob@acme.com`) even if the real mail server has
    a complicated name. The **MX** (Mail Exchange) record makes this possible, and it lets the Web server and the mail server share the same
    alias `acme.com`.
@@ -169,7 +168,7 @@ Beyond name → IP translation, DNS offers three other services. Using the ficti
    addresses, and on each query the server returns the whole set but rotates the order (round-robin). Since the client usually uses the
    first address in the list, requests spread across the replicas.
 
-Host aliasing becomes clear by asking directly for the CNAME record and, in a rich case, watching the whole chain a CDN builds:
+Host aliasing becomes clear by querying the CNAME record directly and, in a richer case, observing the whole chain a CDN builds:
 
 ```bat
 nslookup -type=CNAME www.github.com.
@@ -182,7 +181,7 @@ Address:  192.168.40.1
 www.github.com  canonical name = github.com
 ```
 
-The phrase `canonical name =` is literally the canonical name of the concept. Now the rich case, with PowerShell's `Resolve-DnsName`:
+The phrase `canonical name =` is literally the canonical name of the concept. The richer case follows, with PowerShell's `Resolve-DnsName`:
 
 ```powershell
 Resolve-DnsName -Name www.amazon.com -Type A
@@ -202,13 +201,13 @@ Section    : Answer
 IP4Address : 13.225.51.229
 ```
 
-`www.amazon.com` is just the alias at the tip of a chain: it points to `tp.47cf2c8c9-frontier.amazon.com`, which points to
+`www.amazon.com` is merely the alias at the tip of a chain: it points to `tp.47cf2c8c9-frontier.amazon.com`, which points to
 `cf.47cf2c8c9-frontier.amazon.com`, which finally resolves to the IP `13.225.51.229` on CloudFront, Amazon's own CDN. PowerShell shows the
 two **CNAMEs** in a table (all have the `NameHost` column) and the **A record** at the end in a separate block, because it carries
-`IP4Address` instead of `NameHost`. The IP and the TTLs change on every query — what matters is the alias → canonical chain reaching the
+`IP4Address` instead of `NameHost`. The IP and the TTLs change on every query; what matters is the alias → canonical chain reaching the
 address.
 
-Mail-server aliasing shows up in the MX query:
+Mail-server aliasing appears in the MX query:
 
 ```bat
 nslookup -type=MX gmail.com.
@@ -229,7 +228,7 @@ gmail.com       MX preference = 5, mail exchanger = gmail-smtp-in.l.google.com
 Each `mail exchanger` is the canonical name of a mail server, and `preference` is the priority — the lower, the more preferred. The
 lowest-preference server here is `gmail-smtp-in.l.google.com`, with preference 5.
 
-Load distribution becomes visible when you query a heavily replicated name twice in a row:
+Load distribution becomes visible when a heavily replicated name is queried twice in a row:
 
 ```bat
 nslookup yahoo.com.
@@ -278,9 +277,9 @@ address, different clients end up on different replicas and the load spreads.
 
 <Note>
   DNS is an application-layer protocol for two reasons: it runs between end systems in the client-server paradigm and relies on an
-  end-to-end transport protocol (UDP) to carry its messages. But there is a difference from the Web or email — nobody "uses" DNS directly.
-  It is a core support function, triggered by other applications. This is a deliberate design decision: push a critical function to the edge
-  of the network, on the hosts, keeping the core simple.
+  end-to-end transport protocol (UDP) to carry its messages. There is, however, a difference from the Web or email — no one invokes DNS
+  directly. It is a core support function, triggered by other applications. This is a deliberate design decision: pushing a critical
+  function to the edge of the network, on the hosts, keeps the core simple.
 </Note>
 
 ## Why DNS is not centralized
@@ -315,7 +314,7 @@ classes, plus the local server, which sits outside the hierarchy.
 
 ## Resolution step by step
 
-Imagine `pc.globex.com` wanting the IP of `www.acme.com`. The query goes first to the local server `dns.globex.com`, which walks the
+Consider `pc.globex.com` seeking the IP of `www.acme.com`. The query goes first to the local server `dns.globex.com`, which walks the
 hierarchy on its behalf:
 
 1. `pc.globex.com` → `dns.globex.com`: query with the name `www.acme.com`.
@@ -443,8 +442,8 @@ sequenceDiagram
 
 </Figure>
 
-You can walk this path by hand. Instead of letting the local server iterate for us, we ask one level at a time, always without recursion
-(`-norecurse`) and requesting the name servers (`-type=NS`). We start at a root server:
+This path can be walked by hand. Rather than letting the local server iterate, each level is queried one at a time, always without recursion
+(`-norecurse`) and requesting the name servers (`-type=NS`). The walk begins at a root server:
 
 ```bat
 nslookup -norecurse -type=NS github.com. 198.41.0.4
@@ -463,9 +462,9 @@ l.gtld-servers.net      internet address = 192.41.162.30
 [... A and AAAA glue records for each ...]
 ```
 
-The root does not know the IP of `github.com`, so it returns a **referral** to the `.com` TLD servers. Notice the two line forms:
-`nameserver =` is an **NS** record (the next-level server), and `internet address =` is the **A** glue record with that server's IP. We pick
-one of the TLD IPs (`192.41.162.30`, from `l.gtld-servers.net`) and ask it:
+The root does not know the IP of `github.com`, so it returns a **referral** to the `.com` TLD servers. Note the two line forms:
+`nameserver =` is an **NS** record (the next-level server), and `internet address =` is the **A** glue record with that server's IP. One of
+the TLD IPs (`192.41.162.30`, from `l.gtld-servers.net`) is selected and queried:
 
 ```bat
 nslookup -norecurse -type=NS github.com. 192.41.162.30
@@ -482,8 +481,8 @@ ns-421.awsdns-52.com    internet address = 205.251.193.165
 ```
 
 The TLD also does not know the final IP, but returns another referral, now to the **authoritative** servers of `github.com`, already sending
-the glue with one server's IP. We use that IP (`205.251.193.165`) in the last hop, now requesting the **A** record and turning on debugging
-(`-debug`) to see the flags:
+the glue with one server's IP. That IP (`205.251.193.165`) is used in the last hop, now requesting the **A** record and turning on debugging
+(`-debug`) to expose the flags:
 
 ```bat
 nslookup -debug -norecurse -type=A github.com. 205.251.193.165
@@ -507,15 +506,15 @@ Name:    github.com
 Address:  140.82.114.3
 ```
 
-The referral → referral → answer pattern is exactly the iterative resolution of the eight messages. Compare the worlds: in the first two
+The referral → referral → answer pattern is exactly the iterative resolution of the eight messages. Comparing the worlds: in the first two
 hops there was no `auth. answer`, only `nameserver =`, because they were delegations. In the last hop the `auth. answer` flag appears and
 the IP comes in the `ANSWERS` section. That authoritative IP, `140.82.114.3`, is even different from the `140.82.113.4` the local resolver
-gave us at the start — GitHub publishes several replicas, and which one reaches us depends on which server answers and what is in cache.
+returned at the start — GitHub publishes several replicas, and which one is reached depends on which server answers and what is in cache.
 
 <Warning>
-  On Windows, before each useful answer, `nslookup` prints a block of noise: it tries to find the reverse name of the server you pointed at
-  and fails, showing `in-addr.arpa ...`, `(root) ...` lines or an `rcode = REFUSED`. Ignore that top block and the `Server: UnKnown` — the
-  answer that matters comes **after** it. The excerpts above are already trimmed at that point.
+  On Windows, before each useful answer, `nslookup` prints a block of noise: it tries to find the reverse name of the targeted server and
+  fails, showing `in-addr.arpa ...`, `(root) ...` lines or an `rcode = REFUSED`. That top block and the `Server: UnKnown` may be ignored —
+  the answer that matters comes **after** it. The excerpts above are already trimmed at that point.
 </Warning>
 
 ## Cache and TTL
@@ -560,8 +559,8 @@ sequenceDiagram
 
 </Figure>
 
-To watch the TTL count down, the trick is to pick a name with a long TTL, like the apex `globo.com`. First we clear the client cache and
-populate it with a query (in PowerShell, as administrator):
+To observe the TTL count down, a name with a long TTL is appropriate, such as the apex `globo.com`. The client cache is first cleared and
+populated with a query (in PowerShell, as administrator):
 
 ```powershell
 Clear-DnsClientCache
@@ -574,7 +573,7 @@ Name                                           Type   TTL   Section    IPAddress
 globo.com                                      A      2813  Answer     186.192.83.12
 ```
 
-Now we read the entry already inside the client cache:
+The entry already present in the client cache is then read:
 
 ```powershell
 Get-DnsClientCache -Name globo.com
@@ -588,8 +587,8 @@ globo.com       globo.com       A      Success   Answer    2812      4 186.192.8
 ```
 
 That table is the resource record in columns: `RecordName` is the name, `Data` is the value (the IP), `RecordType` is the type (`A`) and
-`TimeToLive` is the TTL in seconds, the number that will fall. We wait twenty seconds without querying the name again, because any new query
-refills the entry, and read it once more:
+`TimeToLive` is the TTL in seconds, the number that will fall. After twenty seconds without querying the name again — since any new query
+refills the entry — it is read once more:
 
 ```powershell
 Start-Sleep -Seconds 20
@@ -601,7 +600,7 @@ globo.com       globo.com       A      Success   Answer    2792      4 186.192.8
 ```
 
 The `TimeToLive` dropped from 2812 to 2792, about twenty seconds less. When it reaches zero, the entry is discarded. That same cache also
-cuts the delay, and we can measure it with `Measure-Command`: the first query goes to the network, the second comes from the cache.
+cuts the delay, which can be measured with `Measure-Command`: the first query goes to the network, the second comes from the cache.
 
 ```powershell
 Clear-DnsClientCache
@@ -615,8 +614,8 @@ TotalMilliseconds : 14.0728    <- 2nd query (came from the cache)
 ```
 
 The second query never leaves the machine, because Windows already stored the name → IP pair in the client cache. The drop — here from ~22
-ms to ~14 ms — is the gain the cache brings: less delay and less traffic. I used `www.rnp.br`, a less popular name, on purpose: a heavily
-visited name would already be warm at the provider's resolver, and the two measurements would come out nearly equal.
+ms to ~14 ms — is the gain the cache brings: less delay and less traffic. `www.rnp.br`, a less popular name, was used deliberately: a
+heavily visited name would already be warm at the provider's resolver, and the two measurements would come out nearly equal.
 
 ## Resource records
 
@@ -627,7 +626,7 @@ The DNS database is made of **resource records** (RRs).
   depends on the `Type`.
 </Definition>
 
-There are four types that support everything we have seen:
+There are four types that support everything seen so far:
 
 - **A** — `Name` is a host and `Value` is its IP. It is the standard name → IP mapping. E.g.: `(relay1.east.acme.com, 145.37.93.126, A)`.
 - **NS** — `Name` is a domain and `Value` is the name of an authoritative server for that domain. It forwards the query along the chain.
@@ -635,13 +634,13 @@ There are four types that support everything we have seen:
 - **CNAME** — `Value` is the canonical name corresponding to the alias in `Name`. E.g.: `(acme.com, relay1.east.acme.com, CNAME)`.
 - **MX** — `Value` is the canonical name of the mail server whose alias is in `Name`. E.g.: `(acme.com, mail.east.acme.com, MX)`.
 
-The elegant detail is that the **same alias** `acme.com` leads to different destinations depending on the type queried: you ask for **MX**
-to find the mail server and **CNAME** to find the Web server. That is what lets email and Web share the name. We saw the four types in
-action: the A in the first query, the CNAME in the Amazon chain, the MX in Gmail and the NS in the hierarchy referrals.
+The elegant detail is that the **same alias** `acme.com` leads to different destinations depending on the type queried: an **MX** query
+finds the mail server and a **CNAME** query finds the Web server. That is what lets email and Web share the name. The four types were seen
+in action: the A in the first query, the CNAME in the Amazon chain, the MX in Gmail and the NS in the hierarchy referrals.
 
 Where records live depends on authority. If a server has authority over a host, it holds the **A** record for that host. If it does not, it
 holds a pair that points the way: an **NS** (domain → authoritative name) and an **A** that gives the IP of that authoritative server. That
-is exactly the NS + A glue pair we saw arrive in each hierarchy referral — it is what makes the iteration work.
+is exactly the NS + A glue pair seen arriving in each hierarchy referral — it is what makes the iteration work.
 
 ## The DNS message
 
@@ -702,7 +701,7 @@ flags field live, among other bits, the query/response bit, the authoritative bi
 bit. The four sections that follow the header are the **question** (the queried name and type), the **answer** (the RRs for the name), the
 **authority** (records of other authoritative servers) and the **additional** (extra useful records).
 
-With Wireshark you can see each of these fields in the real packet. I generated a clean query with `ipconfig /flushdns` followed by
+Wireshark exposes each of these fields in the real packet. A clean query was generated with `ipconfig /flushdns` followed by
 `nslookup www.example.com.` and filtered on `dns`. The blocks below reproduce Wireshark's dissector tree for the captured pair (the
 `Transaction ID` and the source port change on every run). First the query:
 
@@ -721,9 +720,9 @@ Domain Name System (query)
         www.example.com: type A, class IN
 ```
 
-In `User Datagram Protocol` you read the confirmation that DNS runs over UDP, with port 53 on one side. The header carries the
-`Transaction ID`, the `Flags` field with its individual bits, and the four counters. In a query, only the `Response` bit (here 0, it is a
-question) and `Recursion desired` make sense. Now the response:
+In `User Datagram Protocol` lies the confirmation that DNS runs over UDP, with port 53 on one side. The header carries the `Transaction ID`,
+the `Flags` field with its individual bits, and the four counters. In a query, only the `Response` bit (here 0, since it is a question) and
+`Recursion desired` are meaningful. Now the response:
 
 ```text
 Domain Name System (response)
@@ -743,8 +742,8 @@ Domain Name System (response)
 ```
 
 The `Transaction ID` is the same as the query's, which is how the client matches the response to the question. The `Response` bit is now 1,
-`Answer RRs` is 1, and in the `Answers` section the A record appears with its `Time to live`. Notice the `Authoritative` bit is 0: the
-answer came from the local resolver, from the cache, not from the server that owns the domain — the same `Non-authoritative answer:` that
+`Answer RRs` is 1, and in the `Answers` section the A record appears with its `Time to live`. Note the `Authoritative` bit is 0: the answer
+came from the local resolver, from the cache, not from the server that owns the domain — the same `Non-authoritative answer:` that
 `nslookup` showed at the start.
 
 The response to an MX query illustrates what the additional section is for. The answer section carries the canonical name of the mail
@@ -785,8 +784,8 @@ Domain Name System (response)
         gmail-smtp-in.l.google.com: type A, class IN, addr 142.250.xxx.xxx
 ```
 
-It is worth remembering that not every server sends the A records in the additional section. When they do not come, the client makes
-separate A queries afterward — that is normal, not an error.
+It is worth recalling that not every server sends the A records in the additional section. When they do not come, the client makes separate
+A queries afterward — that is normal, not an error.
 
 Finally, Wireshark makes visible the claim that DNS adds delay **before** the application transfers any data. Opening `github.com` in the
 browser and filtering the DNS query alongside the first TCP SYN, the order is clear:
@@ -803,12 +802,12 @@ the **same IP** the DNS delivered. The `Time` column confirms the sequence.
 
 ## How records enter the database
 
-So far we have seen how records are read. Here is how they get in. First the domain (say `acme.com`) is registered with a **registrar**, an
-organization accredited by **ICANN** (the Internet Corporation for Assigned Names and Numbers) that verifies the name's uniqueness and
-charges a fee. You provide the name and IP of your primary and secondary authoritative servers. The registrar inserts, into the `.com` TLD
-servers, an NS + A pair for each. And you insert, into your own authoritative servers, the A record for the Web server at the canonical
-name, the CNAME linking the alias to the canonical name, and the MX for the mail server. There is also the protocol's **UPDATE** option for
-adding and removing records dynamically [@RFC2136].
+So far the focus has been on how records are read. The mechanism by which they get in follows. First the domain (say `acme.com`) is
+registered with a **registrar**, an organization accredited by **ICANN** (the Internet Corporation for Assigned Names and Numbers) that
+verifies the name's uniqueness and charges a fee. The owner provides the name and IP of the primary and secondary authoritative servers. The
+registrar inserts, into the `.com` TLD servers, an NS + A pair for each. The owner inserts, into the authoritative servers, the A record for
+the Web server at the canonical name, the CNAME linking the alias to the canonical name, and the MX for the mail server. There is also the
+protocol's **UPDATE** option for adding and removing records dynamically [@RFC2136].
 
 <Figure caption="Figure 7 — Record insertion: the registrar inserts NS and A into the TLD, and the domain owner inserts A, CNAME and MX into its authoritative server." zoomable>
 
@@ -843,20 +842,20 @@ sequenceDiagram
 
 Because DNS is critical infrastructure, it is a target. The attacks discussed by Kurose and Ross are four [@KuroseRoss2021]. A **DDoS**
 (Distributed Denial of Service) **against the root servers** tries to flood them with packets. The 2002 attack, with a botnet sending ICMP
-ping to the 13 root servers, had minimal impact for two reasons we already practiced: filters blocking ICMP, and local servers already
-holding the TLD IPs in cache, bypassing the root. A **DDoS against the TLD servers** is more effective, because it is harder to filter
-legitimate DNS queries and TLDs are not bypassed as easily — that is what took down **Dyn** in 2016, via the **Mirai** botnet of about a
-hundred thousand IoT devices, knocking Amazon, Twitter, Netflix, GitHub and Spotify offline for nearly a day [@Antonakakis2017]. There is
-also **man-in-the-middle**, where the attacker intercepts queries and returns false responses, and **cache poisoning**, where the attacker
-makes a server cache false responses. The underlying defense is **DNSSEC** (DNS Security Extensions) [@RFC4033].
+ping to the 13 root servers, had minimal impact for two reasons already practiced: filters blocking ICMP, and local servers already holding
+the TLD IPs in cache, bypassing the root. A **DDoS against the TLD servers** is more effective, because it is harder to filter legitimate
+DNS queries and TLDs are not bypassed as easily — that is what took down **Dyn** in 2016, via the **Mirai** botnet of about a hundred
+thousand IoT devices, knocking Amazon, Twitter, Netflix, GitHub and Spotify offline for nearly a day [@Antonakakis2017]. There is also
+**man-in-the-middle**, where the attacker intercepts queries and returns false responses, and **cache poisoning**, where the attacker makes
+a server cache false responses. The underlying defense is **DNSSEC** (DNS Security Extensions) [@RFC4033].
 
 The fragility becomes clear by observing two fields in Wireshark. The `Transaction ID` (`dns.id`) has only 16 bits, that is, 65,536 possible
-values. The resolver accepts the response whose ID matches the question's, and such a short identifier leaves room for an attacker to try to
-guess the ID and answer before the legitimate server. The concrete defense is to randomize the UDP **source port** (`udp.srcport`), which
-adds entropy to the ID and makes the combined guess much harder. The point is that nothing here authenticates the response: whoever answers
-with the right ID "wins". That is the gap DNSSEC closes.
+values. The resolver accepts the response whose ID matches the question's, and such a short identifier leaves room for an attacker to
+attempt to guess the ID and answer before the legitimate server. The concrete defense is to randomize the UDP **source port**
+(`udp.srcport`), which adds entropy to the ID and makes the combined guess much harder. The point is that nothing here authenticates the
+response: whoever answers with the right ID "wins". That is the gap DNSSEC closes.
 
-DNSSEC cryptographically signs the records. Asking a validating resolver (`1.1.1.1`) for the A record with the `-DnssecOk` flag, the
+DNSSEC cryptographically signs the records. Querying a validating resolver (`1.1.1.1`) for the A record with the `-DnssecOk` flag, the
 signature comes along:
 
 ```powershell
@@ -927,9 +926,10 @@ passing it on.
 
 ## Next steps
 
-This lab stopped on purpose before the "heavy" part. When DNS joins the next topics, we can go deeper by setting up a **real authoritative
-server** (with BIND or `dnsmasq` on Linux or WSL), registering our own zones and pointing the machine's resolver at it, so record insertion
-happens on a real server. It is also worth capturing and comparing **DNS over HTTPS** (DoH) and **DNS over TLS** (DoT) against classic DNS
-on port 53, and completing the record-insertion cycle from the registrar side and via the dynamic **UPDATE** option [@RFC2136].
+This lab stopped on purpose before the "heavy" part. Several extensions follow naturally once DNS is joined with the next topics. Setting up
+a **real authoritative server** (with BIND or `dnsmasq` on Linux or WSL), registering custom zones and pointing the machine's resolver at it
+would make record insertion occur on a real server. A further extension is capturing and comparing **DNS over HTTPS** (DoH) and **DNS over
+TLS** (DoT) against classic DNS on port 53, and completing the record-insertion cycle from the registrar side and via the dynamic **UPDATE**
+option [@RFC2136].
 
 ## References

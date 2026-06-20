@@ -23,11 +23,11 @@ bibliography: ./src/content/papers/dns-from-concept-to-packet/references.bib
 
 import { Definition, Note, Warning, Figure, Sidenote } from '../../../components/mdx';
 
-Toda vez que você abre um site, sua máquina faz uma pergunta silenciosa antes de qualquer outra coisa: "qual é o endereço IP desse nome?".
-Quem responde é o **DNS** (Domain Name System), o serviço de diretório da Internet. Este artigo abre essa caixa-preta. A teoria segue os
-fundamentos de Kurose e Ross [@KuroseRoss2021], e cada conceito aparece logo ao lado do comando que o torna visível, com a saída **real**
-capturada num Windows usando `nslookup`, o PowerShell e o Wireshark. As saídas foram coletadas em 6 de junho de 2026 e estão reproduzidas
-tal como saíram do terminal.
+Todo acesso a um site é precedido por uma pergunta silenciosa do host: o endereço IP correspondente a um dado nome. Quem responde é o
+**DNS** (Domain Name System), o serviço de diretório da Internet. Este artigo examina essa caixa-preta. A teoria segue os fundamentos de
+Kurose e Ross [@KuroseRoss2021], e cada conceito é acompanhado pelo comando que o torna observável, com a saída **real** capturada num
+Windows usando `nslookup`, o PowerShell e o Wireshark. As saídas foram coletadas em 6 de junho de 2026 e estão reproduzidas tal como saíram
+do terminal.
 
 <nav class="paper-toc" aria-label="Sumário">
 
@@ -62,11 +62,11 @@ direita, revela informação cada vez mais específica sobre onde o host está, 
 
 Conciliar "nome fácil de lembrar" com "endereço que a rede sabe rotear" exige um serviço de diretório que traduza nome em IP. Essa é a
 tarefa principal do DNS, que na verdade é duas coisas ao mesmo tempo: um **banco de dados distribuído**, implementado numa hierarquia de
-servidores espalhados pelo mundo, e um **protocolo de camada de aplicação** que deixa um host consultar esse banco. O protocolo roda sobre
-**UDP** (User Datagram Protocol), na porta **53**, e está especificado nos RFCs 1034 e 1035 [@RFC1034; @RFC1035]. Na prática, os servidores
-costumam rodar o software **BIND** (Berkeley Internet Name Domain).
+servidores espalhados pelo mundo, e um **protocolo de camada de aplicação** que permite a um host consultar esse banco. O protocolo roda
+sobre **UDP** (User Datagram Protocol), na porta **53**, e está especificado nos RFCs 1034 e 1035 [@RFC1034; @RFC1035]. Na prática, os
+servidores costumam rodar o software **BIND** (Berkeley Internet Name Domain).
 
-Dá para ver tudo isso de uma vez com um único comando. O `nslookup` pega um nome, pergunta ao servidor DNS e mostra a resposta.
+Tudo isso pode ser observado de uma vez com um único comando. O `nslookup` recebe um nome, consulta o servidor DNS e exibe a resposta.
 
 ```bat
 nslookup www.github.com.
@@ -82,34 +82,34 @@ Address:  140.82.113.4
 Aliases:  www.github.com
 ```
 
-O bloco de cima, com `Server:` e `Address:`, é o **resolver** que respondeu, em geral o roteador da rede ou o DNS do provedor. O nome
-aparecer como `UnKnown` não é erro, significa apenas que esse servidor não tem nome reverso configurado. A linha `Non-authoritative answer:`
-revela que o IP veio do **cache** do resolver, e não do servidor dono do domínio — esse é o caso comum, e é a primeira manifestação do cache
-que veremos em detalhe adiante. Como `www.github.com` é um alias, o Windows mostra o canonical name em `Name:` e o que você digitou em
-`Aliases:`.
+O bloco de cima, com `Server:` e `Address:`, identifica o **resolver** que respondeu, em geral o roteador da rede ou o DNS do provedor. O
+nome aparecer como `UnKnown` não é erro, significa apenas que esse servidor não tem nome reverso configurado. A linha
+`Non-authoritative answer:` revela que o IP veio do **cache** do resolver, e não do servidor dono do domínio — esse é o caso comum, e é a
+primeira manifestação do cache examinada em detalhe adiante. Como `www.github.com` é um alias, o Windows mostra o canonical name em `Name:`
+e o nome consultado em `Aliases:`.
 
 <Note>
-  O ponto final em `www.github.com.` é proposital. Sem ele, o Windows cola o sufixo de busca da sua rede (aqui, `lan`) e pergunta
-  `www.github.com.lan` primeiro, sujando o resultado e, mais adiante, a captura do Wireshark. O ponto final diz "este é o nome completo, não
-  cole nada".
+  O ponto final em `www.github.com.` é proposital. Sem ele, o Windows acrescenta o sufixo de busca da rede (aqui, `lan`) e consulta
+  `www.github.com.lan` primeiro, poluindo o resultado e, mais adiante, a captura do Wireshark. O ponto final sinaliza que o nome está
+  completo e que nada deve ser acrescentado.
 </Note>
 
 ## O cliente DNS mora na sua máquina
 
-O DNS quase nunca aparece sozinho. O **HTTP** (Hypertext Transfer Protocol), o **SMTP** (Simple Mail Transfer Protocol) e outros o chamam
-"por baixo" para traduzir o nome que o usuário digitou. Acompanhe o acesso a `www.acme.com/index.html`:
+O DNS quase nunca aparece sozinho. O **HTTP** (Hypertext Transfer Protocol), o **SMTP** (Simple Mail Transfer Protocol) e outros o invocam
+por baixo para traduzir o nome que o usuário digitou. Considere-se o acesso a `www.acme.com/index.html`:
 
-1. A própria máquina do usuário roda o **lado cliente** do DNS. Ele não é um servidor remoto à parte, mora no seu host.
+1. A própria máquina do usuário roda o **lado cliente** do DNS. Ele não é um servidor remoto à parte, reside no host.
 2. O navegador extrai o hostname `www.acme.com` da URL e o entrega ao cliente DNS.
 3. O cliente DNS envia uma consulta com esse nome a um servidor DNS.
 4. O cliente recebe de volta o IP correspondente ao nome.
 5. Só então, de posse do IP, o navegador abre a conexão **TCP** (Transmission Control Protocol) com o servidor HTTP na porta 80.
 
-Como essa tradução acontece **antes** de qualquer dado da aplicação trafegar, o DNS adiciona atraso, às vezes substancial. O que salva é o
-cache: o IP procurado quase sempre já está guardado num servidor próximo, o que reduz tanto o atraso médio quanto o tráfego DNS na rede.
+Como essa tradução acontece **antes** de qualquer dado da aplicação trafegar, o DNS adiciona atraso, às vezes substancial. O cache mitiga
+isso: o IP procurado quase sempre já está guardado num servidor próximo, o que reduz tanto o atraso médio quanto o tráfego DNS na rede.
 
-Quem é, então, o servidor que respondeu na consulta anterior? O `ipconfig /all` mostra. (Recortei a saída para as linhas que importam e
-ocultei endereço físico e identificadores da máquina.)
+O servidor que respondeu na consulta anterior pode ser identificado com `ipconfig /all`. (A saída foi recortada para as linhas relevantes, e
+o endereço físico e os identificadores da máquina estão ocultos.)
 
 ```bat
 ipconfig /all
@@ -127,10 +127,10 @@ Ethernet adapter Ethernet:
 ```
 
 A linha `DNS Servers` traz o resolver configurado no adaptador, e ele é o mesmo `192.168.40.1` que apareceu como `Server:` na consulta
-anterior. Esse endereço chegou automaticamente via **DHCP** (Dynamic Host Configuration Protocol), o protocolo que distribui as
-configurações de rede. É o servidor DNS local, que age como proxy das suas consultas e que veremos melhor quando falarmos da hierarquia.
+anterior. Esse endereço chegou automaticamente via **DHCP** (Dynamic Host Configuration Protocol), que distribui as configurações de rede. É
+o servidor DNS local, que age como proxy das consultas do host e que é examinado mais de perto na seção sobre a hierarquia.
 
-Para ver que outros protocolos chamam o DNS por baixo, basta dar um `ping`. Ele resolve o nome **antes** de enviar qualquer pacote.
+Que outros protocolos invocam o DNS por baixo confirma-se com um `ping`. Ele resolve o nome **antes** de enviar qualquer pacote.
 
 ```bat
 ping -n 4 www.github.com.
@@ -150,7 +150,7 @@ Approximate round trip times in milli-seconds:
 ```
 
 A primeira linha é a prova: `Pinging github.com [140.82.113.4]`. O IP entre colchetes só pode estar ali porque o nome **já foi resolvido por
-DNS** antes do primeiro pacote. Repare também que, embora eu tenha digitado `www.github.com`, o `ping` exibe o canonical name `github.com`,
+DNS** antes do primeiro pacote. Note-se também que, embora se tenha digitado `www.github.com`, o `ping` exibe o canonical name `github.com`,
 o mesmo encadeamento alias → canonical name que a primeira consulta revelou.
 
 ## Os quatro serviços do DNS
@@ -159,7 +159,8 @@ Além da tradução nome → IP, o DNS oferece outros três serviços. Usando a 
 
 1. **Tradução nome → IP**, o serviço principal já visto.
 2. **Alias de host.** Um servidor real costuma ter um canonical name complicado, como `relay1.east.acme.com`. Para os usuários, definem-se
-   aliases mais simples, como `www.acme.com`. O nome bonito que você digita é, por baixo, um apontamento para o canonical name de verdade.
+   aliases mais simples, como `www.acme.com`. O nome mais simples digitado pelo usuário é, por baixo, um apontamento para o canonical name
+   de verdade.
 3. **Alias de servidor de e-mail.** A mesma ideia aplicada ao e-mail. O endereço deve ser simples (`bob@acme.com`) mesmo que o servidor de
    e-mail real tenha nome complicado. É o registro **MX** (Mail Exchange) que viabiliza isso, e ele permite que o servidor Web e o de e-mail
    compartilhem o mesmo alias `acme.com`.
@@ -167,7 +168,8 @@ Além da tradução nome → IP, o DNS oferece outros três serviços. Usando a 
    **conjunto** de endereços, e a cada consulta o servidor devolve o conjunto inteiro mas rotaciona a ordem (round-robin). Como o cliente
    costuma usar o primeiro endereço da lista, as requisições se espalham pelas réplicas.
 
-O alias de host fica claro pedindo diretamente o registro CNAME e, num caso rico, observando a cadeia inteira que uma CDN monta:
+O alias de host fica claro consultando-se diretamente o registro CNAME e, num caso mais rico, observando-se a cadeia inteira que uma CDN
+monta:
 
 ```bat
 nslookup -type=CNAME www.github.com.
@@ -180,7 +182,7 @@ Address:  192.168.40.1
 www.github.com  canonical name = github.com
 ```
 
-A expressão `canonical name =` é literalmente o canonical name do conceito. Agora o caso rico, com o `Resolve-DnsName` do PowerShell:
+A expressão `canonical name =` é literalmente o canonical name do conceito. Segue o caso mais rico, com o `Resolve-DnsName` do PowerShell:
 
 ```powershell
 Resolve-DnsName -Name www.amazon.com -Type A
@@ -200,10 +202,10 @@ Section    : Answer
 IP4Address : 13.225.51.229
 ```
 
-O `www.amazon.com` é só o alias na ponta de uma corrente: ele aponta para `tp.47cf2c8c9-frontier.amazon.com`, que aponta para
+O `www.amazon.com` é apenas o alias na ponta de uma corrente: ele aponta para `tp.47cf2c8c9-frontier.amazon.com`, que aponta para
 `cf.47cf2c8c9-frontier.amazon.com`, que enfim resolve para o IP `13.225.51.229` da CloudFront, a CDN da própria Amazon. O PowerShell mostra
 os dois **CNAMEs** numa tabela (todos têm a coluna `NameHost`) e o **registro A** do fim num bloco separado, porque ele traz `IP4Address` em
-vez de `NameHost`. O IP e os TTLs mudam a cada consulta — o que importa é a corrente alias → canonical name chegar ao endereço.
+vez de `NameHost`. O IP e os TTLs mudam a cada consulta; o que importa é a corrente alias → canonical name chegar ao endereço.
 
 O alias de servidor de e-mail aparece na consulta MX:
 
@@ -226,7 +228,7 @@ gmail.com       MX preference = 5, mail exchanger = gmail-smtp-in.l.google.com
 Cada `mail exchanger` é o canonical name de um servidor de e-mail, e o `preference` é a prioridade — quanto menor, mais preferencial. O
 servidor de menor preferência aqui é o `gmail-smtp-in.l.google.com`, com preferência 5.
 
-O load distribution fica visível quando se consulta um nome muito replicado duas vezes seguidas:
+O load distribution fica visível quando um nome muito replicado é consultado duas vezes seguidas:
 
 ```bat
 nslookup yahoo.com.
@@ -249,7 +251,7 @@ Addresses:  2001:4998:24:120d::1:1
           74.6.231.20
 ```
 
-Rodando o mesmo comando de novo, a ordem muda:
+Executando o mesmo comando de novo, a ordem muda:
 
 ```text
 Non-authoritative answer:
@@ -275,9 +277,9 @@ clientes distintos acabam em réplicas distintas e a carga se reparte.
 
 <Note>
   O DNS é um protocolo de camada de aplicação por dois motivos: roda entre sistemas finais no paradigma cliente-servidor e depende de um
-  protocolo de transporte fim a fim (o UDP) para carregar suas mensagens. Mas há uma diferença em relação à Web ou ao e-mail — ninguém "usa"
-  o DNS diretamente. Ele é uma função-núcleo de suporte, acionada por outras aplicações. É uma decisão de projeto deliberada: empurrar uma
-  função crítica para a borda da rede, nos hosts, mantendo o núcleo simples.
+  protocolo de transporte fim a fim (o UDP) para carregar suas mensagens. Há, contudo, uma diferença em relação à Web ou ao e-mail — ninguém
+  invoca o DNS diretamente. Ele é uma função-núcleo de suporte, acionada por outras aplicações. É uma decisão de projeto deliberada:
+  empurrar uma função crítica para a borda da rede, nos hosts, mantém o núcleo simples.
 </Note>
 
 ## Por que o DNS não é centralizado
@@ -312,7 +314,7 @@ particionados em três classes, mais o servidor local, que fica fora da hierarqu
 
 ## A resolução passo a passo
 
-Imagine `pc.globex.com` querendo o IP de `www.acme.com`. A consulta vai primeiro ao servidor local `dns.globex.com`, que percorre a
+Considere-se `pc.globex.com` buscando o IP de `www.acme.com`. A consulta vai primeiro ao servidor local `dns.globex.com`, que percorre a
 hierarquia por ele:
 
 1. `pc.globex.com` → `dns.globex.com`: consulta com o nome `www.acme.com`.
@@ -439,8 +441,8 @@ sequenceDiagram
 
 </Figure>
 
-Dá para fazer esse caminho com as próprias mãos. Em vez de deixar o servidor local iterar por nós, perguntamos um nível de cada vez, sempre
-sem recursão (`-norecurse`) e pedindo os servidores de nome (`-type=NS`). Começamos por um servidor raiz:
+Esse caminho pode ser percorrido manualmente. Em vez de deixar o servidor local iterar, consulta-se um nível de cada vez, sempre sem
+recursão (`-norecurse`) e pedindo os servidores de nome (`-type=NS`). O percurso começa por um servidor raiz:
 
 ```bat
 nslookup -norecurse -type=NS github.com. 198.41.0.4
@@ -459,9 +461,9 @@ l.gtld-servers.net      internet address = 192.41.162.30
 [... registros A e AAAA de cola de cada um ...]
 ```
 
-A raiz não sabe o IP de `github.com`, então devolve um **referral** para os servidores do TLD `.com`. Repare nas duas formas de linha:
+A raiz não sabe o IP de `github.com`, então devolve um **referral** para os servidores do TLD `.com`. Note-se as duas formas de linha:
 `nameserver =` é um registro **NS** (o servidor do próximo nível), e `internet address =` é o registro **A** de cola (_glue_) com o IP desse
-servidor. Pegamos um dos IPs do TLD (`192.41.162.30`, do `l.gtld-servers.net`) e perguntamos a ele:
+servidor. Seleciona-se um dos IPs do TLD (`192.41.162.30`, do `l.gtld-servers.net`) e consulta-se a ele:
 
 ```bat
 nslookup -norecurse -type=NS github.com. 192.41.162.30
@@ -478,8 +480,8 @@ ns-421.awsdns-52.com    internet address = 205.251.193.165
 ```
 
 O TLD também não sabe o IP final, mas devolve outro referral, agora para os servidores **autoritativos** de `github.com`, e já manda no glue
-o IP de um deles. Usamos esse IP (`205.251.193.165`) no último salto, agora pedindo o registro **A** e ligando a depuração (`-debug`) para
-ver as flags:
+o IP de um deles. Esse IP (`205.251.193.165`) é usado no último salto, agora pedindo o registro **A** e ligando a depuração (`-debug`) para
+expor as flags:
 
 ```bat
 nslookup -debug -norecurse -type=A github.com. 205.251.193.165
@@ -503,15 +505,15 @@ Name:    github.com
 Address:  140.82.114.3
 ```
 
-O padrão referral → referral → resposta é exatamente a resolução iterativa das oito mensagens. Compare os mundos: nos dois primeiros saltos
-não havia `auth. answer`, só `nameserver =`, porque eram delegações. No último salto aparece a flag `auth. answer` e o IP vem na seção
-`ANSWERS`. Esse IP autoritativo, `140.82.114.3`, é até diferente do `140.82.113.4` que o resolver local nos deu lá no começo — o GitHub
-publica várias réplicas, e o que nos chega depende de qual servidor responde e do que está em cache.
+O padrão referral → referral → resposta é exatamente a resolução iterativa das oito mensagens. Comparando os mundos: nos dois primeiros
+saltos não havia `auth. answer`, só `nameserver =`, porque eram delegações. No último salto aparece a flag `auth. answer` e o IP vem na
+seção `ANSWERS`. Esse IP autoritativo, `140.82.114.3`, é até diferente do `140.82.113.4` que o resolver local devolveu no começo — o GitHub
+publica várias réplicas, e qual delas é alcançada depende de qual servidor responde e do que está em cache.
 
 <Warning>
-  No Windows, antes de cada resposta útil, o `nslookup` imprime um bloco de ruído: ele tenta descobrir o nome reverso do servidor que você
-  apontou e falha, mostrando linhas `in-addr.arpa ...`, `(root) ...` ou um `rcode = REFUSED`. Ignore esse bloco do topo e o `Server:
-  UnKnown` — a resposta que importa vem **depois** dele. Os trechos acima já estão recortados nesse ponto.
+  No Windows, antes de cada resposta útil, o `nslookup` imprime um bloco de ruído: ele tenta descobrir o nome reverso do servidor apontado e
+  falha, mostrando linhas `in-addr.arpa ...`, `(root) ...` ou um `rcode = REFUSED`. Esse bloco do topo e o `Server: UnKnown` podem ser
+  ignorados — a resposta que importa vem **depois** dele. Os trechos acima já estão recortados nesse ponto.
 </Warning>
 
 ## Cache e TTL
@@ -556,8 +558,8 @@ sequenceDiagram
 
 </Figure>
 
-Para ver o TTL contando, o segredo é escolher um nome com TTL longo, como o apex `globo.com`. Primeiro limpamos o cache do cliente e
-povoamos com uma consulta (no PowerShell, como administrador):
+Para observar o TTL contando, convém escolher um nome com TTL longo, como o apex `globo.com`. Primeiro limpa-se o cache do cliente e
+povoa-se com uma consulta (no PowerShell, como administrador):
 
 ```powershell
 Clear-DnsClientCache
@@ -570,7 +572,7 @@ Name                                           Type   TTL   Section    IPAddress
 globo.com                                      A      2813  Answer     186.192.83.12
 ```
 
-Agora lemos a entrada já dentro do cache do cliente:
+Lê-se então a entrada já presente no cache do cliente:
 
 ```powershell
 Get-DnsClientCache -Name globo.com
@@ -584,8 +586,8 @@ globo.com       globo.com       A      Success   Answer    2812      4 186.192.8
 ```
 
 Essa tabela é o registro de recurso em colunas: `RecordName` é o nome, `Data` é o valor (o IP), `RecordType` é o tipo (`A`) e `TimeToLive` é
-o TTL em segundos, o número que vai cair. Esperamos vinte segundos sem consultar o nome de novo, porque qualquer nova consulta repõe a
-entrada, e lemos outra vez:
+o TTL em segundos, o número que vai cair. Após vinte segundos sem consultar o nome de novo — já que qualquer nova consulta repõe a entrada
+—, lê-se outra vez:
 
 ```powershell
 Start-Sleep -Seconds 20
@@ -597,7 +599,7 @@ globo.com       globo.com       A      Success   Answer    2792      4 186.192.8
 ```
 
 O `TimeToLive` caiu de 2812 para 2792, cerca de vinte segundos a menos. Quando chega a zero, a entrada é descartada. Esse mesmo cache também
-derruba o atraso, e dá para medir com o `Measure-Command`: a primeira consulta vai à rede, a segunda vem do cache.
+corta o atraso, o que pode ser medido com o `Measure-Command`: a primeira consulta vai à rede, a segunda vem do cache.
 
 ```powershell
 Clear-DnsClientCache
@@ -611,8 +613,8 @@ TotalMilliseconds : 14.0728    <- 2ª consulta (veio do cache)
 ```
 
 A segunda consulta nem sai da máquina, porque o Windows já guardou o par nome → IP no cache do cliente. A queda — aqui de ~22 ms para ~14 ms
-— é o ganho que o cache traz: menos atraso e menos tráfego. Usei `www.rnp.br`, um nome menos popular, de propósito: um nome muito visitado
-já estaria quente no resolver do provedor, e as duas medições sairiam quase iguais.
+— é o ganho que o cache traz: menos atraso e menos tráfego. Usou-se `www.rnp.br`, um nome menos popular, de propósito: um nome muito
+visitado já estaria quente no resolver do provedor, e as duas medições sairiam quase iguais.
 
 ## Registros de recurso
 
@@ -623,7 +625,7 @@ O banco de dados do DNS é feito de **registros de recurso** (RR).
   `Name` e `Value` depende do `Type`.
 </Definition>
 
-São quatro os tipos que sustentam tudo o que vimos:
+São quatro os tipos que sustentam tudo o que se viu até aqui:
 
 - **A** — `Name` é um host e `Value` é o seu IP. É o mapeamento-padrão nome → IP. Ex.: `(relay1.east.acme.com, 145.37.93.126, A)`.
 - **NS** — `Name` é um domínio e `Value` é o nome de um servidor autoritativo daquele domínio. Encaminha a consulta pela cadeia. Ex.:
@@ -631,13 +633,13 @@ São quatro os tipos que sustentam tudo o que vimos:
 - **CNAME** — `Value` é o canonical name correspondente ao alias em `Name`. Ex.: `(acme.com, relay1.east.acme.com, CNAME)`.
 - **MX** — `Value` é o canonical name do servidor de e-mail cujo alias está em `Name`. Ex.: `(acme.com, mail.east.acme.com, MX)`.
 
-O detalhe elegante é que o **mesmo alias** `acme.com` leva a destinos diferentes conforme o tipo consultado: pede-se **MX** para achar o
-servidor de e-mail e **CNAME** para achar o servidor Web. É isso que permite e-mail e Web compartilharem o nome. Vimos os quatro tipos em
-ação: o A na primeira consulta, o CNAME na cadeia da Amazon, o MX no Gmail e o NS nos referrals da hierarquia.
+O detalhe elegante é que o **mesmo alias** `acme.com` leva a destinos diferentes conforme o tipo consultado: uma consulta **MX** acha o
+servidor de e-mail e uma consulta **CNAME** acha o servidor Web. É isso que permite e-mail e Web compartilharem o nome. Os quatro tipos
+foram vistos em ação: o A na primeira consulta, o CNAME na cadeia da Amazon, o MX no Gmail e o NS nos referrals da hierarquia.
 
 Onde os registros ficam depende da autoridade. Se um servidor tem autoridade sobre um host, ele guarda o registro **A** daquele host. Se não
-tem, guarda um par que aponta o caminho: um **NS** (domínio → nome do autoritativo) e um **A** que dá o IP desse autoritativo. Foi
-exatamente esse par NS + A de cola que vimos chegar em cada referral da hierarquia — é ele que faz a iteração funcionar.
+tem, guarda um par que aponta o caminho: um **NS** (domínio → nome do autoritativo) e um **A** que dá o IP desse autoritativo. É exatamente
+esse par NS + A de cola que se viu chegar em cada referral da hierarquia — é ele que faz a iteração funcionar.
 
 ## A mensagem DNS
 
@@ -692,14 +694,14 @@ classDiagram
 
 </Figure>
 
-O cabeçalho tem seis campos de 2 bytes: a **identificação** (16 bits), um número copiado da consulta para a resposta para o cliente casar
+O cabeçalho tem seis campos de 2 bytes: a **identificação** (16 bits), um número copiado da consulta para a resposta para que o cliente case
 uma com a outra; o campo de **flags** (16 bits); e quatro **contadores** (questões, RRs de resposta, de autoridade e adicionais). Dentro do
 campo de flags vivem, entre outros bits, o de consulta/resposta, o de autoridade, o de recursão desejada e o de recursão disponível. As
 quatro seções que seguem o cabeçalho são a **questão** (o nome e o tipo consultados), a **resposta** (os RRs do nome), a **autoridade**
 (registros de outros servidores autoritativos) e a **adicional** (registros úteis extras).
 
-Com o Wireshark dá para ver cada um desses campos no pacote real. Gerei uma consulta limpa com `ipconfig /flushdns` seguido de
-`nslookup www.example.com.` e filtrei por `dns`. Os blocos abaixo reproduzem a árvore do dissecador do Wireshark para o par capturado (o
+O Wireshark expõe cada um desses campos no pacote real. Gerou-se uma consulta limpa com `ipconfig /flushdns` seguido de
+`nslookup www.example.com.` e filtrou-se por `dns`. Os blocos abaixo reproduzem a árvore do dissecador do Wireshark para o par capturado (o
 `Transaction ID` e a porta de origem variam a cada execução). Primeiro a consulta:
 
 ```text
@@ -717,9 +719,9 @@ Domain Name System (query)
         www.example.com: type A, class IN
 ```
 
-Em `User Datagram Protocol` lê-se a confirmação de que o DNS roda sobre UDP, com a porta 53 num dos lados. O cabeçalho traz o
+Em `User Datagram Protocol` está a confirmação de que o DNS roda sobre UDP, com a porta 53 num dos lados. O cabeçalho traz o
 `Transaction ID`, o campo `Flags` com os bits individuais, e os quatro contadores. Numa consulta, só fazem sentido os bits `Response` (aqui
-0, é uma pergunta) e `Recursion desired`. Agora a resposta:
+0, pois é uma pergunta) e `Recursion desired`. Agora a resposta:
 
 ```text
 Domain Name System (response)
@@ -739,8 +741,8 @@ Domain Name System (response)
 ```
 
 O `Transaction ID` é o mesmo da consulta, que é como o cliente casa a resposta com a pergunta. O bit `Response` agora é 1, `Answer RRs` é 1,
-e na seção `Answers` aparece o registro A com seu `Time to live`. Repare que o bit `Authoritative` é 0: a resposta veio do resolver local,
-do cache, não do servidor dono do domínio — o mesmo `Non-authoritative answer:` que o `nslookup` mostrava lá no início.
+e na seção `Answers` aparece o registro A com seu `Time to live`. Note-se que o bit `Authoritative` é 0: a resposta veio do resolver local,
+do cache, não do servidor dono do domínio — o mesmo `Non-authoritative answer:` que o `nslookup` mostrou no início.
 
 A resposta a uma consulta MX ilustra para que serve a seção adicional. Na seção de resposta vem o canonical name do servidor de e-mail, e a
 seção adicional já traz o registro A com o IP dele, poupando uma segunda consulta.
@@ -780,11 +782,11 @@ Domain Name System (response)
         gmail-smtp-in.l.google.com: type A, class IN, addr 142.250.xxx.xxx
 ```
 
-Vale lembrar que nem todo servidor manda os registros A na seção adicional. Quando não vêm, o cliente faz consultas A separadas depois — é
-normal, não é erro.
+Vale lembrar que nem todo servidor manda os registros A na seção adicional. Quando não vêm, o cliente faz consultas A separadas depois —
+isso é normal, não é erro.
 
-Por fim, o Wireshark deixa visível a afirmação de que o DNS adiciona atraso **antes** de a aplicação trafegar. Abrindo `github.com` no
-navegador e filtrando a consulta DNS junto com o primeiro SYN do TCP, a ordem fica clara:
+Por fim, o Wireshark torna visível a afirmação de que o DNS adiciona atraso **antes** de a aplicação transferir qualquer dado. Abrindo
+`github.com` no navegador e filtrando a consulta DNS junto com o primeiro SYN do TCP, a ordem fica clara:
 
 ```text
 No.   Time        Protocol  Info
@@ -798,12 +800,12 @@ que o DNS entregou. A coluna `Time` confirma a sequência.
 
 ## Como os registros entram no banco
 
-Até aqui vimos como os registros são lidos. Eles entram assim. Primeiro registra-se o domínio (por exemplo `acme.com`) num **registrar**,
-uma organização credenciada pela **ICANN** (Internet Corporation for Assigned Names and Numbers) que verifica a unicidade do nome e cobra
-uma taxa. Você informa o nome e o IP dos seus servidores autoritativos primário e secundário. O registrar insere, nos servidores TLD `.com`,
-um par NS + A para cada um. E você insere, nos seus próprios servidores autoritativos, o registro A do servidor Web no canonical name, o
-CNAME que liga o alias ao canonical name e o MX do servidor de e-mail. Há ainda a opção **UPDATE** do protocolo para adicionar e remover
-registros dinamicamente [@RFC2136].
+Até aqui o foco esteve em como os registros são lidos. Segue o mecanismo pelo qual eles entram. Primeiro registra-se o domínio (por exemplo
+`acme.com`) num **registrar**, uma organização credenciada pela **ICANN** (Internet Corporation for Assigned Names and Numbers) que verifica
+a unicidade do nome e cobra uma taxa. O dono informa o nome e o IP dos servidores autoritativos primário e secundário. O registrar insere,
+nos servidores TLD `.com`, um par NS + A para cada um. O dono insere, nos servidores autoritativos, o registro A do servidor Web no
+canonical name, o CNAME que liga o alias ao canonical name e o MX do servidor de e-mail. Há ainda a opção **UPDATE** do protocolo para
+adicionar e remover registros dinamicamente [@RFC2136].
 
 <Figure caption="Figura 7 — Inserção de registros: o registrar insere NS e A no TLD, e o dono do domínio insere A, CNAME e MX no seu autoritativo." zoomable>
 
@@ -838,11 +840,11 @@ sequenceDiagram
 
 Como o DNS é infraestrutura crítica, ele é alvo. Os ataques discutidos por Kurose e Ross são quatro [@KuroseRoss2021]. Um **DDoS**
 (Distributed Denial of Service) **contra os servidores raiz** tenta inundá-los de pacotes. O ataque de 2002, com uma botnet enviando ICMP
-ping aos 13 servidores raiz, teve impacto mínimo por dois motivos que já praticamos: filtros bloqueando o ICMP, e os servidores locais já
-terem os IPs dos TLDs em cache, contornando a raiz. Um **DDoS contra os servidores TLD** é mais eficaz, porque é mais difícil filtrar
-consultas DNS legítimas e os TLDs não são contornados tão facilmente — foi o que derrubou a **Dyn** em 2016, via a botnet **Mirai** de cerca
-de cem mil dispositivos IoT, tirando do ar Amazon, Twitter, Netflix, GitHub e Spotify por quase um dia [@Antonakakis2017]. Há ainda o
-**man-in-the-middle**, em que o atacante intercepta consultas e devolve respostas falsas, e o **cache poisoning**, em que ele faz um
+ping aos 13 servidores raiz, teve impacto mínimo por dois motivos já praticados: filtros bloqueando o ICMP, e os servidores locais já terem
+os IPs dos TLDs em cache, contornando a raiz. Um **DDoS contra os servidores TLD** é mais eficaz, porque é mais difícil filtrar consultas
+DNS legítimas e os TLDs não são contornados tão facilmente — foi o que derrubou a **Dyn** em 2016, via a botnet **Mirai** de cerca de cem
+mil dispositivos IoT, tirando do ar Amazon, Twitter, Netflix, GitHub e Spotify por quase um dia [@Antonakakis2017]. Há ainda o
+**man-in-the-middle**, em que o atacante intercepta consultas e devolve respostas falsas, e o **cache poisoning**, em que o atacante faz um
 servidor guardar respostas falsas. A defesa de fundo é o **DNSSEC** (DNS Security Extensions) [@RFC4033].
 
 A fragilidade fica clara observando dois campos no Wireshark. O `Transaction ID` (`dns.id`) tem só 16 bits, ou seja, 65.536 valores
@@ -851,8 +853,8 @@ adivinhar o ID e responder antes do servidor legítimo. A defesa concreta é ale
 soma entropia ao ID e dificulta muito a adivinhação combinada. O ponto é que nada aqui autentica a resposta: quem responder com o ID certo
 "ganha". É essa lacuna que o DNSSEC fecha.
 
-O DNSSEC assina criptograficamente os registros. Pedindo a um resolver validador (`1.1.1.1`) o registro A com a flag `-DnssecOk`, vem junto
-a assinatura:
+O DNSSEC assina criptograficamente os registros. Consultando um resolver validador (`1.1.1.1`) pelo registro A com a flag `-DnssecOk`, vem
+junto a assinatura:
 
 ```powershell
 Resolve-DnsName -Name cloudflare.com -Type A -DnssecOk -Server 1.1.1.1
@@ -920,10 +922,10 @@ fechou, e ele preferiu devolver erro a entregar um dado possivelmente forjado. A
 
 ## Próximos passos
 
-Este laboratório parou de propósito antes do "pesado". Quando o DNS se juntar aos próximos assuntos, dá para aprofundar montando um
-**servidor autoritativo de verdade** (com BIND ou `dnsmasq` num Linux ou no WSL), cadastrando zonas próprias e apontando o resolver da
-máquina para ele, de modo que a inserção de registros aconteça num servidor real. Também vale capturar e comparar **DNS over HTTPS** (DoH) e
-**DNS over TLS** (DoT) contra o DNS clássico na porta 53, e completar o ciclo de inserção de registros pelo lado do registrar e pela opção
-de **UPDATE** dinâmico [@RFC2136].
+Várias extensões decorrem naturalmente quando o DNS se junta aos próximos assuntos. A montagem de um **servidor autoritativo de verdade**
+(com BIND ou `dnsmasq` num Linux ou no WSL), com o cadastro de zonas próprias e o apontamento do resolver da máquina para ele, faria a
+inserção de registros acontecer num servidor real. Uma extensão adicional é a captura e comparação de **DNS over HTTPS** (DoH) e **DNS over
+TLS** (DoT) contra o DNS clássico na porta 53, bem como a conclusão do ciclo de inserção de registros pelo lado do registrar e pela opção de
+**UPDATE** dinâmico [@RFC2136].
 
 ## Referências
