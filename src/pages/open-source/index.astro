@@ -10,6 +10,7 @@ import Tag from '../../components/Tag.astro';
 import SEO from '../../components/SEO.astro';
 import { getCollection } from 'astro:content';
 import { sortLibraries, sortContributions } from '../../lib/open-source';
+import { parseInlineLinks } from '../../lib/prose';
 import { t } from '../../lib/ui';
 
 const LOCALE = 'en' as const;
@@ -46,7 +47,23 @@ function libraryChip(language: string, stars: number): string {
               <a class="entry-title" href={lib.repoUrl} target="_blank" rel="noopener noreferrer">
                 {lib.name}
               </a>
-              <p class="entry-abstract">{lib.summary[LOCALE]}</p>
+              {lib.summary[LOCALE].split('\n\n').map((paragraph) => (
+                <p class="entry-abstract">
+                  {parseInlineLinks(paragraph).map((segment) =>
+                    segment.kind === 'link' ? (
+                      <a
+                        href={segment.href}
+                        target={segment.href.startsWith('http') ? '_blank' : undefined}
+                        rel={segment.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      >
+                        {segment.label}
+                      </a>
+                    ) : (
+                      segment.value
+                    ),
+                  )}
+                </p>
+              ))}
               {lib.registry &&
                 (lib.packageUrl ? (
                   <p class="registry">

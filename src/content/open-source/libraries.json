@@ -20,12 +20,12 @@
     "repoUrl": "https://github.com/eagle-head/erli18n",
     "language": "Erlang",
     "stars": 0,
-    "registry": "hex: erli18n 0.1.0",
+    "registry": "hex: erli18n 0.4.0",
     "packageUrl": "https://hex.pm/packages/erli18n",
     "tags": ["erlang", "otp", "i18n", "gettext", "l10n", "cldr"],
     "summary": {
-      "en": "Internationalization (i18n) library for Erlang/OTP, fully GNU gettext compatible — drop-in support for .po/.pot files from Poedit, Crowdin, Transifex, Weblate, and xgettext. A first-class pure-Erlang gettext alternative (gettext/ngettext/pgettext) with atomic catalog loading, runtime Plural-Forms resolution, and CLDR validation, filling the gap left by the stalled gettexter without forcing an Elixir polyglot build.",
-      "pt-BR": "Library de internacionalização (i18n) para Erlang/OTP, totalmente compatível com GNU gettext — suporte drop-in a arquivos .po/.pot do Poedit, Crowdin, Transifex, Weblate e xgettext. Uma alternativa gettext pure-Erlang de primeira classe (gettext/ngettext/pgettext), com carregamento atômico de catálogos, resolução de Plural-Forms em runtime e validação CLDR, preenchendo a lacuna deixada pelo gettexter parado sem exigir um build polyglot com Elixir."
+      "en": "Internationalization (i18n) library for Erlang/OTP, fully GNU gettext compatible — drop-in support for .po/.pot files from Poedit, Crowdin, Transifex, Weblate, and xgettext. A first-class pure-Erlang gettext alternative (gettext/ngettext/pgettext) with atomic catalog loading, runtime Plural-Forms resolution, and CLDR validation, filling the gap left by the stalled gettexter without forcing an Elixir polyglot build.\n\nIt is now listed in [erlang-punch/awesome-erlang](https://github.com/erlang-punch/awesome-erlang#translations-and-internationalizations), the community-curated catalog of notable Erlang libraries and resources — meaning a maintainer reviewed and accepted erli18n into the index that Erlang developers browse to discover libraries, marking it as a recognized i18n option in the ecosystem.",
+      "pt-BR": "Library de internacionalização (i18n) para Erlang/OTP, totalmente compatível com GNU gettext — suporte drop-in a arquivos .po/.pot do Poedit, Crowdin, Transifex, Weblate e xgettext. Uma alternativa gettext pure-Erlang de primeira classe (gettext/ngettext/pgettext), com carregamento atômico de catálogos, resolução de Plural-Forms em runtime e validação CLDR, preenchendo a lacuna deixada pelo gettexter parado sem exigir um build polyglot com Elixir.\n\nAgora está listada na [erlang-punch/awesome-erlang](https://github.com/erlang-punch/awesome-erlang#translations-and-internationalizations), o catálogo curado pela comunidade de libraries e recursos notáveis de Erlang — ou seja, um mantenedor a avaliou e aceitou no índice que desenvolvedores Erlang consultam para descobrir libraries, o que a marca como uma opção reconhecida de i18n no ecossistema."
     },
     "featured": false,
     "order": 1
