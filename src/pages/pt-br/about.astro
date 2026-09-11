@@ -10,57 +10,69 @@ const LOCALE = 'pt-BR' as const;
   <SEO
     slot="head"
     title={`${t(LOCALE, 'about.title')} — Eduardo Kohn`}
-    description="Eduardo Kohn — engenheiro de software (10+ anos) e agora pesquisador independente, partindo de fundamentos de redes de computadores rumo à segurança de Cyber-Physical Systems (CPS/ICS)."
+    description="Eduardo Kohn — engenheiro de software sênior com foco em Java/JVM, análise de programas, confiabilidade de software e tooling de pesquisa reproduzível."
     canonicalPath="/about"
     jsonLd={{ kind: 'about' }}
   />
   <article class="u-container page">
     <h1 class="page-title">{t(LOCALE, 'about.title')}</h1>
     <p>
-      Sou Eduardo Kohn, engenheiro de software com mais de dez anos construindo sistemas full-stack — Java/Spring Boot e
-      Elixir/Phoenix no backend, React e TypeScript no frontend, React Native no mobile, com PostgreSQL, Docker e
-      Kubernetes em produção. Hoje estou em uma transição deliberada da prática de engenharia para a pesquisa aplicada
-      em
-      <strong>Cyber-Physical Systems (CPS)</strong> e segurança de <strong
-        >sistemas de controle industrial (ICS/OT)</strong
-      >.
+      Sou Eduardo Kohn, engenheiro de software sênior com mais de dez anos de experiência construindo e operando
+      sistemas de produção nos setores bancário, varejista, de produtos de consumo e em ambientes corporativos. Minha
+      experiência abrange Java e a JVM, sistemas distribuídos, testes automatizados, arquitetura de software, CI/CD,
+      containers e infraestrutura em nuvem. Atuei em todo o ciclo de software, da arquitetura e implementação ao deploy,
+      operação em produção, definição de padrões técnicos e liderança de equipes.
     </p>
     <p>
-      Minha abordagem é bottom-up. Antes da camada de segurança, estou reconstruindo fundamentos rigorosos de redes de
-      computadores — TCP/IP, roteamento, DNS e os detalhes internos de protocolo dos quais os sistemas reais de fato
-      dependem — estudando Kurose &amp; Ross e confrontando a teoria com capturas de pacotes em vez de tomá-la como
-      certa. Sempre me interessou mais entender <em>por que</em> as coisas funcionam do que entregar features — dos bytes
-      que trafegam pela rede à criptografia que protege um protocolo.
+      Desde fevereiro de 2026, trabalho de forma independente na interseção entre análise de programas, confiabilidade
+      de software e tooling de pesquisa reproduzível. Projetei e implementei o <a
+        href="https://eagle-head.github.io/aquila-graph-poc/"
+        target="_blank"
+        rel="noopener noreferrer">Aquila Graph POC</a
+      >, um experimento inspecionável que combina fatos estáticos e de runtime de Java em um grafo que preserva a
+      proveniência. O projeto inclui fluxos reprodutíveis de execução, verificação, testes e coleta de evidências,
+      fundamentados em bytecode da JVM, grafos de fluxo de controle e de chamadas e reconciliação de identidades entre
+      análise estática e runtime.
     </p>
     <p>
-      Dentro de segurança, a direção que mais me motiva é <strong>Cyber-Physical Systems</strong>: a interseção entre
-      computação, redes e processos físicos que sustenta infraestrutura crítica como redes elétricas, sistemas de
-      controle industrial, dispositivos médicos, IoT e veículos autônomos. Quando uma vulnerabilidade atravessa a
-      fronteira do digital e afeta o mundo físico, as consequências deixam de ser abstratas — e é exatamente essa
-      responsabilidade técnica que me atrai.
+      Meus interesses atuais incluem análise estática e dinâmica, testes de software, detalhes internos da JVM, análise
+      de código relevante para segurança e engenharia de software empírica. Meu interesse está nos métodos fundamentais,
+      sem limitar o trabalho a uma linguagem de programação específica. Estou aberto a colaborar com equipes acadêmicas
+      e de pesquisa aplicada nas quais uma engenharia de software prática e rigorosa possa fortalecer ferramentas,
+      experimentos e infraestrutura de pesquisa.
     </p>
     <p>
-      Sou contribuidor ativo do ecossistema Erlang/Elixir. Tenho quatro pull requests aceitos no <a
+      Sou contribuidor ativo de open source, com seis pull requests aceitos, distribuídos entre o <a
         href="https://github.com/phoenixframework/phoenix"
         target="_blank"
         rel="noopener noreferrer">framework Phoenix</a
-      > — encoding de query-string, geração de código, tratamento de crash no installer e correções de documentação, revisados
-      por core maintainers — além de contribuições abertas no Cowboy e em suas bibliotecas de apoio, do teardown de socket
-      TCP ao parsing de cabeçalhos HTTP/1 baseado em SWAR. Trabalhar em open source nessa escala tem sido minha principal
-      escola de engenharia: foi onde aprendi na prática o que significa projetar sistemas concorrentes e tolerantes a falhas
-      sobre uma base teórica séria — OTP, árvore de supervisão, message passing.
+      > e o <a href="https://github.com/zeek/zeek" target="_blank" rel="noopener noreferrer">Zeek</a>. Quatro no Phoenix
+      abrangem encoding de query-string, geração de código, tratamento de crash no installer e correções de
+      documentação; dois no Zeek adicionam btests para assinaturas de arquivos de bytecode Python e casos de erro no
+      processamento de expressões. Também desenvolvo e mantenho o <a
+        href="https://github.com/eagle-head/timekeeper-countdown"
+        target="_blank"
+        rel="noopener noreferrer">timekeeper-countdown</a
+      > e o <a href="https://github.com/eagle-head/erli18n" target="_blank" rel="noopener noreferrer">erli18n</a>, meus
+      pacotes TypeScript para contagem regressiva e meu tooling de internacionalização em Erlang puro.
     </p>
     <p>
-      Este blog é onde penso em público, escrevendo enquanto trabalho cada tópico. <a href="/pt-br/papers">Artigos</a> são
-      peças mais longas escritas com rigor científico — abstract, citações, teoremas, provas; meu estudo de DNS, do conceito
-      ao pacote, está lá. <a href="/pt-br/posts">Posts</a> são notas curtas que compartilham uma ideia antes que ela esteja
-      completa o suficiente para ser formalizada.
+      Antes do trabalho independente, exerci funções de engenharia e liderança técnica na Capgemini, Leroy Merlin, AB
+      InBev, EY, Livelo Brasil, Semantix Brasil e Hubchain Technologies. Nessas experiências, desenvolvi serviços com
+      Java e Spring Boot, interfaces com React e TypeScript e aplicações React Native; trabalhei com bancos relacionais
+      e NoSQL, Kafka, Docker, Kubernetes e AWS; e ajudei a estabelecer padrões de arquitetura, testes, acessibilidade,
+      entrega e design systems.
     </p>
     <p>
-      Profissionalmente, atuo com frontend e mobile cross-platform (React Native, iOS e Android) desde 2016 e como
-      engenheiro full-stack desde 2021, passando por empresas como EY, AB InBev, Leroy Merlin e Capgemini. Curso
-      Bacharelado em Ciência da Computação (Universidade São Judas Tadeu, 2024–2028) e, hoje baseado em Ohio, converso
-      com pesquisadores nos Estados Unidos enquanto me preparo para me candidatar a um doutorado em segurança aplicada.
+      Curso Bacharelado em Ciência da Computação na Universidade São Judas Tadeu (2024–2028) e sou bacharel em
+      Administração pela UNISBA (2003–2007). Moro em Ashland, Ohio, Estados Unidos.
+    </p>
+    <p>
+      Este blog é onde penso em público enquanto estudo análise de programas, confiabilidade de software, sistemas
+      distribuídos, redes, performance, testes e detalhes internos de software em produção. <a href="/pt-br/papers"
+        >Artigos</a
+      > são textos mais longos desenvolvidos com rigor científico; <a href="/pt-br/posts">Posts</a> são notas mais curtas
+      que compartilham uma ideia enquanto ela ainda está tomando forma.
     </p>
     <p>
       Encontre-me no <a href="https://github.com/eagle-head" target="_blank" rel="me noopener noreferrer">GitHub</a>,
