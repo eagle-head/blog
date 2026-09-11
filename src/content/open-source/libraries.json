@@ -5,11 +5,11 @@
     "repoUrl": "https://github.com/eagle-head/timekeeper-countdown",
     "language": "TypeScript",
     "stars": 18,
-    "registry": "npm: @timekeeper-countdown/core @0.2.0 · @timekeeper-countdown/react @0.2.0",
-    "tags": ["countdown", "timer", "typescript", "state-machine", "react-hook"],
+    "registry": "npm: @timekeeper-countdown/core @0.3.2 · @timekeeper-countdown/react @0.3.2",
+    "tags": ["countdown", "timer", "typescript", "javascript"],
     "summary": {
-      "en": "Zero-dependency countdown engine with a snapshot-driven API and a React useCountdown hook, structured as a monorepo (core engine plus framework adapters). The framework-agnostic core uses wall-clock (performance.now) precision, immutable per-tick snapshots, and ships a fake-time provider for deterministic tests. Published to npm under the @timekeeper-countdown scope with VitePress docs and CI.",
-      "pt-BR": "Countdown engine zero-dependency com uma API orientada a snapshots e um hook React useCountdown, estruturado como monorepo (core engine mais framework adapters). O core, framework-agnostic, usa precisão wall-clock (performance.now), snapshots imutáveis por tick e inclui um fake-time provider para testes determinísticos. Publicado no npm sob o escopo @timekeeper-countdown, com docs em VitePress e CI."
+      "en": "Lightweight, zero-dependency countdown engine and React useCountdown hook, implemented in pure TypeScript and published as a monorepo. The framework-agnostic core uses a guarded monotonic time provider, immutable snapshots, lossless time decomposition, formatting helpers, and fake-time utilities for deterministic tests. Both packages ship ESM and CommonJS bundles, with VitePress documentation and CI.",
+      "pt-BR": "Countdown engine leve e sem dependências, acompanhado do hook React useCountdown, implementado em TypeScript puro e publicado como monorepo. O core independente de framework usa um provedor monotônico de tempo com validação, snapshots imutáveis, decomposição de tempo sem perdas, helpers de formatação e utilitários de tempo simulado para testes determinísticos. Ambos os pacotes oferecem bundles ESM e CommonJS, documentação em VitePress e CI."
     },
     "featured": false,
     "order": 0
@@ -19,13 +19,25 @@
     "name": "erli18n",
     "repoUrl": "https://github.com/eagle-head/erli18n",
     "language": "Erlang",
-    "stars": 0,
-    "registry": "hex: erli18n 0.4.0",
+    "stars": 6,
+    "registry": "hex: erli18n 0.8.0",
     "packageUrl": "https://hex.pm/packages/erli18n",
-    "tags": ["erlang", "otp", "i18n", "gettext", "l10n", "cldr"],
+    "tags": [
+      "cldr",
+      "erlang",
+      "experimental",
+      "gettext",
+      "i18n",
+      "internationalization",
+      "l10n",
+      "localization",
+      "otp",
+      "telemetry",
+      "translation"
+    ],
     "summary": {
-      "en": "Internationalization (i18n) library for Erlang/OTP, fully GNU gettext compatible — drop-in support for .po/.pot files from Poedit, Crowdin, Transifex, Weblate, and xgettext. A first-class pure-Erlang gettext alternative (gettext/ngettext/pgettext) with atomic catalog loading, runtime Plural-Forms resolution, and CLDR validation, filling the gap left by the stalled gettexter without forcing an Elixir polyglot build.\n\nIt is now listed in [erlang-punch/awesome-erlang](https://github.com/erlang-punch/awesome-erlang#translations-and-internationalizations), the community-curated catalog of notable Erlang libraries and resources — meaning a maintainer reviewed and accepted erli18n into the index that Erlang developers browse to discover libraries, marking it as a recognized i18n option in the ecosystem.",
-      "pt-BR": "Library de internacionalização (i18n) para Erlang/OTP, totalmente compatível com GNU gettext — suporte drop-in a arquivos .po/.pot do Poedit, Crowdin, Transifex, Weblate e xgettext. Uma alternativa gettext pure-Erlang de primeira classe (gettext/ngettext/pgettext), com carregamento atômico de catálogos, resolução de Plural-Forms em runtime e validação CLDR, preenchendo a lacuna deixada pelo gettexter parado sem exigir um build polyglot com Elixir.\n\nAgora está listada na [erlang-punch/awesome-erlang](https://github.com/erlang-punch/awesome-erlang#translations-and-internationalizations), o catálogo curado pela comunidade de libraries e recursos notáveis de Erlang — ou seja, um mantenedor a avaliou e aceitou no índice que desenvolvedores Erlang consultam para descobrir libraries, o que a marca como uma opção reconhecida de i18n no ecossistema."
+      "en": "Modern GNU gettext-compatible internationalization for Erlang/OTP 27+, implemented in pure Erlang and organized as a rebar3 umbrella with two separately published Hex packages. The erli18n runtime provides .po/.pot loading, copy-free persistent_term lookups, CLDR pluralization, the full gettext facade family, locale negotiation and fallback, telemetry, and optional Cowboy, Elli, and erlydtl integrations. The rebar3_erli18n 0.2.0 plugin extracts, merges, checks, reports, and compiles catalogs from Erlang abstract forms, including opt-in compile-time .po-to-BEAM generation.\n\nIt is listed in [erlang-punch/awesome-erlang](https://github.com/erlang-punch/awesome-erlang#translations-and-internationalizations), the community-curated catalog of notable Erlang libraries and resources.",
+      "pt-BR": "Internacionalização moderna e compatível com GNU gettext para Erlang/OTP 27+, implementada em Erlang puro e organizada como um umbrella rebar3 com dois pacotes Hex publicados separadamente. O runtime erli18n oferece carregamento de arquivos .po/.pot, consultas sem cópia via persistent_term, pluralização CLDR, a família completa de funções gettext, negociação e fallback de locale, telemetria e integrações opcionais com Cowboy, Elli e erlydtl. O plugin rebar3_erli18n 0.2.0 extrai, mescla, verifica, reporta e compila catálogos a partir das formas abstratas do Erlang, incluindo geração opt-in de .po para BEAM em tempo de compilação.\n\nA biblioteca está listada na [erlang-punch/awesome-erlang](https://github.com/erlang-punch/awesome-erlang#translations-and-internationalizations), o catálogo de bibliotecas e recursos Erlang notáveis mantido pela comunidade."
     },
     "featured": false,
     "order": 1
